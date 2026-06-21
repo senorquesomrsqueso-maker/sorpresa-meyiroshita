@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi persona favorita ❤️</title>
+    <style>
+        /* Estilos Generales */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
+        
+        body { margin: 0; overflow: hidden; background-color: #ffe6e6; font-family: 'Nunito', sans-serif; }
+        .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; opacity: 1; z-index: 1; }
+        .hidden { opacity: 0 !important; pointer-events: none; z-index: -1; }
+
+        /* Escena 1: Corazón inicial y explosión de palabras */
+        #heart-btn { font-size: 100px; cursor: pointer; background: none; border: none; animation: latido 1.2s infinite; z-index: 10; transition: transform 0.2s; }
+        #heart-btn:active { transform: scale(0.8); }
+        @keyframes latido { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        
+        .floating-word { position: absolute; font-family: 'Dancing Script', cursive; font-size: 35px; color: #ff3366; font-weight: bold; pointer-events: none; opacity: 0; animation: floatUp 2.5s ease-out forwards; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-100px) scale(1.2); } }
+
+        #btn-sofia { margin-top: 30px; font-size: 22px; padding: 15px 40px; background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4); opacity: 0; transform: translateY(20px); transition: all 1s ease; z-index: 10; }
+        #btn-sofia.show-btn { opacity: 1; transform: translateY(0); }
+
+        /* Escena 2: La Carta */
+        #carta-container { width: 90%; max-width: 600px; background: #fffcfc; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid #ff4d4d; position: relative; max-height: 80vh; overflow-y: auto; text-align: center; transform: scale(0.8); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #carta-container.open { transform: scale(1); }
+        .titulo-carta { font-family: 'Dancing Script', cursive; font-size: 45px; color: #d63384; margin-bottom: 20px; margin-top: 0; }
+        .texto-carta { font-size: 18px; line-height: 1.8; color: #444; text-align: justify; margin-bottom: 30px; }
+        #btn-continuar { font-size: 18px; padding: 12px 30px; background-color: #ff4d4d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3); }
+
+        /* Escena 3: Nombres acercándose */
+        #scene-3 { flex-direction: row; }
+        .center-heart { font-size: 70px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: latido 1.5s infinite; cursor: pointer; z-index: 5; opacity: 0; transition: opacity 1s; }
+        
+        .name-card { position: absolute; top: 40%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
+        .name-title { font-size: 26px; font-weight: bold; color: #333; background: white; padding: 10px 25px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ffb6c1; margin-bottom: 15px; transition: transform 0.3s; }
+        .name-card:hover .name-title { transform: scale(1.05); }
+        
+        /* Posiciones iniciales (alejados) */
+        #card-left { left: 5%; }
+        #card-right { right: 5%; }
+
+        /* Posiciones finales (cerca del centro) */
+        .move-center-left { left: 50% !important; transform: translate(-140%, -50%) !important; }
+        .move-center-right { right: 50% !important; transform: translate(140%, -50%) !important; }
+
+        /* Contenido multimedia oculto hasta que se unan */
+        .media-content { opacity: 0; height: 0; overflow: hidden; transition: opacity 1.5s ease, height 1.5s ease; display: flex; flex-direction: column; align-items: center; }
+        .media-content img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
+        .media-content iframe { border-radius: 10px; width: 200px; height: 80px; }
+        
+        .show-media { opacity: 1 !important; height: 280px !important; margin-top: 10px; }
+
+        /* Escena 4: Final explosivo */
+        .final-text { font-family: 'Dancing Script', cursive; font-size: 6vw; color: #e6005c; font-weight: bold; text-align: center; line-height: 1.2; text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(0,0,0,0.2); transform: scale(0); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .show-final { transform: scale(1); }
+        
+        /* Confeti */
+        .confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="scene-1" class="scene">
+        <button id="heart-btn">❤️</button>
+        <button id="btn-sofia">Meyiroshita - Sofia</button>
+    </div>
+
+    <div id="scene-2" class="scene hidden">
+        <div id="carta-container">
+            <h1 class="titulo-carta">Feliz Primer Mes, Mi Niña</h1>
+            <div class="texto-carta">
+                <p>Meyiroshita, mi amor hermoso...</p>
+                <p>Parece increíble que ya haya pasado nuestro primer mes desde aquel 21 de mayo. Estos 30 días han sido los más bonitos, llenos de sonrisas, charlas y momentos que ya guardo en mi corazón para siempre.</p>
+                <p>Quería hacerte algo único, algo que te demostrara aunque sea un poquito de lo especial que eres para mí. Me encanta todo de ti, tu forma de ser, tu voz, y cómo iluminas mis días de una manera que nadie más puede.</p>
+                <p>Gracias por dejarme entrar en tu vida y por ser la mejor compañera que pude haber encontrado. Este es solo nuestro primer aniversario de muchos más que nos esperan.</p>
+                <p style="text-align: center; font-weight: bold; color: #d63384; font-size: 22px; margin-top: 20px;">Te amo muchísimo. <br> Feliz 21 de Junio.</p>
+            </div>
+            <button id="btn-continuar">Siguiente Sorpresa ✨</button>
+        </div>
+    </div>
+
+    <div id="scene-3" class="scene hidden">
+        <div id="center-heart" class="center-heart">❤️</div>
+        
+        <div id="card-left" class="name-card">
+            <div class="name-title">Yoshiro - Kairu</div>
+            <div id="media-left" class="media-content">
+                <img src="12047.jpg" alt="Yoshiro">
+                <iframe src="https://www.youtube.com/embed/PEM0Vs8jf1w" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div id="card-right" class="name-card">
+            <div class="name-title">Meyiro - Sofia</div>
+            <div id="media-right" class="media-content">
+                <img src="12046.jpg" alt="Sofia">
+                <iframe src="https://www.youtube.com/embed/GwSSrwryxN0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="scene-4" class="scene hidden">
+        <div id="texto-final" class="final-text">
+            ¡Feliz Aniversario!<br>21/06
+        </div>
+    </div>
+
+    <script>
+        // Referencias a los elementos
+        const s1 = document.getElementById('scene-1');
+        const s2 = document.getElementById('scene-2');
+        const s3 = document.getElementById('scene-3');
+        const s4 = document.getElementById('scene-4');
+
+        const heartBtn = document.getElementById('heart-btn');
+        const btnSofia = document.getElementById('btn-sofia');
+        const cartaContainer = document.getElementById('carta-container');
+        const btnContinuar = document.getElementById('btn-continuar');
+
+        const cardLeft = document.getElementById('card-left');
+        const cardRight = document.getElementById('card-right');
+        const centerHeart = document.getElementById('center-heart');
+        const mediaLeft = document.getElementById('media-left');
+        const mediaRight = document.getElementById('media-right');
+
+        // Escena 1: Explosión del corazón inicial
+        heartBtn.addEventListener('click', () => {
+            heartBtn.style.display = 'none'; // Desaparece el corazón
+            
+            // Palabras de cariño
+            const words = ["Te adoro", "Mi princesa", "Preciosa", "Mi todo", "Hermosa", "Mi niña", "Te amo"];
+            
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    let w = document.createElement('div');
+                    w.classList.add('floating-word');
+                    w.innerText = words[Math.floor(Math.random() * words.length)];
+                    w.style.left = (20 + Math.random() * 60) + 'vw';
+                    w.style.top = (40 + Math.random() * 40) + 'vh';
+                    s1.appendChild(w);
+                    
+                    setTimeout(() => w.remove(), 2500);
+                }, i * 150);
+            }
+
+            // Aparece el botón con su nombre después de 1 segundo
+            setTimeout(() => {
+                btnSofia.classList.add('show-btn');
+            }, 1000);
+        });
+
+        // Pasar de Escena 1 a Escena 2 (La Carta)
+        btnSofia.addEventListener('click', () => {
+            s1.classList.add('hidden');
+            s2.classList.remove('hidden');
+            setTimeout(() => {
+                cartaContainer.classList.add('open');
+            }, 100);
+        });
+
+        // Pasar de Escena 2 a Escena 3 (Los Nombres)
+        btnContinuar.addEventListener('click', () => {
+            s2.classList.add('hidden');
+            s3.classList.remove('hidden');
+        });
+
+        // Lógica de los nombres acercándose
+        let leftMoved = false;
+        let rightMoved = false;
+
+        function checkBoth() {
+            if(leftMoved && rightMoved) {
+                // Aparece el corazón del medio
+                centerHeart.style.opacity = "1";
+                
+                // Aparecen las fotos y los audios
+                setTimeout(() => {
+                    mediaLeft.classList.add('show-media');
+                    mediaRight.classList.add('show-media');
+                }, 800);
+            }
+        }
+
+        cardLeft.addEventListener('click', () => {
+            if(!leftMoved) {
+                cardLeft.classList.add('move-center-left');
+                leftMoved = true;
+                checkBoth();
+            }
+        });
+
+        cardRight.addEventListener('click', () => {
+            if(!rightMoved) {
+                cardRight.classList.add('move-center-right');
+                rightMoved = true;
+                checkBoth();
+            }
+        });
+
+        // Escena Final (Explosión del corazón del medio)
+        centerHeart.addEventListener('click', () => {
+            s3.classList.add('hidden');
+            s4.classList.remove('hidden');
+            document.body.style.backgroundColor = "#ffcccc";
+            
+            setTimeout(() => {
+                document.getElementById('texto-final').classList.add('show-final');
+                crearConfeti();
+            }, 300);
+        });
+
+        // Función para crear lluvia de confeti
+        function crearConfeti() {
+            const colores = ['#ff4d4d', '#d63384', '#ffb6c1', '#ffffff', '#ff9999'];
+            for(let i=0; i<100; i++) {
+                let conf = document.createElement('div');
+                conf.classList.add('confetti');
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = -10 + 'vh';
+                conf.style.backgroundColor = colores[Math.random() * colores.length | 0];
+                conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                conf.style.animationDelay = (Math.random() * 2) + 's';
+                s4.appendChild(conf);
+            }
+        }
+    </script>
+</body>
+</html>
