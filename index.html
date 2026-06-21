@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para mi persona favorita ❤️</title>
     <style>
-        /* Estilos Generales */
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
         
-        body { margin: 0; overflow: hidden; background-color: #ffe6e6; font-family: 'Nunito', sans-serif; }
+        body { margin: 0; overflow-x: hidden; background-color: #ffe6e6; font-family: 'Nunito', sans-serif; }
         .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; opacity: 1; z-index: 1; }
         .hidden { opacity: 0 !important; pointer-events: none; z-index: -1; }
 
-        /* Escena 1: Corazón inicial y palabras infinitas */
+        /* Estilos Escena 1 y 2 (Sin cambios) */
         #heart-btn { font-size: 100px; cursor: pointer; background: none; border: none; animation: latido 1.2s infinite; z-index: 10; transition: transform 0.2s; margin: 0; padding: 0; }
         #heart-btn:active { transform: scale(0.8); }
         @keyframes latido { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
@@ -23,46 +22,40 @@
         #btn-sofia { margin-top: 30px; font-size: 22px; padding: 15px 40px; background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4); opacity: 0; transform: translateY(20px); transition: all 1s ease; z-index: 10; }
         #btn-sofia.show-btn { opacity: 1; transform: translateY(0); }
 
-        /* Escena 2: La Carta */
         #carta-container { width: 90%; max-width: 600px; background: #fffcfc; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid #ff4d4d; position: relative; max-height: 80vh; overflow-y: auto; text-align: center; transform: scale(0.8); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #carta-container.open { transform: scale(1); }
         .titulo-carta { font-family: 'Dancing Script', cursive; font-size: 45px; color: #d63384; margin-bottom: 20px; margin-top: 0; }
         .texto-carta { font-size: 18px; line-height: 1.8; color: #444; text-align: justify; margin-bottom: 30px; }
         #btn-continuar { font-size: 18px; padding: 12px 30px; background-color: #ff4d4d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3); }
 
-        /* Escena 3: Nombres acercándose (CORAZÓN ARREGLADO) */
-        #scene-3 { flex-direction: row; }
-        /* Se creó una animación especial latidoCentro para que no se tuerza al latir */
-        .center-heart { font-size: 80px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: latidoCentro 1.5s infinite; cursor: pointer; z-index: 5; opacity: 0; transition: opacity 1s; display: flex; justify-content: center; align-items: center; margin: 0; }
-        @keyframes latidoCentro { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
+        /* ESCENA 3 ARREGLADA (FLEXBOX) */
+        #scene-3 { flex-direction: row; gap: 40px; }
         
-        .name-card { position: absolute; top: 40%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
-        .name-title { font-size: 26px; font-weight: bold; color: #333; background: white; padding: 10px 25px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ffb6c1; margin-bottom: 15px; transition: transform 0.3s; }
-        .name-card:hover .name-title { transform: scale(1.05); }
+        .center-heart { font-size: 80px; animation: latidoCentro 1.5s infinite; cursor: pointer; opacity: 0; transition: opacity 1s; z-index: 5; order: 2; }
+        @keyframes latidoCentro { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
         
-        /* Posiciones */
-        #card-left { left: 5%; }
-        #card-right { right: 5%; }
-        .move-center-left { left: 50% !important; transform: translate(-150%, -50%) !important; }
-        .move-center-right { right: 50% !important; transform: translate(50%, -50%) !important; }
-
-        /* Contenido multimedia (BOTONES DE AUDIO MEJORADOS) */
+        .name-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.3s; }
+        .name-title { font-size: 26px; font-weight: bold; color: #333; background: white; padding: 10px 25px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ffb6c1; margin-bottom: 15px; transition: transform 0.3s; width: max-content; }
+        
         .media-content { opacity: 0; height: 0; overflow: hidden; transition: opacity 1.5s ease, height 1.5s ease; display: flex; flex-direction: column; align-items: center; }
         .media-content img { width: 170px; height: 170px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
-        
         .show-media { opacity: 1 !important; height: 280px !important; margin-top: 10px; }
-
+        
         .audio-btn { background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-family: 'Nunito', sans-serif; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(214, 51, 132, 0.4); transition: transform 0.2s; margin-top: 5px; }
-        .audio-btn:hover { transform: scale(1.05); }
 
-        /* Escena 4: Final explosivo */
+        /* RESPONSIVE PARA CELULAR */
+        @media (max-width: 768px) {
+            #scene-3 { flex-direction: column; gap: 10px; }
+            .name-title { font-size: 20px; padding: 8px 15px; }
+            .media-content img { width: 120px; height: 120px; }
+            .show-media { height: 200px !important; }
+            .center-heart { font-size: 50px; }
+        }
+
         .final-text { font-family: 'Dancing Script', cursive; font-size: 6vw; color: #e6005c; font-weight: bold; text-align: center; line-height: 1.2; text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(0,0,0,0.2); transform: scale(0); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
         .show-final { transform: scale(1); }
-        
-        /* Confeti infinito arreglado */
         .confetti { position: absolute; width: 12px; height: 12px; animation: fall linear infinite; top: -20px; z-index: 0; }
         @keyframes fall { 0% { transform: translateY(0vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0.8; } }
-
     </style>
 </head>
 <body>
@@ -77,9 +70,8 @@
             <h1 class="titulo-carta">Feliz Primer Mes, Mi Niña</h1>
             <div class="texto-carta">
                 <p>Meyiroshita, mi amor hermoso...</p>
-                <p>Parece increíble que ya haya pasado nuestro primer mes desde aquel 21 de mayo. Estos 30 días han sido los más bonitos, llenos de sonrisas, charlas y momentos que ya guardo en mi corazón para siempre.</p>
-                <p>Quería hacerte algo único, algo que te demostrara aunque sea un poquito de lo especial que eres para mí. Me encanta todo de ti, tu forma de ser, tu voz, y cómo iluminas mis días de una manera que nadie más puede.</p>
-                <p>Gracias por dejarme entrar en tu vida y por ser la mejor compañera que pude haber encontrado. Este es solo nuestro primer aniversario de muchos más que nos esperan.</p>
+                <p>Parece increíble que ya haya pasado nuestro primer mes desde aquel 21 de mayo. Estos 30 días han sido los más bonitos.</p>
+                <p>Quería hacerte algo único. Gracias por ser la mejor compañera que pude haber encontrado.</p>
                 <p style="text-align: center; font-weight: bold; color: #d63384; font-size: 22px; margin-top: 20px;">Te amo muchísimo. <br> Feliz 21 de Junio.</p>
             </div>
             <button id="btn-continuar">Siguiente Sorpresa ✨</button>
@@ -87,8 +79,6 @@
     </div>
 
     <div id="scene-3" class="scene hidden">
-        <div id="center-heart" class="center-heart">❤️</div>
-        
         <div id="card-left" class="name-card">
             <div class="name-title">Yoshiro - Kairu</div>
             <div id="media-left" class="media-content">
@@ -96,6 +86,8 @@
                 <button class="audio-btn" id="btn-golden" onclick="playGolden()">▶️ Reproducir</button>
             </div>
         </div>
+
+        <div id="center-heart" class="center-heart">❤️</div>
 
         <div id="card-right" class="name-card">
             <div class="name-title">Meyiro - Sofia</div>
@@ -113,31 +105,25 @@
     </div>
 
     <script>
-        // Variables
         const s1 = document.getElementById('scene-1');
         const s2 = document.getElementById('scene-2');
         const s3 = document.getElementById('scene-3');
         const s4 = document.getElementById('scene-4');
-
         const heartBtn = document.getElementById('heart-btn');
         const btnSofia = document.getElementById('btn-sofia');
         const cartaContainer = document.getElementById('carta-container');
         const btnContinuar = document.getElementById('btn-continuar');
-
         const cardLeft = document.getElementById('card-left');
         const cardRight = document.getElementById('card-right');
         const centerHeart = document.getElementById('center-heart');
         const mediaLeft = document.getElementById('media-left');
         const mediaRight = document.getElementById('media-right');
 
-        // ESCENA 1: Palabras infinitas
+        // Lógica de escenas intacta
         let intervalPalabras;
         heartBtn.addEventListener('click', () => {
             heartBtn.style.display = 'none'; 
-            
             const words = ["Te adoro", "Mi princesa", "Preciosa", "Mi todo", "Hermosa", "Mi niña", "Te amo"];
-            
-            // Crear palabras sin parar cada 400 milisegundos
             intervalPalabras = setInterval(() => {
                 let w = document.createElement('div');
                 w.classList.add('floating-word');
@@ -145,105 +131,67 @@
                 w.style.left = (10 + Math.random() * 80) + 'vw';
                 w.style.top = (20 + Math.random() * 60) + 'vh';
                 s1.appendChild(w);
-                
-                setTimeout(() => w.remove(), 3000); // Borrarlas luego de animarse
+                setTimeout(() => w.remove(), 3000);
             }, 400);
-
-            setTimeout(() => {
-                btnSofia.classList.add('show-btn');
-            }, 1000);
+            setTimeout(() => { btnSofia.classList.add('show-btn'); }, 1000);
         });
 
-        // ESCENA 2
         btnSofia.addEventListener('click', () => {
-            clearInterval(intervalPalabras); // Detenemos las palabras
+            clearInterval(intervalPalabras);
             s1.classList.add('hidden');
             s2.classList.remove('hidden');
-            setTimeout(() => {
-                cartaContainer.classList.add('open');
-            }, 100);
+            setTimeout(() => { cartaContainer.classList.add('open'); }, 100);
         });
 
-        // ESCENA 3
         btnContinuar.addEventListener('click', () => {
             s2.classList.add('hidden');
             s3.classList.remove('hidden');
         });
 
-        let leftMoved = false;
-        let rightMoved = false;
-
-        function checkBoth() {
-            if(leftMoved && rightMoved) {
-                centerHeart.style.opacity = "1";
-                setTimeout(() => {
-                    mediaLeft.classList.add('show-media');
-                    mediaRight.classList.add('show-media');
-                }, 800);
-            }
-        }
-
+        // Activación de media al hacer click
+        let leftDone = false;
+        let rightDone = false;
+        
         cardLeft.addEventListener('click', () => {
-            if(!leftMoved) { cardLeft.classList.add('move-center-left'); leftMoved = true; checkBoth(); }
+            mediaLeft.classList.add('show-media');
+            leftDone = true;
+            if(rightDone) centerHeart.style.opacity = "1";
         });
-
         cardRight.addEventListener('click', () => {
-            if(!rightMoved) { cardRight.classList.add('move-center-right'); rightMoved = true; checkBoth(); }
+            mediaRight.classList.add('show-media');
+            rightDone = true;
+            if(leftDone) centerHeart.style.opacity = "1";
         });
 
-        // SISTEMA DE AUDIOS ELEGANTES
+        // Audios
         const audioGolden = new Audio('golden.mp3');
         const audioImpostor = new Audio('impostor.mp3');
-
-        function playGolden() {
-            const btn = document.getElementById('btn-golden');
-            if(audioGolden.paused) {
-                audioGolden.play();
-                audioImpostor.pause(); // Pausar el otro por si acaso
-                document.getElementById('btn-impostor').innerText = "▶️ Reproducir";
-                btn.innerText = "⏸️ Pausar";
-            } else {
-                audioGolden.pause();
-                btn.innerText = "▶️ Reproducir";
-            }
+        function playGolden() { 
+            if(audioGolden.paused) { audioGolden.play(); audioImpostor.pause(); } 
+            else { audioGolden.pause(); } 
+        }
+        function playImpostor() { 
+            if(audioImpostor.paused) { audioImpostor.play(); audioGolden.pause(); } 
+            else { audioImpostor.pause(); } 
         }
 
-        function playImpostor() {
-            const btn = document.getElementById('btn-impostor');
-            if(audioImpostor.paused) {
-                audioImpostor.play();
-                audioGolden.pause(); // Pausar el otro por si acaso
-                document.getElementById('btn-golden').innerText = "▶️ Reproducir";
-                btn.innerText = "⏸️ Pausar";
-            } else {
-                audioImpostor.pause();
-                btn.innerText = "▶️ Reproducir";
-            }
-        }
-
-        // ESCENA FINAL: Confeti infinito
         centerHeart.addEventListener('click', () => {
             s3.classList.add('hidden');
             s4.classList.remove('hidden');
             document.body.style.backgroundColor = "#ffcccc";
-            
             setTimeout(() => {
                 document.getElementById('texto-final').classList.add('show-final');
-                crearConfetiEterno();
+                crearConfeti();
             }, 300);
         });
 
-        function crearConfetiEterno() {
-            const colores = ['#ff4d4d', '#d63384', '#ffb6c1', '#ffffff', '#ff9999'];
-            // Creamos muchísimos confetis con diferentes tiempos de retraso para que caigan sin parar
-            for(let i=0; i<150; i++) {
+        function crearConfeti() {
+            for(let i=0; i<100; i++) {
                 let conf = document.createElement('div');
                 conf.classList.add('confetti');
                 conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.backgroundColor = colores[Math.random() * colores.length | 0];
+                conf.style.backgroundColor = ['#ff4d4d', '#d63384'][Math.floor(Math.random()*2)];
                 conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                // El retraso negativo hace que parezca que ya estaban cayendo
-                conf.style.animationDelay = '-' + (Math.random() * 5) + 's'; 
                 s4.appendChild(conf);
             }
         }
