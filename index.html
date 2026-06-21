@@ -12,13 +12,13 @@
         .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; opacity: 1; z-index: 1; }
         .hidden { opacity: 0 !important; pointer-events: none; z-index: -1; }
 
-        /* Escena 1: Corazón inicial y explosión de palabras */
-        #heart-btn { font-size: 100px; cursor: pointer; background: none; border: none; animation: latido 1.2s infinite; z-index: 10; transition: transform 0.2s; }
+        /* Escena 1: Corazón inicial y palabras infinitas */
+        #heart-btn { font-size: 100px; cursor: pointer; background: none; border: none; animation: latido 1.2s infinite; z-index: 10; transition: transform 0.2s; margin: 0; padding: 0; }
         #heart-btn:active { transform: scale(0.8); }
         @keyframes latido { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
         
-        .floating-word { position: absolute; font-family: 'Dancing Script', cursive; font-size: 35px; color: #ff3366; font-weight: bold; pointer-events: none; opacity: 0; animation: floatUp 2.5s ease-out forwards; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-100px) scale(1.2); } }
+        .floating-word { position: absolute; font-family: 'Dancing Script', cursive; font-size: 35px; color: #ff3366; font-weight: bold; pointer-events: none; opacity: 0; animation: floatUp 3s linear forwards; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-150px) scale(1.2); } }
 
         #btn-sofia { margin-top: 30px; font-size: 22px; padding: 15px 40px; background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4); opacity: 0; transform: translateY(20px); transition: all 1s ease; z-index: 10; }
         #btn-sofia.show-btn { opacity: 1; transform: translateY(0); }
@@ -30,36 +30,38 @@
         .texto-carta { font-size: 18px; line-height: 1.8; color: #444; text-align: justify; margin-bottom: 30px; }
         #btn-continuar { font-size: 18px; padding: 12px 30px; background-color: #ff4d4d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3); }
 
-        /* Escena 3: Nombres acercándose */
+        /* Escena 3: Nombres acercándose (CORAZÓN ARREGLADO) */
         #scene-3 { flex-direction: row; }
-        .center-heart { font-size: 70px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: latido 1.5s infinite; cursor: pointer; z-index: 5; opacity: 0; transition: opacity 1s; }
+        /* Se creó una animación especial latidoCentro para que no se tuerza al latir */
+        .center-heart { font-size: 80px; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: latidoCentro 1.5s infinite; cursor: pointer; z-index: 5; opacity: 0; transition: opacity 1s; display: flex; justify-content: center; align-items: center; margin: 0; }
+        @keyframes latidoCentro { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } 100% { transform: translate(-50%, -50%) scale(1); } }
         
         .name-card { position: absolute; top: 40%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
         .name-title { font-size: 26px; font-weight: bold; color: #333; background: white; padding: 10px 25px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ffb6c1; margin-bottom: 15px; transition: transform 0.3s; }
         .name-card:hover .name-title { transform: scale(1.05); }
         
-        /* Posiciones iniciales (alejados) */
+        /* Posiciones */
         #card-left { left: 5%; }
         #card-right { right: 5%; }
+        .move-center-left { left: 50% !important; transform: translate(-150%, -50%) !important; }
+        .move-center-right { right: 50% !important; transform: translate(50%, -50%) !important; }
 
-        /* Posiciones finales (cerca del centro) */
-        .move-center-left { left: 50% !important; transform: translate(-140%, -50%) !important; }
-        .move-center-right { right: 50% !important; transform: translate(140%, -50%) !important; }
-
-        /* Contenido multimedia oculto hasta que se unan */
+        /* Contenido multimedia (BOTONES DE AUDIO MEJORADOS) */
         .media-content { opacity: 0; height: 0; overflow: hidden; transition: opacity 1.5s ease, height 1.5s ease; display: flex; flex-direction: column; align-items: center; }
-        .media-content img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
-        .media-content iframe { border-radius: 10px; width: 200px; height: 80px; }
+        .media-content img { width: 170px; height: 170px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
         
         .show-media { opacity: 1 !important; height: 280px !important; margin-top: 10px; }
 
+        .audio-btn { background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-family: 'Nunito', sans-serif; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(214, 51, 132, 0.4); transition: transform 0.2s; margin-top: 5px; }
+        .audio-btn:hover { transform: scale(1.05); }
+
         /* Escena 4: Final explosivo */
-        .final-text { font-family: 'Dancing Script', cursive; font-size: 6vw; color: #e6005c; font-weight: bold; text-align: center; line-height: 1.2; text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(0,0,0,0.2); transform: scale(0); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .final-text { font-family: 'Dancing Script', cursive; font-size: 6vw; color: #e6005c; font-weight: bold; text-align: center; line-height: 1.2; text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(0,0,0,0.2); transform: scale(0); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
         .show-final { transform: scale(1); }
         
-        /* Confeti */
-        .confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; animation: fall linear forwards; }
-        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+        /* Confeti infinito arreglado */
+        .confetti { position: absolute; width: 12px; height: 12px; animation: fall linear infinite; top: -20px; z-index: 0; }
+        @keyframes fall { 0% { transform: translateY(0vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0.8; } }
 
     </style>
 </head>
@@ -91,7 +93,7 @@
             <div class="name-title">Yoshiro - Kairu</div>
             <div id="media-left" class="media-content">
                 <img src="12047.jpg" alt="Yoshiro">
-                <iframe src="https://www.youtube.com/embed/PEM0Vs8jf1w" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <button class="audio-btn" id="btn-golden" onclick="playGolden()">▶️ Reproducir</button>
             </div>
         </div>
 
@@ -99,7 +101,7 @@
             <div class="name-title">Meyiro - Sofia</div>
             <div id="media-right" class="media-content">
                 <img src="12046.jpg" alt="Sofia">
-                <iframe src="https://www.youtube.com/embed/GwSSrwryxN0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <button class="audio-btn" id="btn-impostor" onclick="playImpostor()">▶️ Reproducir</button>
             </div>
         </div>
     </div>
@@ -111,7 +113,7 @@
     </div>
 
     <script>
-        // Referencias a los elementos
+        // Variables
         const s1 = document.getElementById('scene-1');
         const s2 = document.getElementById('scene-2');
         const s3 = document.getElementById('scene-3');
@@ -128,34 +130,33 @@
         const mediaLeft = document.getElementById('media-left');
         const mediaRight = document.getElementById('media-right');
 
-        // Escena 1: Explosión del corazón inicial
+        // ESCENA 1: Palabras infinitas
+        let intervalPalabras;
         heartBtn.addEventListener('click', () => {
-            heartBtn.style.display = 'none'; // Desaparece el corazón
+            heartBtn.style.display = 'none'; 
             
-            // Palabras de cariño
             const words = ["Te adoro", "Mi princesa", "Preciosa", "Mi todo", "Hermosa", "Mi niña", "Te amo"];
             
-            for(let i=0; i<15; i++) {
-                setTimeout(() => {
-                    let w = document.createElement('div');
-                    w.classList.add('floating-word');
-                    w.innerText = words[Math.floor(Math.random() * words.length)];
-                    w.style.left = (20 + Math.random() * 60) + 'vw';
-                    w.style.top = (40 + Math.random() * 40) + 'vh';
-                    s1.appendChild(w);
-                    
-                    setTimeout(() => w.remove(), 2500);
-                }, i * 150);
-            }
+            // Crear palabras sin parar cada 400 milisegundos
+            intervalPalabras = setInterval(() => {
+                let w = document.createElement('div');
+                w.classList.add('floating-word');
+                w.innerText = words[Math.floor(Math.random() * words.length)];
+                w.style.left = (10 + Math.random() * 80) + 'vw';
+                w.style.top = (20 + Math.random() * 60) + 'vh';
+                s1.appendChild(w);
+                
+                setTimeout(() => w.remove(), 3000); // Borrarlas luego de animarse
+            }, 400);
 
-            // Aparece el botón con su nombre después de 1 segundo
             setTimeout(() => {
                 btnSofia.classList.add('show-btn');
             }, 1000);
         });
 
-        // Pasar de Escena 1 a Escena 2 (La Carta)
+        // ESCENA 2
         btnSofia.addEventListener('click', () => {
+            clearInterval(intervalPalabras); // Detenemos las palabras
             s1.classList.add('hidden');
             s2.classList.remove('hidden');
             setTimeout(() => {
@@ -163,22 +164,18 @@
             }, 100);
         });
 
-        // Pasar de Escena 2 a Escena 3 (Los Nombres)
+        // ESCENA 3
         btnContinuar.addEventListener('click', () => {
             s2.classList.add('hidden');
             s3.classList.remove('hidden');
         });
 
-        // Lógica de los nombres acercándose
         let leftMoved = false;
         let rightMoved = false;
 
         function checkBoth() {
             if(leftMoved && rightMoved) {
-                // Aparece el corazón del medio
                 centerHeart.style.opacity = "1";
-                
-                // Aparecen las fotos y los audios
                 setTimeout(() => {
                     mediaLeft.classList.add('show-media');
                     mediaRight.classList.add('show-media');
@@ -187,22 +184,44 @@
         }
 
         cardLeft.addEventListener('click', () => {
-            if(!leftMoved) {
-                cardLeft.classList.add('move-center-left');
-                leftMoved = true;
-                checkBoth();
-            }
+            if(!leftMoved) { cardLeft.classList.add('move-center-left'); leftMoved = true; checkBoth(); }
         });
 
         cardRight.addEventListener('click', () => {
-            if(!rightMoved) {
-                cardRight.classList.add('move-center-right');
-                rightMoved = true;
-                checkBoth();
-            }
+            if(!rightMoved) { cardRight.classList.add('move-center-right'); rightMoved = true; checkBoth(); }
         });
 
-        // Escena Final (Explosión del corazón del medio)
+        // SISTEMA DE AUDIOS ELEGANTES
+        const audioGolden = new Audio('golden.mp3');
+        const audioImpostor = new Audio('impostor.mp3');
+
+        function playGolden() {
+            const btn = document.getElementById('btn-golden');
+            if(audioGolden.paused) {
+                audioGolden.play();
+                audioImpostor.pause(); // Pausar el otro por si acaso
+                document.getElementById('btn-impostor').innerText = "▶️ Reproducir";
+                btn.innerText = "⏸️ Pausar";
+            } else {
+                audioGolden.pause();
+                btn.innerText = "▶️ Reproducir";
+            }
+        }
+
+        function playImpostor() {
+            const btn = document.getElementById('btn-impostor');
+            if(audioImpostor.paused) {
+                audioImpostor.play();
+                audioGolden.pause(); // Pausar el otro por si acaso
+                document.getElementById('btn-golden').innerText = "▶️ Reproducir";
+                btn.innerText = "⏸️ Pausar";
+            } else {
+                audioImpostor.pause();
+                btn.innerText = "▶️ Reproducir";
+            }
+        }
+
+        // ESCENA FINAL: Confeti infinito
         centerHeart.addEventListener('click', () => {
             s3.classList.add('hidden');
             s4.classList.remove('hidden');
@@ -210,21 +229,21 @@
             
             setTimeout(() => {
                 document.getElementById('texto-final').classList.add('show-final');
-                crearConfeti();
+                crearConfetiEterno();
             }, 300);
         });
 
-        // Función para crear lluvia de confeti
-        function crearConfeti() {
+        function crearConfetiEterno() {
             const colores = ['#ff4d4d', '#d63384', '#ffb6c1', '#ffffff', '#ff9999'];
-            for(let i=0; i<100; i++) {
+            // Creamos muchísimos confetis con diferentes tiempos de retraso para que caigan sin parar
+            for(let i=0; i<150; i++) {
                 let conf = document.createElement('div');
                 conf.classList.add('confetti');
                 conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = -10 + 'vh';
                 conf.style.backgroundColor = colores[Math.random() * colores.length | 0];
                 conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                conf.style.animationDelay = (Math.random() * 2) + 's';
+                // El retraso negativo hace que parezca que ya estaban cayendo
+                conf.style.animationDelay = '-' + (Math.random() * 5) + 's'; 
                 s4.appendChild(conf);
             }
         }
