@@ -3,199 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para mi persona favorita ❤️</title>
+    <title>El Universo de Meyiroshira ✨</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@300;400;700&display=swap');
         
-        body { margin: 0; overflow-x: hidden; background-color: #ffe6e6; font-family: 'Nunito', sans-serif; }
-        .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease-in-out; opacity: 1; z-index: 1; }
-        .hidden { opacity: 0 !important; pointer-events: none; z-index: -1; }
-
-        /* Estilos Escena 1 y 2 */
-        #heart-btn { font-size: 100px; cursor: pointer; background: none; border: none; animation: latido 1.2s infinite; z-index: 10; transition: transform 0.2s; margin: 0; padding: 0; }
-        #heart-btn:active { transform: scale(0.8); }
-        @keyframes latido { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        body { margin: 0; background: #0b0e14; color: #fff; font-family: 'Nunito', sans-serif; overflow: hidden; }
+        .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1s ease; padding: 20px; box-sizing: border-box; }
+        .hidden { opacity: 0; pointer-events: none; z-index: -1; }
         
-        .floating-word { position: absolute; font-family: 'Dancing Script', cursive; font-size: 35px; color: #ff3366; font-weight: bold; pointer-events: none; opacity: 0; animation: floatUp 3s linear forwards; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-150px) scale(1.2); } }
-
-        #btn-sofia { margin-top: 30px; font-size: 22px; padding: 15px 40px; background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4); opacity: 0; transform: translateY(20px); transition: all 1s ease; z-index: 10; }
-        #btn-sofia.show-btn { opacity: 1; transform: translateY(0); }
-
-        #carta-container { width: 90%; max-width: 600px; background: #fffcfc; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 8px solid #ff4d4d; position: relative; max-height: 80vh; overflow-y: auto; text-align: center; transform: scale(0.8); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #carta-container.open { transform: scale(1); }
-        .titulo-carta { font-family: 'Dancing Script', cursive; font-size: 45px; color: #d63384; margin-bottom: 20px; margin-top: 0; }
-        .texto-carta { font-size: 18px; line-height: 1.8; color: #444; text-align: justify; margin-bottom: 30px; }
-        #btn-continuar { font-size: 18px; padding: 12px 30px; background-color: #ff4d4d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3); }
-
-        /* ESCENA 3 ARREGLADA (FLEXBOX) */
-        #scene-3 { flex-direction: row; gap: 40px; }
+        /* UI de Búsqueda de Estrellas */
+        #star-counter { position: fixed; top: 20px; left: 20px; font-size: 18px; z-index: 999; color: gold; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); }
         
-        .center-heart { font-size: 80px; animation: latidoCentro 1.5s infinite; cursor: pointer; opacity: 0; transition: opacity 1s; z-index: 5; order: 2; }
-        @keyframes latidoCentro { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        /* Estrellas Ocultas */
+        .hidden-star { position: absolute; cursor: pointer; font-size: 35px; filter: drop-shadow(0 0 10px gold); animation: pulse 1.5s infinite; z-index: 50; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
         
-        .name-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.3s; }
-        .name-title { font-size: 26px; font-weight: bold; color: #333; background: white; padding: 10px 25px; border-radius: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ffb6c1; margin-bottom: 15px; transition: transform 0.3s; width: max-content; }
+        /* Planeta Secreto */
+        #secret-planet { position: absolute; bottom: 12%; right: 15%; width: 90px; height: 90px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; box-shadow: inset -15px -15px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0, 242, 254, 0.6); cursor: pointer; display: none; animation: floatPlanet 3s ease-in-out infinite; z-index: 50; }
+        @keyframes floatPlanet { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         
-        .media-content { opacity: 0; height: 0; overflow: hidden; transition: opacity 1.5s ease, height 1.5s ease; display: flex; flex-direction: column; align-items: center; }
-        .media-content img { width: 170px; height: 170px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
-        .show-media { opacity: 1 !important; height: 280px !important; margin-top: 10px; }
-        
-        .audio-btn { background: linear-gradient(45deg, #ff4d4d, #d63384); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-family: 'Nunito', sans-serif; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(214, 51, 132, 0.4); transition: transform 0.2s; margin-top: 5px; }
+        /* Lluvia de Estrellas (Transición) */
+        #meteor-shower { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle, #0f0c29, #000); display: none; z-index: 1000; }
 
-        /* RESPONSIVE PARA CELULAR */
-        @media (max-width: 768px) {
-            #scene-3 { flex-direction: column; gap: 10px; }
-            .name-title { font-size: 20px; padding: 8px 15px; }
-            .media-content img { width: 120px; height: 120px; }
-            .show-media { height: 200px !important; }
-            .center-heart { font-size: 50px; }
-        }
+        /* Tarjetas (Glassmorphism) */
+        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; text-align: center; max-width: 700px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.6); position: relative; max-height: 85vh; overflow-y: auto; }
+        
+        h1 { font-family: 'Cinzel', serif; color: #ff9a9e; margin-top: 0; }
+        h2 { color: #fad0c4; }
+        
+        input { background: rgba(255,255,255,0.1); border: 1px solid #ff9a9e; color: white; padding: 12px; width: 80%; border-radius: 10px; margin: 10px 0; outline: none; text-align: center; font-size: 16px; }
+        button { background: linear-gradient(45deg, #ff9a9e, #fad0c4); border: none; padding: 12px 30px; border-radius: 30px; color: #333; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4); }
+        button:hover { transform: scale(1.05); }
 
-        .final-text { font-family: 'Dancing Script', cursive; font-size: 6vw; color: #e6005c; font-weight: bold; text-align: center; line-height: 1.2; text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(0,0,0,0.2); transform: scale(0); transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
-        .show-final { transform: scale(1); }
-        .confetti { position: absolute; width: 12px; height: 12px; animation: fall linear infinite; top: -20px; z-index: 0; }
-        @keyframes fall { 0% { transform: translateY(0vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0.8; } }
+        .chapter { margin-bottom: 30px; padding: 20px; border-left: 3px solid #ff9a9e; background: rgba(255,255,255,0.03); text-align: left; }
+        
+        /* Final Dinámico (Espacio) */
+        #scene-final { background: #000; z-index: 100; overflow: hidden; }
+        .titulo-central { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Cinzel', serif; font-size: 6vw; color: #fff; text-shadow: 0 0 20px #ff9a9e, 0 0 40px #ff4d4d; z-index: 10; pointer-events: none; text-align: center; line-height: 1.2; width: 100%; }
+        
+        .star-final { position: absolute; font-size: 24px; cursor: pointer; color: gold; transition: transform 0.2s; z-index: 5; }
+        .star-final:hover { transform: scale(1.5); }
+        @keyframes floatStar { from { transform: translateY(0px) rotate(0deg); } to { transform: translateY(-40px) rotate(20deg); } }
     </style>
 </head>
 <body>
 
+    <!-- Audios -->
+    <audio id="music-golden" loop><source src="golden.mp3" type="audio/mpeg"></audio>
+    <audio id="music-impostor" loop><source src="impostor.mp3" type="audio/mpeg"></audio>
+
+    <!-- Contador Global -->
+    <div id="star-counter">Estrellas: 0/4</div>
+
+    <!-- Fase 1: El Acceso -->
     <div id="scene-1" class="scene">
-        <button id="heart-btn">❤️</button>
-        <button id="btn-sofia">Meyiroshita - Sofia</button>
+        <div class="card">
+            <h1>Bienvenida, mi vida</h1>
+            <div id="q1">
+                <p>1. ¿Qué sobrenombre siempre me gusta decirte?<br><small>(Pista: Meyiro es la inicial...)</small></p>
+                <input type="text" id="pass1"> <button onclick="check(1)">Validar</button>
+            </div>
+            <div id="q2" style="display:none;">
+                <p>2. ¿Qué día oficializamos nuestra relación?<br><small>(Pista: Junio)</small></p>
+                <input type="text" id="pass2"> <button onclick="check(2)">Validar</button>
+            </div>
+            <div id="q3" style="display:none;">
+                <p>3. ¿Qué fue nuestra primera película que vimos juntos?<br><small>(Pista: Uma musu**)</small></p>
+                <input type="text" id="pass3"> <button onclick="check(3)">Acceder al Viaje</button>
+            </div>
+        </div>
+        <!-- Estrella 1 -->
+        <div class="hidden-star" style="top: 15%; left: 10%;" onclick="findStar(this)">⭐</div>
     </div>
 
+    <!-- Fase 2: La Historia -->
     <div id="scene-2" class="scene hidden">
-        <div id="carta-container">
-            <h1 class="titulo-carta">Feliz Primer Mes, Mi Niña</h1>
-            <div class="texto-carta">
-                <p>Meyiroshita, mi amor hermoso...</p>
-                <p>Parece increíble cómo vuela el tiempo cuando se es feliz, y hoy ya estamos cumpliendo nuestro primer mes juntos desde aquel inolvidable 21 de mayo. Si miro hacia atrás, me doy cuenta de que estos 30 días han sido los más bonitos, mágicos y completos de todo mi año. Cada conversación, cada risa compartida y cada momento a tu lado se han convertido rápidamente en mis recuerdos favoritos y en los tesoros más grandes que guardo en el corazón.</p>
-                <p>Siento que en muy poco tiempo te has transformado en mi pensamiento constante, en esa bonita razón por la cual sonrío mirando la pantalla del teléfono y en la primera persona en la que pienso al despertar y la última antes de dormir. Me encanta absolutamente todo de ti: tu forma de ser tan única, la dulzura de tu voz que me transmite una paz inexplicable, y esa manera tan hermosa y natural que tienes de iluminar mis días, transformando cualquier momento ordinario en algo completamente especial.</p>
-                <p>Quería construirte algo único, un rincón que fuera solo nuestro y que te demostrara, aunque sea de forma sencilla, lo inmensamente valiosa e importante que eres para mí. Adoro cada pequeño detalle tuyo, tu ternura, la confianza que compartimos y cómo logras hacerme sentir tan feliz y afortunado con el simple hecho de existir en mi vida.</p>
-                <p>Gracias de todo corazón por dejarme entrar en tu mundo, por abrirme tu lado más dulce, por confiar en mí cada día y por ser la mejor compañera de aventuras que jamás pude haber imaginado encontrar. Contigo todo se siente más ligero, más alegre y lleno de vida. Eres mi refugio seguro y mi lugar favorito en el universo entero.</p>
-                <p>Este es apenas el primer capítulo de una historia hermosa que quiero seguir escribiendo a tu lado, paso a paso, cuidándote, apoyándote en todo lo que te propongas y disfrutando de cada instante juntos. No olvides nunca lo mucho que te valoro y el lugar tan inmenso que ocupas en mi vida.</p>
-                <p style="text-align: center; font-weight: bold; color: #d63384; font-size: 24px; margin-top: 25px; line-height: 1.4;">Te amo con todo mi corazón.<br>¡Feliz 21 de Junio, mi princesa!</p>
-            </div>
-            <button id="btn-continuar">Siguiente Sorpresa ✨</button>
+        <div class="card">
+            <h1>Nuestra Crónica</h1>
+            <div class="chapter"><h3>Capítulo 1: Nuestro Primer Hola</h3><p>Todo comenzó en la frialdad de la moderación. Yo era un staff serio, centrado en el trabajo, hasta que apareciste. Eras tímida pero con una chispa única. Ese primer "Hola" fue el hilo invisible que conectó nuestras vidas.</p></div>
+            <div class="chapter"><h3>Capítulo 2: Mi primera acción</h3><p>Te convertiste en mi prioridad. Recuerdo la rabia al ver que otros te trataban mal. Me enfrenté al mundo por ti, ganándome críticas por mis "preferencias", pero las palabras "di que te gusta, tontita" fueron el presagio de lo que mi corazón ya sabía.</p></div>
+            <div class="chapter"><h3>Capítulo 3: Mi impacto relativo</h3><p>La intuición no me fallaba. Me acerqué, nos hicimos cercanos en TikTok, y esos pequeños detalles en Blood Strike no eran casualidad; eran mi forma de decirte que quería estar presente en tu mundo.</p></div>
+            <div class="chapter"><h3>Capítulo 4: La sombra</h3><p>Hubo un tiempo donde la distancia creció. Los celos fueron un fuego difícil de controlar cuando sentí que perdía lo que apenas empezaba a construir. Fue un momento oscuro, donde el dolor se hizo presente.</p></div>
+            <div class="chapter"><h3>Capítulo 5: El vacío y la luz</h3><p>La vida golpeó fuerte con la pérdida de mi amigo Erick. El mundo se derrumbó: trabajo, estudios, familia... quise alejarme de todo, incluso de ti. Fueron meses en la oscuridad hasta que una notificación de Layoucris me hizo entender tu preocupación. Esa luz me salvó, y esa luz eras tú.</p></div>
+            <div class="chapter"><h3>Capítulo 6: Mi lucha</h3><p>Decidí que esa luz no se apagaría. Saqué mi lado coqueto, mi determinación, y luché por tenerte conmigo. Me gané el odio de muchos, pero obtuve el premio más grande: quedarme con mi luz para siempre.</p></div>
+            <div class="chapter"><h3>Capítulo Final: Nuestro amor</h3><p>Dejamos atrás la timidez y lo gritamos al mundo. "Te amo" fue la respuesta que cambió mi realidad. Hemos pasado tormentas, casi nos separamos, pero aquí estamos, fuertes, invencibles, celebrando nuestro segundo aniversario.</p></div>
+            
+            <button onclick="nextScene()">Siguiente Sorpresa ✨</button>
         </div>
+        <!-- Estrella 2 -->
+        <div class="hidden-star" style="bottom: 10%; right: 5%;" onclick="findStar(this)">⭐</div>
     </div>
 
+    <!-- Fase 3: Minijuego -->
     <div id="scene-3" class="scene hidden">
-        <div id="card-left" class="name-card">
-            <div class="name-title">Yoshiro - Kairu</div>
-            <div id="media-left" class="media-content">
-                <img src="12047.jpg" alt="Yoshiro">
-                <button class="audio-btn" id="btn-golden" onclick="playGolden()">▶️ Reproducir</button>
-            </div>
+        <div class="card">
+            <h1>Atrapa mi corazón</h1>
+            <p>Demuestra que puedes con todo. ¡Tócalo 3 veces para leer tu carta!</p>
+            <div id="heart-game" style="font-size: 80px; cursor: pointer; transition: 0.2s;" onclick="hitHeart()">❤️</div>
         </div>
-
-        <div id="center-heart" class="center-heart">❤️</div>
-
-        <div id="card-right" class="name-card">
-            <div class="name-title">Meyiro - Sofia</div>
-            <div id="media-right" class="media-content">
-                <img src="12046.jpg" alt="Sofia">
-                <button class="audio-btn" id="btn-impostor" onclick="playImpostor()">▶️ Reproducir</button>
-            </div>
-        </div>
+        <!-- Estrella 3 -->
+        <div class="hidden-star" style="top: 25%; right: 15%;" onclick="findStar(this)">⭐</div>
     </div>
 
+    <!-- Fase 4: La Carta Final (Aquí suena Golden Hour) -->
     <div id="scene-4" class="scene hidden">
-        <div id="texto-final" class="final-text">
-            ¡Feliz Aniversario!<br>21/06
+        <div class="card">
+            <h1>Para mi persona favorita</h1>
+            <p style="font-size: 18px; line-height: 1.8; text-align: justify; color: #ddd;">
+                Meyiroshira, mi amor hermoso... <br><br>
+                Parece increíble cómo vuela el tiempo cuando se es feliz. Estos dos meses han sido la aventura más grande de mi vida. Hemos sobrevivido a tantas cosas, a comentarios, a la distancia, a nuestros propios miedos... y si algo he aprendido, es que nuestra historia es inquebrantable. <br><br>
+                Eres mi refugio seguro y mi lugar favorito en el universo. Gracias por dejarme entrar en tu mundo, por confiar en mí y por ser la mejor compañera que pude haber encontrado. Este es solo nuestro segundo aniversario de muchísimos más que nos esperan.<br><br>
+                Te amo muchísimo. Feliz 21 de Junio.
+            </p>
         </div>
+        <!-- Estrella 4 -->
+        <div class="hidden-star" style="bottom: 20%; left: 10%;" onclick="findStar(this)">⭐</div>
+        
+        <!-- El Planeta Secreto (Aparece al tener 4/4) -->
+        <div id="secret-planet" onclick="triggerSpace()"></div>
+    </div>
+
+    <!-- Transición Lluvia de estrellas -->
+    <div id="meteor-shower"></div>
+
+    <!-- Fase Final Estelar (Aquí suena Impostor y aparece el centro) -->
+    <div id="scene-final" class="scene hidden">
+        <h1 class="titulo-central">¡Feliz 2do Aniversario!<br><span style="font-size: 0.5em; color: #fff;">Meyiroshira</span></h1>
+        <div id="star-field"></div>
     </div>
 
     <script>
-        const s1 = document.getElementById('scene-1');
-        const s2 = document.getElementById('scene-2');
-        const s3 = document.getElementById('scene-3');
-        const s4 = document.getElementById('scene-4');
-        const heartBtn = document.getElementById('heart-btn');
-        const btnSofia = document.getElementById('btn-sofia');
-        const cartaContainer = document.getElementById('carta-container');
-        const btnContinuar = document.getElementById('btn-continuar');
-        const cardLeft = document.getElementById('card-left');
-        const cardRight = document.getElementById('card-right');
-        const centerHeart = document.getElementById('center-heart');
-        const mediaLeft = document.getElementById('media-left');
-        const mediaRight = document.getElementById('media-right');
-
-        // Lógica de escenas intacta
-        let intervalPalabras;
-        heartBtn.addEventListener('click', () => {
-            heartBtn.style.display = 'none'; 
-            const words = ["Te adoro", "Mi princesa", "Preciosa", "Mi todo", "Hermosa", "Mi niña", "Te amo"];
-            intervalPalabras = setInterval(() => {
-                let w = document.createElement('div');
-                w.classList.add('floating-word');
-                w.innerText = words[Math.floor(Math.random() * words.length)];
-                w.style.left = (10 + Math.random() * 80) + 'vw';
-                w.style.top = (20 + Math.random() * 60) + 'vh';
-                s1.appendChild(w);
-                setTimeout(() => w.remove(), 3000);
-            }, 400);
-            setTimeout(() => { btnSofia.classList.add('show-btn'); }, 1000);
-        });
-
-        btnSofia.addEventListener('click', () => {
-            clearInterval(intervalPalabras);
-            s1.classList.add('hidden');
-            s2.classList.remove('hidden');
-            setTimeout(() => { cartaContainer.classList.add('open'); }, 100);
-        });
-
-        btnContinuar.addEventListener('click', () => {
-            s2.classList.add('hidden');
-            s3.classList.remove('hidden');
-        });
-
-        // Activación de media al hacer click
-        let leftDone = false;
-        let rightDone = false;
+        const audioGolden = document.getElementById('music-golden');
+        const audioImpostor = document.getElementById('music-impostor');
         
-        cardLeft.addEventListener('click', () => {
-            mediaLeft.classList.add('show-media');
-            leftDone = true;
-            if(rightDone) centerHeart.style.opacity = "1";
-        });
-        cardRight.addEventListener('click', () => {
-            mediaRight.classList.add('show-media');
-            rightDone = true;
-            if(leftDone) centerHeart.style.opacity = "1";
-        });
+        let starsFound = 0;
+        const totalStars = 4;
+        let heartClicks = 0;
 
-        // Audios
-        const audioGolden = new Audio('golden.mp3');
-        const audioImpostor = new Audio('impostor.mp3');
-        function playGolden() { 
-            if(audioGolden.paused) { audioGolden.play(); audioImpostor.pause(); } 
-            else { audioGolden.pause(); } 
-        }
-        function playImpostor() { 
-            if(audioImpostor.paused) { audioImpostor.play(); audioGolden.pause(); } 
-            else { audioImpostor.pause(); } 
+        // Búsqueda de Estrellas
+        function findStar(element) {
+            element.style.display = 'none';
+            starsFound++;
+            document.getElementById('star-counter').innerText = `Estrellas: ${starsFound}/${totalStars}`;
+            
+            if(starsFound === totalStars) {
+                document.getElementById('secret-planet').style.display = 'block';
+                // Solo alerta si ya está en la fase 4, si no, lo verá cuando llegue
+                if(!document.getElementById('scene-4').classList.contains('hidden')) {
+                    alert("¡Has desbloqueado el Planeta Secreto en la pantalla! Tócalo.");
+                }
+            }
         }
 
-        centerHeart.addEventListener('click', () => {
-            s3.classList.add('hidden');
-            s4.classList.remove('hidden');
-            document.body.style.backgroundColor = "#ffcccc";
+        // Validación Fase 1
+        function check(step) {
+            const val = document.getElementById('pass' + step).value.toLowerCase().trim();
+            if(step === 1 && val === 'meyiroshira') { 
+                document.getElementById('q1').style.display = 'none'; document.getElementById('q2').style.display = 'block'; 
+            }
+            else if(step === 2 && val === '21/06') { 
+                document.getElementById('q2').style.display = 'none'; document.getElementById('q3').style.display = 'block'; 
+            }
+            else if(step === 3 && val === 'uma musume') { 
+                document.getElementById('scene-1').classList.add('hidden'); 
+                document.getElementById('scene-2').classList.remove('hidden');
+            } 
+            else { alert("Casi... intenta de nuevo mi vida."); }
+        }
+
+        // Navegación Fase 2 a 3
+        function nextScene() {
+            document.getElementById('scene-2').classList.add('hidden');
+            document.getElementById('scene-3').classList.remove('hidden');
+        }
+
+        // Minijuego Fase 3 a 4 (Inicia Golden Hour)
+        function hitHeart() {
+            heartClicks++;
+            const heart = document.getElementById('heart-game');
+            heart.style.transform = `scale(${1 + heartClicks*0.3})`;
+            
+            if(heartClicks >= 3) {
+                document.getElementById('scene-3').classList.add('hidden');
+                document.getElementById('scene-4').classList.remove('hidden');
+                
+                // Reproducir Golden Hour automáticamente en la Carta
+                audioGolden.play().catch(e => console.log("Interacción requerida para audio"));
+                
+                // Si ya encontró las 4 estrellas antes de llegar, avisarle aquí
+                if(starsFound === totalStars) {
+                    setTimeout(() => alert("¡El Planeta Secreto ha aparecido en tu carta! Tócalo."), 1000);
+                }
+            }
+        }
+
+        // Transición a la Fase Espacial (Cambio de música)
+        function triggerSpace() {
+            // Ocultar el UI del contador
+            document.getElementById('star-counter').style.display = 'none';
+            
+            // Efecto de lluvia
+            const meteor = document.getElementById('meteor-shower');
+            meteor.style.display = 'block';
+            
+            // Pausar Golden Hour y preparar Impostor
+            audioGolden.pause();
+            
             setTimeout(() => {
-                document.getElementById('texto-final').classList.add('show-final');
-                crearConfeti();
-            }, 300);
-        });
+                document.getElementById('scene-4').classList.add('hidden');
+                meteor.style.display = 'none';
+                document.getElementById('scene-final').classList.remove('hidden');
+                
+                // Reproducir Impostor Syndrome en el espacio
+                audioImpostor.currentTime = 0;
+                audioImpostor.play();
+                
+                createStarField();
+            }, 1500);
+        }
 
-        function crearConfeti() {
-            for(let i=0; i<100; i++) {
-                let conf = document.createElement('div');
-                conf.classList.add('confetti');
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.backgroundColor = ['#ff4d4d', '#d63384'][Math.floor(Math.random()*2)];
-                conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                s4.appendChild(conf);
+        // Generador del Universo Interactivo
+        function createStarField() {
+            const container = document.getElementById('star-field');
+            const phrases = [
+                "Eres hermosa", "Eres perfecta", "Te amo mi vida", 
+                "Mi princesa", "Eres mi luz", "Mi todo", 
+                "Eres increíble", "Me haces feliz", "Mi lugar seguro", 
+                "Adoro tu voz", "Gracias por existir", "Siempre juntos"
+            ];
+            
+            for(let i = 0; i < 70; i++) {
+                let s = document.createElement('div');
+                s.className = "star-final";
+                s.innerText = "⭐";
+                // Posición aleatoria en toda la pantalla
+                s.style.left = Math.random() * 95 + "vw";
+                s.style.top = Math.random() * 95 + "vh";
+                // Animación flotante desfasada
+                s.style.animation = `floatStar ${3 + Math.random()*4}s infinite alternate ease-in-out`;
+                s.style.animationDelay = `-${Math.random()*5}s`;
+                
+                // Evento al tocar la estrella
+                s.onclick = () => alert("✨ " + phrases[Math.floor(Math.random() * phrases.length)] + " ✨");
+                
+                container.appendChild(s);
             }
         }
     </script>
