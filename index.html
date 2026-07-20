@@ -14,7 +14,7 @@
         /* UI de Búsqueda de Estrellas */
         #star-counter { position: fixed; top: 20px; left: 20px; font-size: 18px; z-index: 999; color: gold; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); }
         
-        /* Alertas Personalizadas (Reemplazo del alert feo) */
+        /* Alertas Personalizadas */
         #custom-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #333; padding: 15px 30px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.4s ease; text-align: center; }
         #custom-alert.show-alert { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -46,7 +46,13 @@
         .chapter { margin-bottom: 30px; padding: 20px; border-left: 3px solid #ff9a9e; background: rgba(255,255,255,0.03); text-align: left; line-height: 1.6; }
         
         /* Corazón que se mueve */
-        #heart-game { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; cursor: pointer; transition: top 0.4s ease, left 0.4s ease; z-index: 100; }
+        #heart-game { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; cursor: pointer; transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease; z-index: 100; user-select: none; }
+
+        /* Efectos de click en el corazón */
+        .heart-particle { position: absolute; pointer-events: none; font-size: 24px; animation: floatParticle 1s ease-out forwards; z-index: 200; }
+        .heart-phrase { position: absolute; pointer-events: none; font-size: 20px; font-weight: bold; color: #ff9a9e; text-shadow: 0 0 10px rgba(0,0,0,0.9); animation: floatPhrase 1.2s ease-out forwards; z-index: 200; white-space: nowrap; transform: translate(-50%, 0); font-family: 'Nunito', sans-serif; }
+        @keyframes floatParticle { 0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.5) rotate(45deg); } }
+        @keyframes floatPhrase { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1.2); } }
 
         /* Final Dinámico (Espacio) */
         #scene-final { background: #000; z-index: 100; overflow: hidden; }
@@ -60,7 +66,7 @@
 <body>
 
     <!-- Audios -->
-    <audio id="music-golden" loop><source src="golden_hour.mp3" type="audio/mpeg"></audio>
+    <audio id="music-golden" loop><source src="golden.mp3" type="audio/mpeg"></audio>
     <audio id="music-impostor" loop><source src="impostor.mp3" type="audio/mpeg"></audio>
 
     <!-- UI: Contador y Alertas -->
@@ -118,11 +124,12 @@
         <!-- El texto explicativo de arriba -->
         <div class="card" style="position: absolute; top: 10%; left: 50%; transform: translateX(-50%); z-index: 50;">
             <h1 style="margin-bottom: 5px;">Atrápame si puedes</h1>
-            <p style="margin-top: 0;">¡Persigue el corazón y tócalo 3 veces para leer tu carta!</p>
+            <p style="margin-top: 0;">¡Persigue el corazón y tócalo 15 veces para leer tu carta!</p>
         </div>
         
         <!-- El corazón que se mueve por todo el borde -->
-        <div id="heart-game" onclick="hitHeart()">❤️</div>
+        <!-- NOTA: Añadido el parámetro event para obtener las coordenadas del clic -->
+        <div id="heart-game" onclick="hitHeart(event)">❤️</div>
         
         <!-- Estrella 3 -->
         <div class="hidden-star" style="bottom: 20%; left: 15%;" onclick="findStar(this)">⭐</div>
@@ -168,6 +175,7 @@
         let starsFound = 0;
         const totalStars = 4;
         let heartClicks = 0;
+        const maxHeartClicks = 15; // Ahora son 15 clics para atraparlo
 
         // Función para mostrar alertas elegantes en pantalla
         function showMessage(text) {
@@ -217,12 +225,57 @@
             document.getElementById('scene-3').classList.remove('hidden');
         }
 
-        // Minijuego Fase 3 (Corazón que huye)
-        function hitHeart() {
+        // Generador de partículas y frases para el corazón
+        function createHeartEffects(x, y, clickCount) {
+            const catchPhrases = [
+                "¡Uy, casi!", "¡Muy lenta mi princesa!", "¡Sigue intentando!", "¡Por aquí no!", 
+                "¡Te falta velocidad!", "¡Atrápame si puedes!", "¡Ups, fallaste!", 
+                "¡Soy muy rápido para ti!", "¡Modo gamer activado!", "¡Concéntrate mi amor!", 
+                "¡Ay, casi me tocas!", "¡Un poquito más rápido!", "¡No te rindas!", 
+                "¡Ya casi, tú puedes!", "¡Último esfuerzo!"
+            ];
+            
+            // Crear la frase flotante
+            let phrase = document.createElement('div');
+            phrase.className = "heart-phrase";
+            phrase.innerText = catchPhrases[Math.min(clickCount - 1, catchPhrases.length - 1)];
+            phrase.style.left = x + "px";
+            phrase.style.top = (y - 40) + "px"; // Ligeramente más arriba del corazón
+            document.body.appendChild(phrase);
+            setTimeout(() => phrase.remove(), 1200);
+
+            // Crear las partículas (corazones y destellos)
+            for(let i = 0; i < 7; i++) {
+                let p = document.createElement('div');
+                p.className = "heart-particle";
+                p.innerText = ["❤️", "💖", "✨", "💕"][Math.floor(Math.random() * 4)];
+                p.style.left = x + "px";
+                p.style.top = y + "px";
+                
+                // Dirección aleatoria de explosión
+                p.style.setProperty('--dx', (Math.random() * 160 - 80) + "px");
+                p.style.setProperty('--dy', (Math.random() * -140 - 20) + "px");
+                
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        // Minijuego Fase 3 (Corazón que huye) modificado
+        function hitHeart(event) {
             heartClicks++;
             const heart = document.getElementById('heart-game');
             
-            if(heartClicks >= 3) {
+            // Obtener coordenadas del clic o usar el centro si falla el evento
+            const x = event ? event.clientX : window.innerWidth / 2;
+            const y = event ? event.clientY : window.innerHeight / 2;
+            
+            // Generar los efectos visuales
+            if (heartClicks <= maxHeartClicks) {
+                createHeartEffects(x, y, heartClicks);
+            }
+            
+            if(heartClicks >= maxHeartClicks) {
                 document.getElementById('scene-3').classList.add('hidden');
                 document.getElementById('scene-4').classList.remove('hidden');
                 
@@ -237,7 +290,9 @@
                 const randomY = Math.floor(Math.random() * 70) + 20; // De 20% a 90% del alto
                 heart.style.left = randomX + "vw";
                 heart.style.top = randomY + "vh";
-                heart.style.transform = `translate(-50%, -50%) scale(${1 + heartClicks*0.3})`;
+                
+                // Crece ligeramente con cada toque, ajustado para 15 clics para que no se deforme
+                heart.style.transform = `translate(-50%, -50%) scale(${1 + heartClicks * 0.08})`;
             }
         }
 
