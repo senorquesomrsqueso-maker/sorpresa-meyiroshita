@@ -351,35 +351,34 @@
         }
 
         // ---------- LÓGICA DEL PUZZLE "TE AMO" ----------
-        // Array de coordenadas para formar T - E (arriba) y A - M - O (abajo)
         const teAmoPoints = [
             // T (9 estrellas - Superior Izquierda)
-            {x: 20, y: 25}, {x: 23, y: 25}, {x: 26, y: 25}, {x: 29, y: 25}, {x: 32, y: 25}, // barra horizontal
-            {x: 26, y: 30}, {x: 26, y: 35}, {x: 26, y: 40}, {x: 26, y: 45}, // linea vertical
+            {x: 20, y: 25}, {x: 23, y: 25}, {x: 26, y: 25}, {x: 29, y: 25}, {x: 32, y: 25},
+            {x: 26, y: 30}, {x: 26, y: 35}, {x: 26, y: 40}, {x: 26, y: 45},
             
             // E (13 estrellas - Superior Derecha)
-            {x: 60, y: 25}, {x: 60, y: 30}, {x: 60, y: 35}, {x: 60, y: 40}, {x: 60, y: 45}, // linea vertical
-            {x: 63, y: 25}, {x: 66, y: 25}, {x: 69, y: 25}, // barra superior
-            {x: 63, y: 35}, {x: 66, y: 35}, // barra medio
-            {x: 63, y: 45}, {x: 66, y: 45}, {x: 69, y: 45}, // barra inferior
+            {x: 60, y: 25}, {x: 60, y: 30}, {x: 60, y: 35}, {x: 60, y: 40}, {x: 60, y: 45},
+            {x: 63, y: 25}, {x: 66, y: 25}, {x: 69, y: 25},
+            {x: 63, y: 35}, {x: 66, y: 35},
+            {x: 63, y: 45}, {x: 66, y: 45}, {x: 69, y: 45},
 
             // A (15 estrellas - Abajo Izquierda)
-            {x: 24, y: 60}, {x: 22, y: 65}, {x: 20, y: 70}, {x: 18, y: 75}, {x: 16, y: 80}, // pata izquierda
-            {x: 26, y: 60}, {x: 28, y: 65}, {x: 30, y: 70}, {x: 32, y: 75}, {x: 34, y: 80}, // pata derecha
-            {x: 21, y: 70}, {x: 23, y: 70}, {x: 25, y: 70}, {x: 27, y: 70}, {x: 29, y: 70}, // puente del medio
+            {x: 24, y: 60}, {x: 22, y: 65}, {x: 20, y: 70}, {x: 18, y: 75}, {x: 16, y: 80},
+            {x: 26, y: 60}, {x: 28, y: 65}, {x: 30, y: 70}, {x: 32, y: 75}, {x: 34, y: 80},
+            {x: 21, y: 70}, {x: 23, y: 70}, {x: 25, y: 70}, {x: 27, y: 70}, {x: 29, y: 70},
 
             // M (15 estrellas - Abajo Centro)
-            {x: 42, y: 80}, {x: 42, y: 75}, {x: 42, y: 70}, {x: 42, y: 65}, {x: 42, y: 60}, // pata izquierda
-            {x: 58, y: 80}, {x: 58, y: 75}, {x: 58, y: 70}, {x: 58, y: 65}, {x: 58, y: 60}, // pata derecha
-            {x: 45, y: 65}, {x: 47, y: 70}, {x: 50, y: 75}, {x: 53, y: 70}, {x: 55, y: 65}, // pico interno (V)
+            {x: 42, y: 80}, {x: 42, y: 75}, {x: 42, y: 70}, {x: 42, y: 65}, {x: 42, y: 60},
+            {x: 58, y: 80}, {x: 58, y: 75}, {x: 58, y: 70}, {x: 58, y: 65}, {x: 58, y: 60},
+            {x: 45, y: 65}, {x: 47, y: 70}, {x: 50, y: 75}, {x: 53, y: 70}, {x: 55, y: 65},
 
             // O (14 estrellas - Abajo Derecha)
-            {x: 70, y: 60}, {x: 73, y: 60}, {x: 76, y: 60}, // superior
-            {x: 70, y: 80}, {x: 73, y: 80}, {x: 76, y: 80}, // inferior
-            {x: 67, y: 65}, {x: 67, y: 70}, {x: 67, y: 75}, // lateral izq
-            {x: 79, y: 65}, {x: 79, y: 70}, {x: 79, y: 75}, // lateral der
-            {x: 68, y: 62}, {x: 78, y: 62} // esquinas suavizadas
-        ]; // Total = 66 Estrellas
+            {x: 70, y: 60}, {x: 73, y: 60}, {x: 76, y: 60},
+            {x: 70, y: 80}, {x: 73, y: 80}, {x: 76, y: 80},
+            {x: 67, y: 65}, {x: 67, y: 70}, {x: 67, y: 75},
+            {x: 79, y: 65}, {x: 79, y: 70}, {x: 79, y: 75},
+            {x: 68, y: 62}, {x: 78, y: 62}
+        ];
 
         let starsClickedSequence = 0;
 
@@ -390,37 +389,30 @@
                 "Mi todo", "Me haces feliz", "Mi lugar seguro", "Siempre juntos"
             ];
             
-            // Crear exactamente 66 estrellas esparcidas para que armen el mensaje completo
             for(let i = 0; i < 66; i++) {
                 let s = document.createElement('div');
                 s.className = "star-final";
                 s.innerText = "⭐";
-                // Posición inicial aleatoria
                 s.style.left = Math.random() * 90 + 5 + "vw";
                 s.style.top = Math.random() * 85 + 10 + "vh";
                 
-                // Animación de deriva espacial
                 s.style.animation = `spaceDrift ${10 + Math.random()*15}s infinite alternate ease-in-out`;
                 s.style.animationDelay = `-${Math.random()*10}s`;
                 
                 s.onclick = function(e) {
-                    // Si ya se acomodaron todas las estrellas, ignorar clics
                     if (starsClickedSequence >= teAmoPoints.length) return;
 
-                    // Detener animación flotante y cambiar estilo para que viaje
                     this.style.animation = "none";
                     this.style.transition = "all 2.5s cubic-bezier(0.25, 0.8, 0.25, 1)";
                     this.style.transform = "scale(1.3)";
-                    this.style.color = "#ff4d4d"; // Se vuelve roja/rosada
+                    this.style.color = "#ff4d4d";
                     this.style.filter = "drop-shadow(0 0 15px #ff4d4d)";
-                    this.innerText = "❤️"; // Cambia estrella por corazón
+                    this.innerText = "❤️";
 
-                    // Obtener la coordenada que le toca
                     let targetPoint = teAmoPoints[starsClickedSequence];
                     this.style.left = targetPoint.x + "vw";
                     this.style.top = targetPoint.y + "vh";
                     
-                    // Mostrar mensajito flotante
                     let msg = document.createElement('div');
                     msg.className = "star-tooltip";
                     msg.innerText = "✨ " + phrases[Math.floor(Math.random() * phrases.length)] + " ✨";
@@ -431,15 +423,13 @@
 
                     starsClickedSequence++;
 
-                    // Notificaciones por progreso
                     if(starsClickedSequence === 9) showMessage("¡La 'T' se ha formado! Sigue presionando...");
                     if(starsClickedSequence === 22) showMessage("¡Tenemos la 'E'! Presiona más abajo...");
                     if(starsClickedSequence === 66) {
                         setTimeout(() => showMessage("TE AMO, MEYIROSHIRA ❤️✨"), 2500);
-                        document.querySelector('.titulo-central').innerHTML = "Lo logramos mi amor...<br><span style="font-size: 0.5em; color: #ff9a9e;">Juntos por siempre</span>";
+                        document.querySelector('.titulo-central').innerHTML = 'Lo logramos mi amor...<br><span style="font-size: 0.5em; color: #ff9a9e;">Juntos por siempre</span>';
                     }
 
-                    // Deshabilitar el clic en este elemento para que no robe turnos
                     this.onclick = null;
                 };
                 
