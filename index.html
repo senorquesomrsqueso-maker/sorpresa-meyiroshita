@@ -14,6 +14,14 @@
         /* UI de Búsqueda de Estrellas */
         #star-counter { position: fixed; top: 20px; left: 20px; font-size: 18px; z-index: 999; color: gold; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); }
         
+        /* Alertas Personalizadas (Reemplazo del alert feo) */
+        #custom-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #333; padding: 15px 30px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.4s ease; text-align: center; }
+        #custom-alert.show-alert { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Nube de mensaje flotante para las estrellas */
+        .star-tooltip { position: absolute; background: rgba(255, 255, 255, 0.95); color: #e6005c; padding: 8px 18px; border-radius: 20px; font-weight: bold; font-size: 15px; pointer-events: none; animation: floatUpMsg 1.5s forwards; box-shadow: 0 4px 15px rgba(230, 0, 92, 0.4); z-index: 1000; white-space: nowrap; font-family: 'Nunito', sans-serif; }
+        @keyframes floatUpMsg { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.8); } 15% { opacity: 1; transform: translate(-50%, -15px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
+
         /* Estrellas Ocultas */
         .hidden-star { position: absolute; cursor: pointer; font-size: 35px; filter: drop-shadow(0 0 10px gold); animation: pulse 1.5s infinite; z-index: 50; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
@@ -35,8 +43,11 @@
         button { background: linear-gradient(45deg, #ff9a9e, #fad0c4); border: none; padding: 12px 30px; border-radius: 30px; color: #333; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4); }
         button:hover { transform: scale(1.05); }
 
-        .chapter { margin-bottom: 30px; padding: 20px; border-left: 3px solid #ff9a9e; background: rgba(255,255,255,0.03); text-align: left; }
+        .chapter { margin-bottom: 30px; padding: 20px; border-left: 3px solid #ff9a9e; background: rgba(255,255,255,0.03); text-align: left; line-height: 1.6; }
         
+        /* Corazón que se mueve */
+        #heart-game { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; cursor: pointer; transition: top 0.4s ease, left 0.4s ease; z-index: 100; }
+
         /* Final Dinámico (Espacio) */
         #scene-final { background: #000; z-index: 100; overflow: hidden; }
         .titulo-central { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Cinzel', serif; font-size: 6vw; color: #fff; text-shadow: 0 0 20px #ff9a9e, 0 0 40px #ff4d4d; z-index: 10; pointer-events: none; text-align: center; line-height: 1.2; width: 100%; }
@@ -49,18 +60,19 @@
 <body>
 
     <!-- Audios -->
-    <audio id="music-golden" loop><source src="golden.mp3" type="audio/mpeg"></audio>
+    <audio id="music-golden" loop><source src="golden_hour.mp3" type="audio/mpeg"></audio>
     <audio id="music-impostor" loop><source src="impostor.mp3" type="audio/mpeg"></audio>
 
-    <!-- Contador Global -->
+    <!-- UI: Contador y Alertas -->
     <div id="star-counter">Estrellas: 0/4</div>
+    <div id="custom-alert">Mensaje</div>
 
     <!-- Fase 1: El Acceso -->
     <div id="scene-1" class="scene">
         <div class="card">
             <h1>Bienvenida, mi vida</h1>
             <div id="q1">
-                <p>1. ¿Qué sobrenombre siempre me gusta decirte?<br><small>(Pista: Meyiro es la inicial...)</small></p>
+                <p>1. ¿Qué sobrenombre siempre me gusta decirte?<br><small>(Pista: Meyiro es la inicial y tiene una continuación)</small></p>
                 <input type="text" id="pass1"> <button onclick="check(1)">Validar</button>
             </div>
             <div id="q2" style="display:none;">
@@ -68,7 +80,7 @@
                 <input type="text" id="pass2"> <button onclick="check(2)">Validar</button>
             </div>
             <div id="q3" style="display:none;">
-                <p>3. ¿Qué fue nuestra primera película que vimos juntos?<br><small>(Pista: Uma musu**)</small></p>
+                <p>3. ¿Qué fue nuestra primera película que vimos juntos?<br><small>(Pista: Nombre básico Uma musu**)</small></p>
                 <input type="text" id="pass3"> <button onclick="check(3)">Acceder al Viaje</button>
             </div>
         </div>
@@ -76,57 +88,74 @@
         <div class="hidden-star" style="top: 15%; left: 10%;" onclick="findStar(this)">⭐</div>
     </div>
 
-    <!-- Fase 2: La Historia -->
+    <!-- Fase 2: La Historia Exacta -->
     <div id="scene-2" class="scene hidden">
         <div class="card">
             <h1>Nuestra Crónica</h1>
-            <div class="chapter"><h3>Capítulo 1: Nuestro Primer Hola</h3><p>Todo comenzó en la frialdad de la moderación. Yo era un staff serio, centrado en el trabajo, hasta que apareciste. Eras tímida pero con una chispa única. Ese primer "Hola" fue el hilo invisible que conectó nuestras vidas.</p></div>
-            <div class="chapter"><h3>Capítulo 2: Mi primera acción</h3><p>Te convertiste en mi prioridad. Recuerdo la rabia al ver que otros te trataban mal. Me enfrenté al mundo por ti, ganándome críticas por mis "preferencias", pero las palabras "di que te gusta, tontita" fueron el presagio de lo que mi corazón ya sabía.</p></div>
-            <div class="chapter"><h3>Capítulo 3: Mi impacto relativo</h3><p>La intuición no me fallaba. Me acerqué, nos hicimos cercanos en TikTok, y esos pequeños detalles en Blood Strike no eran casualidad; eran mi forma de decirte que quería estar presente en tu mundo.</p></div>
-            <div class="chapter"><h3>Capítulo 4: La sombra</h3><p>Hubo un tiempo donde la distancia creció. Los celos fueron un fuego difícil de controlar cuando sentí que perdía lo que apenas empezaba a construir. Fue un momento oscuro, donde el dolor se hizo presente.</p></div>
-            <div class="chapter"><h3>Capítulo 5: El vacío y la luz</h3><p>La vida golpeó fuerte con la pérdida de mi amigo Erick. El mundo se derrumbó: trabajo, estudios, familia... quise alejarme de todo, incluso de ti. Fueron meses en la oscuridad hasta que una notificación de Layoucris me hizo entender tu preocupación. Esa luz me salvó, y esa luz eras tú.</p></div>
-            <div class="chapter"><h3>Capítulo 6: Mi lucha</h3><p>Decidí que esa luz no se apagaría. Saqué mi lado coqueto, mi determinación, y luché por tenerte conmigo. Me gané el odio de muchos, pero obtuve el premio más grande: quedarme con mi luz para siempre.</p></div>
-            <div class="chapter"><h3>Capítulo Final: Nuestro amor</h3><p>Dejamos atrás la timidez y lo gritamos al mundo. "Te amo" fue la respuesta que cambió mi realidad. Hemos pasado tormentas, casi nos separamos, pero aquí estamos, fuertes, invencibles, celebrando nuestro segundo aniversario.</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 1: Nuestro Primer Hola</h3><p>Yo recuerdo mucho este momento, comenzamos desde aquí pues esto es algo que siempre he querido hacer y es contar nuestra historia jejejeje, todo comenzó un día que estaba tranquilamente encargandome de moderación del chat, siempre solía ser un staff demasiado serio te lo juro muy serio, miraba el chat moderaba y me iba a hacer trabajos de Blood Strike, siempre era lo mismo pero un día todo eso cambio, apareciste tu, tu al inicio según recuerdo eras una persona medio tímida en comunicación, pero eras muy alegre al mismo tiempo, recuerdo que nuestro primer cercanía fue un "Hola" aunque fue muy simple ese Hola fue el inicio de una historia muy interesante, desde allí comenzamos a entablar conversaciones, y no sé cómo nació una amistad.</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 2: Mi primera acción</h3><p>Aunque no lo parezca fuistes una de las primeras chicas que logró establecer una comunicación muy cercana pues te trataba mucho como una hermanita al inicio, recuerdo que un día te estaban tratando mal y me moleste mucho, a tal punto que salió afectado staff y comunidad solo para que no se metieran contigo y allí comenzaron a decir y que yo tenía preferencias y etc etc etc, aunque no le preste atención simplemente los dejaba en visto pues para mí había hecho lo correcto pero algo me dejó marcado (Queso ya di que te gusta Mi tontita) esas palabras me dejaron pensando y pensando pero no me lo tomé a pecho y te seguí tratando igual como siempre.</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 3: Mi impacto relativo</h3><p>Luego de establecer una gran cercanía siempre y no se porque pero me sentía raro, algo me decía que estuviera contigo y que me acercara y lo pensé mucho, pero muchísimo y lo hice, me acerqué y lo trate y nos volvimos más cercanos por alguna razón, recuerdo que allí fue donde nos conocimos por tiktok y comenzamos a tratarnos mucho más cercano, te daba cosas en Blood aunque muy mínimas pero te las daba por qué algo me decía que lo hiciera y lo hice y quien se pensaría que eso fue algo clave para nuestro hoy en día.</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 4: Mi impacto yo</h3><p>Está parte de mi vida no me gustaría contarla pero se que debe estar pues es importante para nuestra historia, un día ví que te alejaste más de mi, no era igual, y aunque lo intentaba no lo lograba como antes y entendí en ese momento que alguien ya se me había adelantado, y si, este capitulo es cuando estabas con Sus, no sé porque pero digamos sentí celos, celos de que alguien de la nada se llevó todo lo que había tratado de construir y eso me dolió mucho pero aún así quise seguir adelante y algo muy doloroso ocurrió...</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 5: El vacío</h3><p>Un día normal a las 3:40 de la madrugada, me llamaron del hospital de Suecia para notificarme que uno de sus familiares de uno de mis amigos le había dicho que me llamarán para avisarme que Erick mi amigo de la infancia había muerto en un accidente de automóvil llendo a Suecia puebla central en uno de los puentes Gracias al impacto de un camión, yo... Yo quede destrozado... Adicional mi trabajo, el instituto, mi familia, lo de Sus todo me afectó muy feo, tal punto que quise dejar todo , quería alejarme de Blood Strike, Quería alejarme de los estudios, quería alejarme de mi familia y quería alejarme de tí, y bueno no quería, lo hice, estaba muy mal a tal punto que no se todo lo que pasó por mi mente me hizo caer tan fuerte que.. nomás no me sentía como yo, fueron 4 meses duros que estaba controlando pero ese día todo se derrumbó, así estuve aproximadamente 15 días creo, y un día un mensaje me notifico algo, era layoucris, me pareció raro que ella me escribiera algo en seriedad pero no me imaginé que eso fue a base de preocupación de tí, ella me decía que tú estabas preocupada y cosas así y yo no sabía cómo reaccionar, pensaba que todo estaba acabando pero eso me dió a entender que aún había una luz , y no se porque pero algo me empujó y me dijo no la dejes apagar y lo hice, hablé contigo y logramos y aquí comienza el capítulo más interesante.</p></div>
+            
+            <div class="chapter"><h3>CAPITULO 6: Mi lucha</h3><p>Aquí es algo muy interesante pues yo me había decidido a no dejar que esa luz se apagará, pero de una forma interesante, quería que esa luz solo fuera para mí costará lo que costará y aquí tu debes saber que entro el queso coqueto y conquistador, dure que, 1 mes o 2 consintiendo y tratando de obtenerlo y aunque fue fuerte lo logre, y fue un resultado que esperaba, aunque me gane un odio eterno de LATAM, al menos mi luz se quedó para mí y aquí es donde empieza el último capítulo</p></div>
+            
+            <div class="chapter"><h3>CAPITULO final: Nuestro amor</h3><p>Aquí nosotros nos desarrollamos en relación, aunque eras muy tímida pues no querías hacerlo conocer al público un día nos armamos de valor y hicimos que ocurriera, y fue goood, cuando te dije te amo y me respondiste también, fue muy lindo, de una me llegaron mds y cosas así pero lo hicimos, y aquí me di a entender algo, juntos podemos solucionar cualquier cosa, aunque hemos llevado muchas luchas últimamente, personales, comunidad, entre tú y yo que incluso casi nos hemos separado, aquí es donde fuimos y entendemos que somos fuertes, y así creció nuestro primer y 2 mes de aniversario que no me arrepiento de nada.</p></div>
             
             <button onclick="nextScene()">Siguiente Sorpresa ✨</button>
         </div>
         <!-- Estrella 2 -->
-        <div class="hidden-star" style="bottom: 10%; right: 5%;" onclick="findStar(this)">⭐</div>
+        <div class="hidden-star" style="bottom: 5%; right: 5%;" onclick="findStar(this)">⭐</div>
     </div>
 
-    <!-- Fase 3: Minijuego -->
+    <!-- Fase 3: Minijuego del Corazón que Huye -->
     <div id="scene-3" class="scene hidden">
-        <div class="card">
-            <h1>Atrapa mi corazón</h1>
-            <p>Demuestra que puedes con todo. ¡Tócalo 3 veces para leer tu carta!</p>
-            <div id="heart-game" style="font-size: 80px; cursor: pointer; transition: 0.2s;" onclick="hitHeart()">❤️</div>
+        <!-- El texto explicativo de arriba -->
+        <div class="card" style="position: absolute; top: 10%; left: 50%; transform: translateX(-50%); z-index: 50;">
+            <h1 style="margin-bottom: 5px;">Atrápame si puedes</h1>
+            <p style="margin-top: 0;">¡Persigue el corazón y tócalo 3 veces para leer tu carta!</p>
         </div>
+        
+        <!-- El corazón que se mueve por todo el borde -->
+        <div id="heart-game" onclick="hitHeart()">❤️</div>
+        
         <!-- Estrella 3 -->
-        <div class="hidden-star" style="top: 25%; right: 15%;" onclick="findStar(this)">⭐</div>
+        <div class="hidden-star" style="bottom: 20%; left: 15%;" onclick="findStar(this)">⭐</div>
     </div>
 
-    <!-- Fase 4: La Carta Final (Aquí suena Golden Hour) -->
+    <!-- Fase 4: La Gran Carta -->
     <div id="scene-4" class="scene hidden">
         <div class="card">
-            <h1>Para mi persona favorita</h1>
+            <h1>Para mi luz, mi todo</h1>
             <p style="font-size: 18px; line-height: 1.8; text-align: justify; color: #ddd;">
                 Meyiroshira, mi amor hermoso... <br><br>
-                Parece increíble cómo vuela el tiempo cuando se es feliz. Estos dos meses han sido la aventura más grande de mi vida. Hemos sobrevivido a tantas cosas, a comentarios, a la distancia, a nuestros propios miedos... y si algo he aprendido, es que nuestra historia es inquebrantable. <br><br>
-                Eres mi refugio seguro y mi lugar favorito en el universo. Gracias por dejarme entrar en tu mundo, por confiar en mí y por ser la mejor compañera que pude haber encontrado. Este es solo nuestro segundo aniversario de muchísimos más que nos esperan.<br><br>
-                Te amo muchísimo. Feliz 21 de Junio.
+                Cada vez que leo nuestra historia y recuerdo por todo lo que hemos pasado, me doy cuenta de lo afortunado que soy. Estos 60 días a tu lado han sido un torbellino de emociones, desde aquel inocente "hola" en medio de mi seriedad, hasta convertirte en la luz que iluminó mis momentos más oscuros y difíciles.
+                <br><br>
+                Tú eres la demostración viva de que valió la pena cada lucha, cada celo sentido y cada obstáculo superado. A pesar de los problemas, de la gente, e incluso de las veces que casi nos separamos, aquí estamos. Fuertes. Unidos. Demostrando que lo nuestro es real y que no pienso dejar que esa luz se apague jamás.
+                <br><br>
+                Te amo por la persona que eres, por lo alegre, por la forma en que te preocupas por mí y por dejar que este "queso coqueto y conquistador" entrara en tu corazón. Eres mi refugio. Quiero seguir sumando meses, superando retos y creando recuerdos inolvidables contigo.
+                <br><br>
+                Gracias por existir y por quedarte conmigo. 
+                <br><br>
+                <b style="color: #ff9a9e; font-size: 22px; display: block; text-align: center; margin-top: 15px;">Te amo muchísimo.<br>Feliz Segundo Aniversario.</b>
             </p>
         </div>
         <!-- Estrella 4 -->
-        <div class="hidden-star" style="bottom: 20%; left: 10%;" onclick="findStar(this)">⭐</div>
+        <div class="hidden-star" style="top: 15%; right: 10%;" onclick="findStar(this)">⭐</div>
         
-        <!-- El Planeta Secreto (Aparece al tener 4/4) -->
+        <!-- El Planeta Secreto -->
         <div id="secret-planet" onclick="triggerSpace()"></div>
     </div>
 
     <!-- Transición Lluvia de estrellas -->
     <div id="meteor-shower"></div>
 
-    <!-- Fase Final Estelar (Aquí suena Impostor y aparece el centro) -->
+    <!-- Fase Final Estelar -->
     <div id="scene-final" class="scene hidden">
         <h1 class="titulo-central">¡Feliz 2do Aniversario!<br><span style="font-size: 0.5em; color: #fff;">Meyiroshira</span></h1>
         <div id="star-field"></div>
@@ -140,17 +169,26 @@
         const totalStars = 4;
         let heartClicks = 0;
 
+        // Función para mostrar alertas elegantes en pantalla
+        function showMessage(text) {
+            const alertBox = document.getElementById('custom-alert');
+            alertBox.innerText = text;
+            alertBox.classList.add('show-alert');
+            setTimeout(() => alertBox.classList.remove('show-alert'), 4000);
+        }
+
         // Búsqueda de Estrellas
         function findStar(element) {
             element.style.display = 'none';
             starsFound++;
             document.getElementById('star-counter').innerText = `Estrellas: ${starsFound}/${totalStars}`;
+            showMessage("¡Has encontrado una estrella secreta! 🌟");
             
             if(starsFound === totalStars) {
                 document.getElementById('secret-planet').style.display = 'block';
-                // Solo alerta si ya está en la fase 4, si no, lo verá cuando llegue
+                // Avisar que el planeta apareció si ya está en la fase final
                 if(!document.getElementById('scene-4').classList.contains('hidden')) {
-                    alert("¡Has desbloqueado el Planeta Secreto en la pantalla! Tócalo.");
+                    setTimeout(() => showMessage("¡Un Planeta Secreto apareció en tu carta! Tócalo."), 1000);
                 }
             }
         }
@@ -168,7 +206,9 @@
                 document.getElementById('scene-1').classList.add('hidden'); 
                 document.getElementById('scene-2').classList.remove('hidden');
             } 
-            else { alert("Casi... intenta de nuevo mi vida."); }
+            else { 
+                showMessage("Casi... intenta de nuevo mi vida."); 
+            }
         }
 
         // Navegación Fase 2 a 3
@@ -177,36 +217,36 @@
             document.getElementById('scene-3').classList.remove('hidden');
         }
 
-        // Minijuego Fase 3 a 4 (Inicia Golden Hour)
+        // Minijuego Fase 3 (Corazón que huye)
         function hitHeart() {
             heartClicks++;
             const heart = document.getElementById('heart-game');
-            heart.style.transform = `scale(${1 + heartClicks*0.3})`;
             
             if(heartClicks >= 3) {
                 document.getElementById('scene-3').classList.add('hidden');
                 document.getElementById('scene-4').classList.remove('hidden');
                 
-                // Reproducir Golden Hour automáticamente en la Carta
                 audioGolden.play().catch(e => console.log("Interacción requerida para audio"));
                 
-                // Si ya encontró las 4 estrellas antes de llegar, avisarle aquí
                 if(starsFound === totalStars) {
-                    setTimeout(() => alert("¡El Planeta Secreto ha aparecido en tu carta! Tócalo."), 1000);
+                    setTimeout(() => showMessage("¡El Planeta Secreto te espera en tu carta! Tócalo."), 1000);
                 }
+            } else {
+                // Hacer que el corazón huya a una posición aleatoria en pantalla
+                const randomX = Math.floor(Math.random() * 80) + 10; // De 10% a 90% del ancho
+                const randomY = Math.floor(Math.random() * 70) + 20; // De 20% a 90% del alto
+                heart.style.left = randomX + "vw";
+                heart.style.top = randomY + "vh";
+                heart.style.transform = `translate(-50%, -50%) scale(${1 + heartClicks*0.3})`;
             }
         }
 
         // Transición a la Fase Espacial (Cambio de música)
         function triggerSpace() {
-            // Ocultar el UI del contador
             document.getElementById('star-counter').style.display = 'none';
-            
-            // Efecto de lluvia
             const meteor = document.getElementById('meteor-shower');
             meteor.style.display = 'block';
             
-            // Pausar Golden Hour y preparar Impostor
             audioGolden.pause();
             
             setTimeout(() => {
@@ -214,7 +254,6 @@
                 meteor.style.display = 'none';
                 document.getElementById('scene-final').classList.remove('hidden');
                 
-                // Reproducir Impostor Syndrome en el espacio
                 audioImpostor.currentTime = 0;
                 audioImpostor.play();
                 
@@ -222,7 +261,7 @@
             }, 1500);
         }
 
-        // Generador del Universo Interactivo
+        // Generador de nubes de mensajes para las estrellas finales
         function createStarField() {
             const container = document.getElementById('star-field');
             const phrases = [
@@ -236,15 +275,26 @@
                 let s = document.createElement('div');
                 s.className = "star-final";
                 s.innerText = "⭐";
-                // Posición aleatoria en toda la pantalla
                 s.style.left = Math.random() * 95 + "vw";
                 s.style.top = Math.random() * 95 + "vh";
-                // Animación flotante desfasada
                 s.style.animation = `floatStar ${3 + Math.random()*4}s infinite alternate ease-in-out`;
                 s.style.animationDelay = `-${Math.random()*5}s`;
                 
-                // Evento al tocar la estrella
-                s.onclick = () => alert("✨ " + phrases[Math.floor(Math.random() * phrases.length)] + " ✨");
+                // Nube de mensaje interactiva
+                s.onclick = (e) => {
+                    let msg = document.createElement('div');
+                    msg.className = "star-tooltip";
+                    msg.innerText = "✨ " + phrases[Math.floor(Math.random() * phrases.length)] + " ✨";
+                    
+                    // Posicionamos el mensaje justo encima de donde hizo clic
+                    msg.style.left = e.clientX + "px";
+                    msg.style.top = e.clientY + "px";
+                    
+                    document.body.appendChild(msg);
+                    
+                    // Eliminar la nube de mensaje después de que termine la animación
+                    setTimeout(() => msg.remove(), 1500);
+                };
                 
                 container.appendChild(s);
             }
