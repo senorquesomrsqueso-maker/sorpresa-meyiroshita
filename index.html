@@ -58,7 +58,7 @@
     <div class="hud" id="main-hud">
         <h2>Proyecto Eternidad</h2>
         <p>Mundo: <span id="hud-world" style="color: #4facfe;">El Abismo Dorado</span></p>
-        <p>Fragmentos Estelares: <span id="easter-score" style="color: #ffd700;">0</span> / 6</p>
+        <p>Fragmentos Estelares: <span id="easter-score" style="color: #ffd700;">0</span> / 4</p>
     </div>
 
     <div class="controls" id="main-controls">
@@ -262,30 +262,18 @@
         createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(0, -738, -45, 18, 18, 4, 0x1a0a1a, 0xa855f7);
 
-        // MUNDO 5: Mundo del Avión (Estructura original de vuelo vertical exacto)
-        createPlatDef(0, -1000, 0, 25, 6, 5, 0x002244, 0x00ffff); // Ala del avión
-        createPlatDef(0, -995, -15, 10, 18, 5, 0x003366, 0x00ffff); // Cuerpo del avión
-        createPlatDef(0, -990, -30, 8, 8, 5, 0x111122, 0xff00ff); // Punta del avión ascendente
-
-        // MUNDO 6: Mundo de Parkour Extremo (Adicional separado)
-        createPlatDef(0, -1150, 0, 12, 12, 6, 0x330033, 0xff00ff);
-        createPlatDef(10, -1145, -18, 8, 8, 6, 0x330033, 0xff00ff);
-        createPlatDef(-10, -1140, -36, 8, 8, 6, 0x330033, 0xff00ff);
-        createPlatDef(12, -1135, -54, 7, 7, 6, 0x330033, 0xff00ff);
-        createPlatDef(0, -1130, -72, 14, 14, 6, 0x440044, 0xff00ff);
-
-        // MUNDO 7: Tablero Real con Carta Gigante
+        // MUNDO 5: Tablero Real con Carta Gigante (antes Mundo 7, ahora conectado directo al Arcade)
         const tileSize = 20;
         for(let r=0; r<6; r++) {
             for(let c=0; c<6; c++) {
                 const isW = (r + c) % 2 === 0;
-                createPlatDef((c - 2.5) * tileSize, -1350, (r - 2.5) * tileSize, tileSize, tileSize, 7, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
+                createPlatDef((c - 2.5) * tileSize, -1000, (r - 2.5) * tileSize, tileSize, tileSize, 5, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
             }
         }
 
-        // MUNDO 8: MUNDO SECRETO (Cofre Final del Aniversario - Desbloqueado con los 6 Fragmentos)
-        createPlatDef(0, -1600, 0, 22, 22, 8, 0x1a001a, 0xff00ff);
-        createPlatDef(0, -1596, -25, 15, 15, 8, 0x1a001a, 0xff00ff);
+        // MUNDO 6: MUNDO SECRETO (Cofre Final del Aniversario - Desbloqueado con los 4 Fragmentos)
+        createPlatDef(0, -1250, 0, 22, 22, 6, 0x1a001a, 0xff00ff);
+        createPlatDef(0, -1246, -25, 15, 15, 6, 0x1a001a, 0xff00ff);
 
         // Memorias y Portales de transición
         const memData = [
@@ -300,13 +288,9 @@
             
             { world: 4, pos: [0, -734, -45], title: "Nivel Superado: Arcade Ascendente", text: "Subiendo cada escalón de la vida juntos.", isPortal: 5 },
 
-            { world: 5, pos: [0, -986, -30], title: "El Mundo del Avión", text: "✈️ ¡Has completado el vuelo vertical del avión hacia las alturas con éxito!", isPortal: 6 },
+            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Carta Gigante)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true, checkSecret: true },
 
-            { world: 6, pos: [0, -1125, -72], title: "Mundo de Parkour Extremo", text: "🧗‍♂️ ¡Has superado todos los saltos de precisión en el mundo adicional de parkour!", isPortal: 7 },
-            
-            { world: 7, pos: [0, -1347, 0], title: "Jaque Mate de mi Vida (Carta Gigante)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true, checkSecret: true },
-
-            { world: 8, pos: [0, -1592, -25], title: "Cofre Secreto del Aniversario", text: "✨ ¡Has abierto el cofre secreto definitivo!\n\nEste nivel solo se desbloquea para la jugadora más especial del universo al recolectar todos los fragmentos. ¡Te amo muchísimo!", isSecretFinal: true }
+            { world: 6, pos: [0, -1242, -25], title: "Cofre Secreto del Aniversario", text: "✨ ¡Has abierto el cofre secreto definitivo!\n\nEste nivel solo se desbloquea para la jugadora más especial del universo al recolectar todos los fragmentos. ¡Te amo muchísimo!", isSecretFinal: true }
         ];
 
         const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
@@ -320,14 +304,12 @@
             memories.push({ mesh: m, data: d, collected: false });
         });
 
-        // 6 Fragmentos / Estrellas repartidas en los mundos
+        // 4 Fragmentos / Estrellas repartidas en los mundos restantes
         const eeData = [
             { world: 2, pos: [10, -243, -36], name: "Fragmento Estelar 1" },
             { world: 3, pos: [0, -491, -40], name: "Fragmento Estelar 2" },
             { world: 4, pos: [-8, -739, -30], name: "Fragmento Estelar 3" },
-            { world: 5, pos: [0, -986, -15], name: "Fragmento Estelar 4 (Avión)" },
-            { world: 6, pos: [-10, -1136, -36], name: "Fragmento Estelar 5 (Parkour)" },
-            { world: 7, pos: [15, -1347, 15], name: "Fragmento Estelar 6 (Ajedrez)" }
+            { world: 5, pos: [15, -997, 15], name: "Fragmento Estelar 4 (Ajedrez)" }
         ];
         const eeGeo = new THREE.DodecahedronGeometry(0.8, 0);
         const eeMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
@@ -355,7 +337,6 @@
             }, 1000);
         }
 
-        // Conectar eventos del botón de inicio de manera directa (tanto clic como toque móvil)
         const startBtn = document.getElementById('start-btn');
         startBtn.addEventListener('click', startGame);
         startBtn.addEventListener('touchstart', (e) => {
@@ -402,12 +383,10 @@
             else if(worldId === 2) player.position.set(0, -245, 0);
             else if(worldId === 3) player.position.set(0, -495, 0);
             else if(worldId === 4) player.position.set(0, -745, 0);
-            else if(worldId === 5) player.position.set(0, -995, 10);
-            else if(worldId === 6) player.position.set(0, -1145, 0);
-            else if(worldId === 7) player.position.set(0, -1345, 30);
-            else if(worldId === 8) player.position.set(0, -1595, 0);
+            else if(worldId === 5) player.position.set(0, -995, 30);
+            else if(worldId === 6) player.position.set(0, -1245, 0);
 
-            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "Mundo del Avión", "Mundo de Parkour Extremo", "El Tablero Real", "✨ Mundo Secreto: Cofre Final ✨"];
+            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "El Tablero Real", "✨ Mundo Secreto: Cofre Final ✨"];
             document.getElementById('hud-world').innerText = names[worldId];
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
@@ -424,9 +403,9 @@
             if(data.isPortal) {
                 btn.innerText = "Siguiente Nivel";
                 btn.onclick = () => transitionToWorld(data.isPortal);
-            } else if(data.checkSecret && easterEggsFound === 6) {
+            } else if(data.checkSecret && easterEggsFound === 4) {
                 btn.innerText = "🔓 Entrar al Mundo Secreto del Cofre";
-                btn.onclick = () => transitionToWorld(8);
+                btn.onclick = () => transitionToWorld(6);
             } else {
                 btn.innerText = "Seguir";
                 btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); setTimeout(()=>gamePaused=false, 200); };
@@ -437,7 +416,7 @@
         function transitionToWorld(worldId) {
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
-            if (worldId >= 7) fadeAudio(audioImpostor, audioGolden);
+            if (worldId >= 5) fadeAudio(audioImpostor, audioGolden);
 
             setTimeout(() => {
                 loadWorld(worldId);
@@ -504,9 +483,7 @@
                 if(currentWorld === 3) voidLimit = -530;
                 if(currentWorld === 4) voidLimit = -780;
                 if(currentWorld === 5) voidLimit = -1030;
-                if(currentWorld === 6) voidLimit = -1180;
-                if(currentWorld === 7) voidLimit = -1380;
-                if(currentWorld === 8) voidLimit = -1630;
+                if(currentWorld === 6) voidLimit = -1280;
 
                 if(player.position.y < voidLimit) {
                     loadWorld(currentWorld);
