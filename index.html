@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Un Universo Para Ti ✨</title>
+    <title>Un Universo Para Ti ✨ - Tercer Aniversario</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@300;400;700&display=swap');
 
@@ -12,7 +12,7 @@
 
         /* Pantalla de Inicio */
         #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; }
-        #start-screen h1 { font-family: 'Cinzel', serif; font-size: 3em; color: #4facfe; margin-bottom: 10px; padding: 0 20px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.5);}
+        #start-screen h1 { font-family: 'Cinzel', serif; font-size: 2.8em; color: #4facfe; margin-bottom: 10px; padding: 0 20px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.5);}
         #start-screen p { font-size: 1.1em; color: #cbd5e1; max-width: 90%; margin-bottom: 30px; }
         .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); transition: all 0.3s; }
         .btn-start:active { transform: scale(0.95); }
@@ -25,21 +25,21 @@
         .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.85em; border-right: 2px solid #4facfe; }
         .controls span { color: #4facfe; font-weight: bold; }
 
-        /* Modales */
-        .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 450px; background: rgba(5,5,15,0.95); padding: 35px; border-radius: 15px; border: 1px solid #4facfe; z-index: 100; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; box-shadow: 0 0 30px rgba(79,172,254,0.3); }
+        /* Modales / Cartas Gigantes */
+        .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background: rgba(5,5,18,0.97); padding: 40px; border-radius: 20px; border: 2px solid #ff9a9e; z-index: 100; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; box-shadow: 0 0 40px rgba(255,154,158,0.4); max-height: 85vh; overflow-y: auto; }
         .modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
-        .modal h1 { font-family: 'Cinzel', serif; color: #ff9a9e; font-size: 1.8em; margin-top: 0; text-shadow: 0 0 10px rgba(255, 154, 158, 0.4); }
-        .modal p { font-size: 1.05em; line-height: 1.6; color: #e2e8f0; margin-bottom: 25px; }
-        .btn-continue { background: linear-gradient(45deg, #4facfe, #00f2fe); border: none; padding: 12px 35px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(79,172,254,0.4); }
+        .modal h1 { font-family: 'Cinzel', serif; color: #ff9a9e; font-size: 2em; margin-top: 0; text-shadow: 0 0 10px rgba(255, 154, 158, 0.5); }
+        .modal p { font-size: 1.1em; line-height: 1.7; color: #e2e8f0; margin-bottom: 25px; text-align: left; white-space: pre-line; }
+        .btn-continue { background: linear-gradient(45deg, #ff9a9e, #4facfe); border: none; padding: 14px 40px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(255,154,158,0.5); }
         .btn-continue:active { transform: scale(0.95); }
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 1.5s; }
 
-        /* JOYSTICK TÁCTIL PARA MÓVIL */
-        #joystick-zone { display: none; position: absolute; bottom: 30px; left: 30px; width: 130px; height: 130px; background: rgba(255,255,255,0.05); border: 2px solid rgba(79,172,254,0.3); border-radius: 50%; z-index: 50; touch-action: none; opacity: 0; transition: opacity 1s; }
+        /* JOYSTICK MÓVIL */
+        #joystick-zone { display: none; position: absolute; bottom: 25px; left: 25px; width: 130px; height: 130px; background: rgba(255,255,255,0.05); border: 2px solid rgba(79,172,254,0.3); border-radius: 50%; z-index: 50; touch-action: none; opacity: 0; transition: opacity 1s; }
         #joystick-handle { position: absolute; top: 35px; left: 35px; width: 60px; height: 60px; background: rgba(79,172,254,0.4); border: 2px solid #4facfe; border-radius: 50%; pointer-events: none; transition: transform 0.05s linear; }
 
-        #action-controls { display: none; position: absolute; bottom: 40px; right: 30px; z-index: 50; opacity: 0; transition: opacity 1s; }
+        #action-controls { display: none; position: absolute; bottom: 35px; right: 25px; z-index: 50; opacity: 0; transition: opacity 1s; }
         .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; }
         .action-btn:active { background: rgba(255,154,158,0.7); transform: scale(0.9); box-shadow: 0 0 15px #ff9a9e; }
 
@@ -55,13 +55,14 @@
 
     <div id="start-screen">
         <h1>El Universo de Meyiroshira</h1>
-        <p>Conectando servidores...<br>Sube el volumen y prepárate para saltar.</p>
+        <p>Iniciando protocolo de amor estelar...<br>Sube el volumen y prepárate.</p>
         <button class="btn-start" onclick="startGame()">Conectar</button>
     </div>
 
     <div class="hud" id="main-hud">
         <h2>Proyecto Eternidad</h2>
         <p>Mundo: <span id="hud-world" style="color: #4facfe;">El Abismo Dorado</span></p>
+        <p>Easter Eggs: <span id="easter-score" style="color: #ffd700;">0</span> / 3</p>
     </div>
 
     <div class="controls" id="main-controls">
@@ -69,7 +70,6 @@
         Doble Salto: <span>[Espacio x2]</span>
     </div>
 
-    <!-- Joystick Móvil -->
     <div id="joystick-zone">
         <div id="joystick-handle"></div>
     </div>
@@ -95,7 +95,7 @@
         audioImpostor.loop = true; audioImpostor.volume = 0;
 
         function fadeAudio(audioIn, audioOut) {
-            audioIn.play().catch(e => console.log("Audio interceptado por el navegador"));
+            audioIn.play().catch(e => console.log("Audio interceptado"));
             let volIn = 0, volOut = audioOut ? audioOut.volume : 0;
             const fade = setInterval(() => {
                 if(volIn < 0.5) { volIn += 0.05; audioIn.volume = Math.min(volIn, 0.5); }
@@ -112,20 +112,20 @@
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010103, 0.012);
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 800);
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 900);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); 
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
         container.appendChild(renderer.domElement);
 
-        // --- PARTÍCULAS DOBLES ---
+        // --- PARTÍCULAS ---
         function createParticles(colorHex, count, size) {
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(count * 3);
             for(let i=0; i<count; i++) {
-                pPos[i*3] = (Math.random() - 0.5) * 400;
-                pPos[i*3+1] = (Math.random() - 0.5) * 400;
-                pPos[i*3+2] = (Math.random() - 0.5) * 400;
+                pPos[i*3] = (Math.random() - 0.5) * 500;
+                pPos[i*3+1] = (Math.random() - 0.5) * 500;
+                pPos[i*3+2] = (Math.random() - 0.5) * 500;
             }
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({ color: colorHex, size: size, transparent: true, opacity: 0.6 });
@@ -146,9 +146,8 @@
         const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.18, jumpForce: 0.38, jumps: 2 };
         const keys = { w: false, a: false, s: false, d: false };
         let spacePressed = false;
-        
-        // Control direccional análogo (soporta teclado y joystick móvil)
         let moveDir = { x: 0, z: 0 };
+        let easterEggsFound = 0;
 
         function handleJump() {
             if(!spacePressed && !gamePaused && physics.jumps > 0) {
@@ -169,7 +168,7 @@
             if(e.code === 'Space') spacePressed = false;
         });
 
-        // --- JOYSTICK TÁCTIL FUNCIONAL ---
+        // Joystick Táctil
         const joystickZone = document.getElementById('joystick-zone');
         const joystickHandle = document.getElementById('joystick-handle');
         let joystickTouchId = null;
@@ -192,12 +191,7 @@
                     let dy = touch.clientY - joystickCenter.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     const maxDist = 45;
-                    
-                    if(dist > maxDist) {
-                        dx = (dx / dist) * maxDist;
-                        dy = (dy / dist) * maxDist;
-                    }
-                    
+                    if(dist > maxDist) { dx = (dx / dist) * maxDist; dy = (dy / dist) * maxDist; }
                     joystickHandle.style.transform = `translate(${dx}px, ${dy}px)`;
                     moveDir.x = dx / maxDist;
                     moveDir.z = dy / maxDist;
@@ -210,8 +204,7 @@
                 if(e.changedTouches[i].identifier === joystickTouchId) {
                     joystickTouchId = null;
                     joystickHandle.style.transform = `translate(0px, 0px)`;
-                    moveDir.x = 0;
-                    moveDir.z = 0;
+                    moveDir.x = 0; moveDir.z = 0;
                 }
             }
         };
@@ -222,9 +215,10 @@
         btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); }, {passive: false});
         btnJump.addEventListener('touchend', (e) => { e.preventDefault(); spacePressed = false; }, {passive: false});
 
-        // --- SISTEMA DE PLATAFORMAS Y MUNDOS ---
+        // --- SISTEMA DE MUNDOS Y PLATAFORMAS ---
         const platforms = [];
         const memories = [];
+        const easterEggs = [];
         const worldGroup = new THREE.Group(); 
         scene.add(worldGroup);
 
@@ -241,12 +235,11 @@
             mesh.visible = false;
             mesh.scale.set(0.01, 0.01, 0.01);
             worldGroup.add(mesh);
-            
             platforms.push({ mesh, x, y, z, w, d, yTop: y + 1, active: false, world: worldId });
             return mesh;
         }
 
-        // MUNDO 1: Parkour (Intacto, tal cual lo pediste)[cite: 3]
+        // MUNDO 1: Parkour 
         createPlatDef(0, 0, 0, 15, 15, 1); 
         createPlatDef(0, -2, -15, 12, 12, 1); 
         createPlatDef(12, 1, -28, 12, 12, 1); 
@@ -256,35 +249,67 @@
         createPlatDef(-15, 17, -78, 12, 12, 1); 
         createPlatDef(-30, 20, -95, 18, 18, 1); 
 
-        // MUNDO 2: NUEVO PASADIZO ESTELAR (Estructuras seguras, sin vacíos mortales)
+        // MUNDO 2: Paseo Estelar
         createPlatDef(0, -250, 0, 18, 18, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(0, -248, -18, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(10, -246, -36, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(-10, -244, -54, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, -242, -72, 20, 20, 2, 0x0a0a1a, 0xff9a9e); // Plataforma final de llegada
+        createPlatDef(0, -242, -72, 20, 20, 2, 0x0a0a1a, 0xff9a9e);
 
-        // MUNDO 3: El Tablero de Ajedrez
+        // MUNDO 3: Pasaje Cósmico (Nuevo Mundo Único)
+        createPlatDef(0, -500, 0, 22, 22, 3, 0x05101a, 0x00f2fe);
+        createPlatDef(15, -498, -25, 16, 16, 3, 0x05101a, 0x00f2fe);
+        createPlatDef(-15, -496, -50, 16, 16, 3, 0x05101a, 0x00f2fe);
+        createPlatDef(0, -494, -75, 22, 22, 3, 0x05101a, 0x00f2fe);
+
+        // MUNDO 4: Sala Arcade Retro / Espacial (Nuevo Mundo Único)
+        createPlatDef(0, -750, 0, 25, 25, 4, 0x1a0a1a, 0xa855f7);
+        createPlatDef(0, -748, -25, 18, 18, 4, 0x1a0a1a, 0xa855f7);
+        createPlatDef(0, -746, -50, 25, 25, 4, 0x1a0a1a, 0xa855f7);
+
+        // MUNDO 5: Tablero de Ajedrez con Fichas 3D
         const tileSize = 20;
         for(let r=0; r<6; r++) {
             for(let c=0; c<6; c++) {
                 const isW = (r + c) % 2 === 0;
-                createPlatDef((c - 2.5) * tileSize, 0, (r - 2.5) * tileSize, tileSize, tileSize, 3, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
+                createPlatDef((c - 2.5) * tileSize, -1000, (r - 2.5) * tileSize, tileSize, tileSize, 5, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
             }
         }
 
-        // --- MEMORIAS / PORTALES ---
+        // --- CREACIÓN DE FICHAS DE AJEDREZ 3D EN MUNDO 5 ---
+        function createChessPiece(x, z, type) {
+            const pieceGroup = new THREE.Group();
+            let geo, mat = new THREE.MeshBasicMaterial({ color: type === 'queen' ? 0xff9a9e : 0x4facfe, wireframe: true });
+            if(type === 'pawn') geo = new THREE.ConeGeometry(1.5, 4, 6);
+            else if(type === 'rook') geo = new THREE.CylinderGeometry(1.5, 1.8, 4, 6);
+            else geo = new THREE.SphereGeometry(2, 8, 8); // Queen/King
+            
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.y = 2;
+            pieceGroup.add(mesh);
+            pieceGroup.position.set(x, -999, z);
+            pieceGroup.visible = false;
+            worldGroup.add(pieceGroup);
+            return pieceGroup;
+        }
+        createChessPiece(-20, -20, 'pawn');
+        createChessPiece(0, -20, 'rook');
+        createChessPiece(20, -20, 'queen');
+
+        // --- MEMORIAS Y PORTALES ---
         const memData = [
-            // MUNDO 1
             { world: 1, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
             { world: 1, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
             { world: 1, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
             { world: 1, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: 2 },
             
-            // MUNDO 2
-            { world: 2, pos: [0, -240, -72], title: "Camino Estelar", text: "No todo tiene que ser un salto al vacío. A veces, la mayor aventura es simplemente caminar a tu lado hacia el futuro.", isPortal: 3 },
+            { world: 2, pos: [0, -240, -72], title: "Camino Estelar", text: "No todo tiene que ser un salto al vacío. A veces, caminar a tu lado es la mayor aventura.", isPortal: 3 },
             
-            // MUNDO 3
-            { world: 3, pos: [0, 3, 0], title: "Jaque Mate de mi Vida", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 2 meses donde mi mundo cambió. Eres el sistema operativo de mi corazón, la jugada perfecta.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu victoria. ¡Feliz Aniversario mi Reina Blanca! ❤️", isFinal: true }
+            { world: 3, pos: [0, -490, -75], title: "Constelación de Amor", text: "Cada estrella en este universo virtual representa un momento feliz que hemos compartido juntos.", isPortal: 4 },
+            
+            { world: 4, pos: [0, -736, -50], title: "Nivel Superado: Arcade", text: "Jugamos en equipo en cada aspecto de la vida. ¡Siguiente fase desbloqueada!", isPortal: 5 },
+            
+            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true }
         ];
 
         const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
@@ -296,6 +321,23 @@
             m.visible = false; 
             worldGroup.add(m);
             memories.push({ mesh: m, data: d, collected: false });
+        });
+
+        // --- 3 EASTER EGGS OCULTOS ---
+        const eeData = [
+            { world: 2, pos: [15, -245, -36], name: "Fragmento Secreto 1" },
+            { world: 3, pos: [-15, -493, -50], name: "Fragmento Secreto 2" },
+            { world: 4, pos: [15, -745, -25], name: "Fragmento Secreto 3" }
+        ];
+        const eeGeo = new THREE.DodecahedronGeometry(0.8, 0);
+        const eeMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+
+        eeData.forEach(e => {
+            const m = new THREE.Mesh(eeGeo, eeMat);
+            m.position.set(e.pos[0], e.pos[1], e.pos[2]);
+            m.visible = false;
+            worldGroup.add(m);
+            easterEggs.push({ mesh: m, data: e, collected: false });
         });
 
         let gamePaused = true, currentWorld = 1, highestPlatIndex = 0;
@@ -344,20 +386,22 @@
                 m.mesh.visible = (m.data.world === worldId);
             });
 
-            if(worldId === 1) {
-                player.position.set(0, 5, 0);
-                document.getElementById('hud-world').innerText = "El Abismo Dorado";
-                document.getElementById('hud-world').style.color = "#00f2fe";
-            } else if (worldId === 2) {
-                player.position.set(0, -245, 0); // Posición segura exacta sobre la estructura del Mundo 2
-                document.getElementById('hud-world').innerText = "El Paseo Estelar";
-                document.getElementById('hud-world').style.color = "#ff9a9e";
-            } else if (worldId === 3) {
-                player.position.set(0, 10, 30); 
-                document.getElementById('hud-world').innerText = "El Tablero";
-                document.getElementById('hud-world').style.color = "#a855f7";
+            easterEggs.forEach(e => {
+                e.mesh.visible = (e.data.world === worldId && !e.collected);
+            });
+
+            // Posicionar jugador según el mundo
+            if(worldId === 1) player.position.set(0, 5, 0);
+            else if(worldId === 2) player.position.set(0, -245, 0);
+            else if(worldId === 3) player.position.set(0, -495, 0);
+            else if(worldId === 4) player.position.set(0, -745, 0);
+            else if(worldId === 5) {
+                player.position.set(0, -995, 30);
+                worldGroup.children.forEach(c => { if(c instanceof THREE.Group) c.visible = true; }); // Mostrar fichas ajedrez
             }
-            
+
+            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Retro", "El Tablero Real"];
+            document.getElementById('hud-world').innerText = names[worldId];
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
 
@@ -365,7 +409,13 @@
             gamePaused = true; 
             physics.vel.set(0,0,0);
             document.getElementById('msg-title').innerText = data.title;
-            document.getElementById('msg-text').innerHTML = data.text.replace(/\n/g, '<br>');
+            
+            let textToShow = data.text;
+            if(data.isFinal && easterEggsFound === 3) {
+                textToShow += "\n\n✨ ¡INCREÍBLE! Encontraste los 3 Easter Eggs ocultos en el universo.\n🎁 Cofre Secreto Abierto: ¡Feliz Tercer Aniversario Meyiroshira! Te amo con todo mi ser.";
+            }
+
+            document.getElementById('msg-text').innerHTML = textToShow.replace(/\n/g, '<br>');
             
             const btn = document.querySelector('.btn-continue');
             if(data.isPortal) {
@@ -384,8 +434,7 @@
         function transitionToWorld(worldId) {
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
-            
-            if (worldId === 3) fadeAudio(audioImpostor, audioGolden);
+            if (worldId === 5) fadeAudio(audioImpostor, audioGolden);
 
             setTimeout(() => {
                 loadWorld(worldId);
@@ -402,7 +451,6 @@
             });
 
             if(!gamePaused) {
-                // Calcular movimiento combinando Teclado (WASD) y Joystick análogo táctil
                 let mX = 0, mZ = 0;
                 if(keys.w) mZ -= physics.speed;
                 if(keys.s) mZ += physics.speed;
@@ -416,8 +464,7 @@
 
                 player.position.x += mX;
                 player.position.z += mZ;
-                physics.vel.x = mX; 
-                physics.vel.z = mZ;
+                physics.vel.x = mX; physics.vel.z = mZ;
 
                 let oldY = player.position.y;
                 physics.vel.y += physics.grav;
@@ -428,22 +475,13 @@
 
                 platforms.forEach((p, i) => {
                     if(!p.active || p.world !== currentWorld) return;
-                    
                     const marginX = (p.w / 2) + 1.2;
                     const marginZ = (p.d / 2) + 1.2;
                     
-                    if (Math.abs(player.position.x - p.x) <= marginX && 
-                        Math.abs(player.position.z - p.z) <= marginZ) {
-                        
+                    if (Math.abs(player.position.x - p.x) <= marginX && Math.abs(player.position.z - p.z) <= marginZ) {
                         const top = p.yTop;
-                        const oldBase = oldY - 1.0;
-                        const newBase = player.position.y - 1.0;
-                        
-                        if (oldBase >= top - 1.0 && newBase <= top + 0.5) {
-                            if (top > floorY) {
-                                floorY = top;
-                                landedIndex = i;
-                            }
+                        if (oldY - 1.0 >= top - 1.0 && player.position.y - 1.0 <= top + 0.5) {
+                            if (top > floorY) { floorY = top; landedIndex = i; }
                         }
                     }
                 });
@@ -452,7 +490,6 @@
                     player.position.y = floorY + 1.0;
                     physics.vel.y = 0;
                     physics.jumps = 2; 
-                    
                     if (currentWorld === 1 && landedIndex >= highestPlatIndex) {
                         highestPlatIndex = landedIndex;
                         activatePlatform(highestPlatIndex + 1);
@@ -460,34 +497,43 @@
                     }
                 }
 
-                // Límites de caída al vacío adaptados de forma segura por mundo
+                // Límites de caída al vacío dinámicos
                 let voidLimit = -40;
                 if(currentWorld === 2) voidLimit = -280;
-                if(currentWorld === 3) voidLimit = -30;
+                if(currentWorld === 3) voidLimit = -530;
+                if(currentWorld === 4) voidLimit = -780;
+                if(currentWorld === 5) voidLimit = -1030;
 
                 if(player.position.y < voidLimit) {
-                    if(currentWorld === 1) player.position.set(0, 5, 0);
-                    if(currentWorld === 2) player.position.set(0, -245, 0);
-                    if(currentWorld === 3) player.position.set(0, 10, 30);
-                    physics.vel.set(0,0,0);
+                    loadWorld(currentWorld);
                 }
 
+                // Recolección de Memorias
                 memories.forEach(m => {
                     m.mesh.rotation.y += 0.05; m.mesh.rotation.x += 0.02;
                     if(m.data.world === currentWorld && m.mesh.visible && !m.collected) {
                         if(player.position.distanceTo(m.mesh.position) < 3.5) {
-                            m.collected = true; 
-                            m.mesh.visible = false;
+                            m.collected = true; m.mesh.visible = false;
                             openMsg(m.data);
+                        }
+                    }
+                });
+
+                // Recolección de Easter Eggs
+                easterEggs.forEach(e => {
+                    e.mesh.rotation.y += 0.08;
+                    if(e.data.world === currentWorld && e.mesh.visible && !e.collected) {
+                        if(player.position.distanceTo(e.mesh.position) < 3.0) {
+                            e.collected = true; e.mesh.visible = false;
+                            easterEggsFound++;
+                            document.getElementById('easter-score').innerText = easterEggsFound;
                         }
                     }
                 });
             }
 
             particlesCyan.rotation.y += 0.001;
-            particlesCyan.rotation.x += 0.0005;
             particlesPink.rotation.y -= 0.001;
-            particlesPink.rotation.z += 0.0005;
             
             let targetCamX = player.position.x;
             let targetCamY = player.position.y + 7;
