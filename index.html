@@ -14,12 +14,13 @@
         #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; }
         #start-screen h1 { font-family: 'Cinzel', serif; font-size: 3em; color: #4facfe; margin-bottom: 10px; padding: 0 20px;}
         #start-screen p { font-size: 1.1em; color: #cbd5e1; max-width: 90%; margin-bottom: 30px; }
-        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; }
+        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-start:hover { background: #4facfe; color: #000; }
         
         /* HUD */
         .hud { position: absolute; top: 15px; left: 15px; z-index: 10; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; border-left: 3px solid #00f2fe; opacity: 0; transition: opacity 1s; }
         .hud h2 { margin: 0 0 5px 0; font-family: 'Cinzel', serif; color: #fff; font-size: 1.1em; }
-        .hud p { margin: 0; color: #a0aec0; font-size: 0.9em; }
+        .hud p { margin: 2px 0; color: #a0aec0; font-size: 0.9em; }
 
         .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.8em; }
 
@@ -28,9 +29,15 @@
         .modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
         .modal h1 { font-family: 'Cinzel', serif; color: #ff9a9e; font-size: 1.8em; margin-top: 0; }
         .modal p { font-size: 1em; line-height: 1.5; color: #e2e8f0; margin-bottom: 20px; }
-        .btn-continue { background: #4facfe; border: none; padding: 12px 30px; color: #000; font-weight: bold; border-radius: 20px; cursor: pointer; }
+        .btn-continue { background: #4facfe; border: none; padding: 12px 20px; color: #000; font-weight: bold; border-radius: 20px; cursor: pointer; margin: 5px; }
+        .btn-secret { background: #ff00ff; border: none; padding: 12px 20px; color: #fff; font-weight: bold; border-radius: 20px; cursor: pointer; margin: 5px; display: none; box-shadow: 0 0 15px #ff00ff; }
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 2s; }
+
+        /* Mensaje Estelar Final */
+        #estelar-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 160; text-align: center; display: none; width: 90vw; }
+        #estelar-text h1 { font-family: 'Cinzel', serif; font-size: 4em; color: #fff; text-shadow: 0 0 20px #00f2fe, 0 0 40px #ff9a9e; animation: pulse 2s infinite; margin: 0; line-height: 1.2; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* CONTROLES MÓVILES */
         #mobile-controls { display: none; position: absolute; bottom: 20px; left: 20px; z-index: 50; width: 150px; height: 150px; opacity: 0; transition: opacity 1s; }
@@ -46,6 +53,8 @@
             .controls { display: none; } 
             #mobile-controls { display: flex; flex-direction: column; }
             #action-controls { display: block; }
+            #start-screen h1 { font-size: 2em; }
+            #estelar-text h1 { font-size: 2.2em; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -54,14 +63,15 @@
 
     <div id="start-screen">
         <h1>El Universo de Meyiroshira</h1>
-        <p>Conectando servidores...<br>Sube el volumen y prepárate para saltar.</p>
+        <p>Conectando servidores para nuestro tercer mes...<br>Sube el volumen y prepárate para explorar.</p>
         <button class="btn-start" onclick="startGame()">Conectar</button>
     </div>
 
     <div class="hud" id="main-hud">
         <h2>Proyecto Eternidad</h2>
-        <p>Mundo: <span id="hud-world" style="color: #ff9a9e;">El Abismo Dorado</span></p>
-        <p>Fragmentos: <span id="score" style="color: #00f2fe; font-weight: bold;">0</span> / 4</p>
+        <p>Mundo: <span id="hud-world" style="color: #4facfe;">Jardín de los Inicios</span></p>
+        <p>Fragmentos: <span id="score" style="color: #00f2fe; font-weight: bold;">0</span> / 6</p>
+        <p>Secretos: <span id="secrets" style="color: #ff00ff; font-weight: bold;">0</span> / 3</p>
     </div>
 
     <div class="controls" id="main-controls">
@@ -86,7 +96,14 @@
     <div class="modal" id="msg-modal">
         <h1 id="msg-title"></h1>
         <p id="msg-text"></p>
-        <button class="btn-continue" onclick="closeMsg()">Seguir</button>
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-continue" id="btn-continue" onclick="closeMsg()">Seguir</button>
+            <button class="btn-secret" id="btn-secret-chest" onclick="triggerEstelar()">Abrir Cofre Secreto</button>
+        </div>
+    </div>
+
+    <div id="estelar-text">
+        <h1>Te amo Meyiroshira<br>Feliz Tercer Aniversario</h1>
     </div>
 
     <div id="game-canvas"></div>
@@ -116,38 +133,42 @@
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010103, 0.012);
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 800);
-        const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" }); 
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); 
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(1); 
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
         container.appendChild(renderer.domElement);
 
-        // PARTÍCULAS
+        // LUZ
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        // PARTÍCULAS AMBIENTALES
         const pGeo = new THREE.BufferGeometry();
-        const pPos = new Float32Array(300 * 3);
-        for(let i=0; i<300; i++) {
-            pPos[i*3] = (Math.random() - 0.5) * 300;
-            pPos[i*3+1] = (Math.random() - 0.5) * 300;
-            pPos[i*3+2] = (Math.random() - 0.5) * 300;
+        const pPos = new Float32Array(500 * 3);
+        for(let i=0; i<500; i++) {
+            pPos[i*3] = (Math.random() - 0.5) * 400;
+            pPos[i*3+1] = (Math.random() - 0.5) * 400;
+            pPos[i*3+2] = (Math.random() - 0.5) * 400;
         }
         pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-        const pMat = new THREE.PointsMaterial({ color: 0x4facfe, size: 2, transparent: true, opacity: 0.5 });
+        const pMat = new THREE.PointsMaterial({ color: 0x4facfe, size: 1.5, transparent: true, opacity: 0.6 });
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
         // --- JUGADOR ---
-        const playerGeo = new THREE.SphereGeometry(1, 8, 8); 
+        const playerRadius = 1;
+        const playerGeo = new THREE.SphereGeometry(playerRadius, 16, 16); 
         const playerMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true }); 
         const player = new THREE.Mesh(playerGeo, playerMat);
-        player.position.set(0, 5, 0);
         scene.add(player);
 
-        const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.18, jumpForce: 0.38, jumps: 2 };
+        const physics = { vel: new THREE.Vector3(), grav: -0.018, speed: 0.25, jumpForce: 0.45, jumps: 2 };
         const keys = { w: false, a: false, s: false, d: false };
         let spacePressed = false;
 
         function handleJump() {
-            if(!spacePressed && !gamePaused && physics.jumps > 0) {
+            if(!gamePaused && physics.jumps > 0 && !estelarActive) {
                 spacePressed = true;
                 physics.vel.y = physics.jumpForce;
                 physics.jumps--;
@@ -157,7 +178,7 @@
         window.addEventListener('keydown', e => {
             const k = e.key.toLowerCase();
             if(keys.hasOwnProperty(k)) keys[k] = true;
-            if(e.code === 'Space') handleJump();
+            if(e.code === 'Space' && !spacePressed) handleJump();
         });
         window.addEventListener('keyup', e => {
             const k = e.key.toLowerCase();
@@ -165,7 +186,6 @@
             if(e.code === 'Space') spacePressed = false;
         });
 
-        // Controles Táctiles
         const bindTouch = (id, key) => {
             const el = document.getElementById(id);
             el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; }, {passive: false});
@@ -178,61 +198,94 @@
         btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); }, {passive: false});
         btnJump.addEventListener('touchend', (e) => { e.preventDefault(); spacePressed = false; }, {passive: false});
 
-        // --- MUNDOS Y GENERACIÓN PROGRESIVA ---
+        // --- GESTIÓN DE MUNDOS Y FÍSICAS REPARADAS ---
         const platforms = [];
         const memories = [];
-        const worldGroup1 = new THREE.Group(); scene.add(worldGroup1);
-        const worldGroup2 = new THREE.Group(); worldGroup2.position.set(0, -300, -200); scene.add(worldGroup2);
+        const secrets = [];
         
-        const platMat = new THREE.MeshBasicMaterial({ color: 0x050510 }); 
-        const lineMat = new THREE.LineBasicMaterial({ color: 0x4facfe });
+        const worldGroup1 = new THREE.Group(); scene.add(worldGroup1); // Jardín
+        const worldGroup2 = new THREE.Group(); worldGroup2.position.set(0, -100, -200); scene.add(worldGroup2); // Salar
+        const worldGroup3 = new THREE.Group(); worldGroup3.position.set(0, -200, -400); scene.add(worldGroup3); // Parkour
+        const worldGroup4 = new THREE.Group(); worldGroup4.position.set(0, -300, -600); scene.add(worldGroup4); // Tablero
+        const worldGroup5 = new THREE.Group(); worldGroup5.position.set(0, -500, -800); scene.add(worldGroup5); // Estelar
 
-        function createPlatDef(x, y, z, w, d, group) {
+        function createPlatDef(x, y, z, w, d, group, colorCode, worldIdx) {
             const geo = new THREE.BoxGeometry(w, 2, d);
-            const mesh = new THREE.Mesh(geo, platMat);
+            const mat = new THREE.MeshBasicMaterial({ color: colorCode });
+            const mesh = new THREE.Mesh(geo, mat);
             mesh.position.set(x, y, z);
             
             const edges = new THREE.EdgesGeometry(geo);
-            const line = new THREE.LineSegments(edges, lineMat);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 }));
             mesh.add(line);
             
-            mesh.visible = false;
-            mesh.scale.set(0.01, 0.01, 0.01);
-            
             group.add(mesh);
-            platforms.push({ mesh, w, d, yTop: y + 1, active: false, world: group === worldGroup1 ? 1 : 2 });
+            platforms.push({ mesh, w, d, x, yTop: y + 1, z, world: worldIdx });
             return mesh;
         }
 
-        // DISTANCIAS CORREGIDAS (Más cerca, saltos probados)
-        createPlatDef(0, 0, 0, 15, 15, worldGroup1); // 0 (Spawn)
-        createPlatDef(0, -2, -15, 12, 12, worldGroup1); // 1
-        createPlatDef(12, 1, -28, 12, 12, worldGroup1); // 2
-        createPlatDef(20, 5, -40, 10, 10, worldGroup1); // 3
-        createPlatDef(10, 9, -52, 10, 10, worldGroup1); // 4
-        createPlatDef(0, 13, -65, 15, 15, worldGroup1); // 5
-        createPlatDef(-15, 17, -78, 12, 12, worldGroup1); // 6
-        createPlatDef(-30, 20, -95, 18, 18, worldGroup1); // 7 (Final)
+        // --- CONSTRUCCIÓN DE MUNDOS ---
 
-        const memData = [
-            { idx: 2, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
-            { idx: 5, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
-            { idx: 6, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
-            { idx: 7, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: true }
-        ];
+        // Mundo 1: Jardín de los Inicios (Fácil, exploración recta)
+        createPlatDef(0, 0, 0, 20, 20, worldGroup1, 0x0a2a1a, 1);
+        createPlatDef(0, -1, -25, 15, 30, worldGroup1, 0x0a2a1a, 1);
+        createPlatDef(0, -2, -60, 25, 25, worldGroup1, 0x0a2a1a, 1);
+        // Plataforma escondida para Secreto 1
+        createPlatDef(25, -2, -60, 10, 10, worldGroup1, 0x051505, 1); 
 
-        const memGeo = new THREE.BoxGeometry(2, 2, 2); // Fragmentos más grandes
-        const memM = new THREE.MeshBasicMaterial({ color: 0xffd700, wireframe: true });
+        // Mundo 2: Salar de Estrellas (Caminos amplios)
+        createPlatDef(0, 0, 0, 20, 20, worldGroup2, 0x1a1a3a, 2);
+        createPlatDef(-20, 2, -30, 20, 20, worldGroup2, 0x1a1a3a, 2);
+        createPlatDef(10, -1, -60, 30, 30, worldGroup2, 0x1a1a3a, 2);
+        // Plataforma escondida abajo para Secreto 2
+        createPlatDef(10, -15, -80, 10, 10, worldGroup2, 0x0a0a1a, 2);
 
-        memData.forEach(d => {
-            const m = new THREE.Mesh(memGeo, memM);
-            m.position.set(d.pos[0], d.pos[1], d.pos[2]);
-            m.visible = false; 
-            worldGroup1.add(m);
-            memories.push({ mesh: m, data: d, collected: false });
-        });
+        // Mundo 3: El Abismo Dorado (Parkour original mejorado)
+        createPlatDef(0, 0, 0, 15, 15, worldGroup3, 0x050510, 3); 
+        createPlatDef(0, -2, -18, 12, 12, worldGroup3, 0x050510, 3); 
+        createPlatDef(14, 2, -32, 10, 10, worldGroup3, 0x050510, 3); 
+        createPlatDef(-10, 7, -50, 10, 10, worldGroup3, 0x050510, 3); 
+        createPlatDef(0, 12, -70, 15, 15, worldGroup3, 0x050510, 3); 
+        createPlatDef(0, 25, -70, 5, 5, worldGroup3, 0x000000, 3); // Plataforma muy alta para Secreto 3
+        createPlatDef(-20, 16, -90, 18, 18, worldGroup3, 0x050510, 3); 
 
-        // Tablero de Ajedrez (Mundo 2)
+        // Generador de Fragmentos (Memorias)
+        const memGeo = new THREE.BoxGeometry(2, 2, 2); 
+        const memMat = new THREE.MeshBasicMaterial({ color: 0xffd700, wireframe: true });
+        
+        function addMem(x, y, z, group, wIdx, title, text, isPortal=false) {
+            const m = new THREE.Mesh(memGeo, memMat);
+            m.position.set(x, y, z);
+            group.add(m);
+            memories.push({ mesh: m, world: wIdx, collected: false, data: {title, text, isPortal} });
+        }
+
+        // Textos del Aniversario de 3 Meses
+        addMem(0, 2, -25, worldGroup1, 1, "Mes 1: El Comienzo", "Nuestras mentes se conectaron al mismo servidor. Todo empezó a brillar más.");
+        addMem(0, 2, -60, worldGroup1, 1, "El Vínculo", "Descubrimos que éramos el dúo perfecto.", true);
+
+        addMem(-20, 5, -30, worldGroup2, 2, "Mes 2: El Equipo", "Superando el lag y demostrando que juntos ganamos cualquier partida.");
+        addMem(10, 2, -60, worldGroup2, 2, "La Confianza", "Eres la jugadora favorita de mi vida.", true);
+
+        addMem(14, 5, -32, worldGroup3, 3, "Mes 3: Nuestro Soporte", "Eres mi soporte y la razón de mi sonrisa frente a la pantalla.");
+        addMem(-20, 19, -90, worldGroup3, 3, "El Gran Salto", "Tres meses increíbles a tu lado. Prepárate para lo que viene...", true);
+
+        // Generador de Secretos (Easter Eggs)
+        const secGeo = new THREE.OctahedronGeometry(1.5);
+        const secMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+        
+        function addSecret(x, y, z, group, wIdx) {
+            const s = new THREE.Mesh(secGeo, secMat);
+            s.position.set(x, y, z);
+            group.add(s);
+            secrets.push({ mesh: s, world: wIdx, collected: false });
+        }
+
+        addSecret(25, 1, -60, worldGroup1, 1); // Escondido a la derecha en W1
+        addSecret(10, -12, -80, worldGroup2, 2); // Escondido abajo al fondo en W2
+        addSecret(0, 28, -70, worldGroup3, 3); // Escondido muy alto en W3
+
+        // Tablero de Ajedrez (Mundo 4)
         const tileSize = 20;
         for(let r=0; r<6; r++) {
             for(let c=0; c<6; c++) {
@@ -240,14 +293,14 @@
                 const mat = new THREE.MeshBasicMaterial({ color: isW ? 0xffffff : 0x111111 });
                 const mesh = new THREE.Mesh(new THREE.BoxGeometry(tileSize, 2, tileSize), mat);
                 mesh.position.set((c - 2.5) * tileSize, 0, (r - 2.5) * tileSize);
-                mesh.visible = false;
-                mesh.scale.set(0.01,0.01,0.01);
-                worldGroup2.add(mesh);
-                platforms.push({ mesh, w: tileSize, d: tileSize, yTop: 1, active: false, world: 2 });
+                worldGroup4.add(mesh);
+                platforms.push({ mesh, w: tileSize, d: tileSize, x: mesh.position.x, yTop: 1, z: mesh.position.z, world: 4 });
             }
         }
 
-        let gamePaused = true, score = 0, currentWorld = 1, highestPlatIndex = 0;
+        let gamePaused = true, score = 0, secretScore = 0, currentWorld = 1;
+        let estelarActive = false;
+        let finalEstelarObjects = [];
 
         function startGame() {
             document.getElementById('start-screen').style.opacity = '0';
@@ -257,29 +310,33 @@
                 document.getElementById('main-controls').style.opacity = '1';
                 document.getElementById('mobile-controls').style.opacity = '1';
                 document.getElementById('action-controls').style.opacity = '1';
+                player.position.set(0, 5, 0);
                 gamePaused = false;
                 fadeAudio(audioGolden, null);
-                activatePlatform(0); activatePlatform(1);
             }, 1000);
         }
 
-        function activatePlatform(index) {
-            if(platforms[index] && !platforms[index].active) {
-                platforms[index].active = true;
-                platforms[index].mesh.visible = true;
-                const mem = memories.find(m => m.data.idx === index);
-                if(mem) mem.mesh.visible = true;
-            }
-        }
-
-        function openMsg(data) {
+        function openMsg(data, isWorldEnd) {
             gamePaused = true; physics.vel.set(0,0,0);
             document.getElementById('msg-title').innerText = data.title;
             document.getElementById('msg-text').innerText = data.text;
-            const btn = document.querySelector('.btn-continue');
-            if(data.isPortal) {
-                btn.innerText = "Saltar al Tablero";
-                btn.onclick = transitionWorld2;
+            
+            const btn = document.getElementById('btn-continue');
+            const btnSecret = document.getElementById('btn-secret-chest');
+            btnSecret.style.display = 'none';
+
+            if(isWorldEnd) {
+                if (currentWorld === 3) {
+                    btn.innerText = "Ver Mensaje Final";
+                    btn.onclick = transitionWorld4;
+                    // Lógica del Cofre Secreto
+                    if (secretScore === 3) {
+                        btnSecret.style.display = 'inline-block';
+                    }
+                } else {
+                    btn.innerText = "Siguiente Mundo";
+                    btn.onclick = advanceWorld;
+                }
             } else {
                 btn.innerText = "Seguir";
                 btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); setTimeout(()=>gamePaused=false, 200); };
@@ -287,31 +344,109 @@
             document.getElementById('msg-modal').classList.add('active');
         }
 
-        function transitionWorld2() {
+        function advanceWorld() {
+            document.getElementById('msg-modal').classList.remove('active');
+            document.getElementById('flash').style.opacity = '1'; 
+            setTimeout(() => {
+                currentWorld++;
+                if(currentWorld === 2) {
+                    document.getElementById('hud-world').innerText = "Salar de Estrellas";
+                    player.position.set(0, -90, -200); // Spawn Mundo 2
+                } else if(currentWorld === 3) {
+                    document.getElementById('hud-world').innerText = "El Abismo Dorado";
+                    document.getElementById('hud-world').style.color = "#ff9a9e";
+                    player.position.set(0, -190, -400); // Spawn Mundo 3
+                }
+                physics.vel.set(0,0,0);
+                document.getElementById('flash').style.opacity = '0';
+                gamePaused = false;
+            }, 2000);
+        }
+
+        function transitionWorld4() {
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
             fadeAudio(audioImpostor, audioGolden);
             setTimeout(() => {
-                currentWorld = 2;
+                currentWorld = 4;
                 document.getElementById('hud-world').innerText = "El Tablero";
                 document.getElementById('hud-world').style.color = "#a855f7";
-                player.position.set(0, -250, -80);
+                player.position.set(0, -290, -600);
                 physics.vel.set(0,0,0);
-                platforms.forEach(p => { if(p.world === 2) activatePlatform(platforms.indexOf(p)); });
                 document.getElementById('flash').style.opacity = '0';
                 gamePaused = false;
-                setTimeout(showFinalLetter, 6000);
-            }, 2500);
+                setTimeout(showNormalFinalLetter, 4000);
+            }, 2000);
         }
 
-        function showFinalLetter() {
+        function showNormalFinalLetter() {
             gamePaused = true;
             document.getElementById('msg-title').innerText = "Jaque Mate de mi Vida";
-            document.getElementById('msg-text').innerHTML = "Mi amada Meyiroshira...<br><br>Quería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.<br><br>Han sido 3 meses donde mi mundo cambió. Eres el sistema operativo de mi corazón, la jugada perfecta.<br><br>Prometo seguir perdiendo en ajedrez con tal de ver tu victoria. ¡Feliz Aniversario mi Reina Blanca! ❤️";
-            const btn = document.querySelector('.btn-continue');
+            document.getElementById('msg-text').innerHTML = "Mi amada Meyiroshira...<br><br>Han sido 3 meses donde mi mundo cambió. Eres el sistema operativo de mi corazón, la jugada perfecta.<br><br>Prometo seguir perdiendo en ajedrez con tal de ver tu victoria. ¡Feliz Tercer Mes de Novios mi Reina Blanca! ❤️";
+            const btn = document.getElementById('btn-continue');
             btn.innerText = "Te Amo";
             btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); gamePaused=false; };
             document.getElementById('msg-modal').classList.add('active');
+        }
+
+        // --- LÓGICA DEL MUNDO SECRETO (ESTELAR) ---
+        function triggerEstelar() {
+            document.getElementById('msg-modal').classList.remove('active');
+            document.getElementById('flash').style.opacity = '1';
+            gamePaused = true;
+            estelarActive = true;
+            currentWorld = 5;
+
+            // Limpiar UI original
+            document.getElementById('main-hud').style.display = 'none';
+            document.getElementById('main-controls').style.display = 'none';
+            document.getElementById('mobile-controls').style.display = 'none';
+            document.getElementById('action-controls').style.display = 'none';
+
+            setTimeout(() => {
+                // Mover jugador al centro estelar
+                player.position.set(0, -500, -800);
+                player.material.wireframe = false;
+                player.material.color.setHex(0xffffff);
+
+                // Crear orbitadores (fragmentos que recolectó)
+                for(let i=0; i<30; i++) {
+                    const mesh = new THREE.Mesh(memGeo, memMat);
+                    mesh.position.set(
+                        (Math.random() - 0.5) * 40, 
+                        -500 + (Math.random() - 0.5) * 40, 
+                        -800 + (Math.random() - 0.5) * 40
+                    );
+                    worldGroup5.add(mesh);
+                    finalEstelarObjects.push(mesh);
+                }
+
+                document.getElementById('flash').style.opacity = '0';
+                
+                // Secuencia de explosión
+                setTimeout(() => {
+                    // Fragmentos se encogen
+                    finalEstelarObjects.forEach(obj => obj.scale.set(0.1, 0.1, 0.1));
+                    
+                    // Explosión blanca
+                    document.getElementById('flash').style.background = "#fff";
+                    document.getElementById('flash').style.transition = "opacity 0.2s";
+                    document.getElementById('flash').style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        finalEstelarObjects.forEach(obj => obj.visible = false); // Ocultar cajas
+                        player.visible = false; // Ocultar jugador
+                        document.getElementById('flash').style.transition = "opacity 3s";
+                        document.getElementById('flash').style.opacity = '0';
+                        document.getElementById('flash').style.background = "transparent";
+                        
+                        // Mostrar Mensaje Final Estelar
+                        document.getElementById('estelar-text').style.display = 'block';
+                    }, 200);
+
+                }, 4000);
+
+            }, 2000);
         }
 
         // --- BUCLE PRINCIPAL ---
@@ -320,86 +455,127 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            platforms.forEach(p => {
-                if(p.active && p.mesh.scale.x < 1) p.mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
-            });
-
-            if(!gamePaused) {
+            if(!gamePaused && !estelarActive) {
                 let mX = 0, mZ = 0;
-                // Controles absolutos para facilitar el parkour en móvil
                 if(keys.w) mZ -= physics.speed;
                 if(keys.s) mZ += physics.speed;
                 if(keys.a) mX -= physics.speed;
                 if(keys.d) mX += physics.speed;
 
                 physics.vel.x = mX; physics.vel.z = mZ; physics.vel.y += physics.grav;
-                player.position.add(physics.vel);
+                
+                // Mover jugador en X y Z
+                player.position.x += physics.vel.x;
+                player.position.z += physics.vel.z;
 
-                const px = player.position.x, pz = player.position.z, py = player.position.y - 1;
+                const px = player.position.x;
+                const pz = player.position.z;
+                
+                // Simular Y primero para detección
+                const nextY = player.position.y + physics.vel.y;
                 let floorY = -9999;
-                let landedIndex = -1;
 
-                // Hitboxes aumentadas (+1.0) para evitar traspasar
-                platforms.forEach((p, i) => {
-                    if(!p.active || p.world !== currentWorld) return;
+                // FÍSICAS CORREGIDAS (AABB estricto)
+                platforms.forEach(p => {
+                    if(p.world !== currentWorld) return;
+                    
                     p.mesh.getWorldPosition(pos);
-                    if(px >= pos.x - p.w/2 - 1.0 && px <= pos.x + p.w/2 + 1.0 &&
-                       pz >= pos.z - p.d/2 - 1.0 && pz <= pos.z + p.d/2 + 1.0) {
+                    // Comprobar límites X y Z considerando el radio del jugador
+                    if(Math.abs(px - pos.x) < (p.w/2 + playerRadius) && 
+                       Math.abs(pz - pos.z) < (p.d/2 + playerRadius)) {
+                        
                         const top = pos.y + p.yTop;
-                        if(py <= top && py >= top - 2.5) { // Tolerancia vertical aumentada
+                        // Si está cayendo y cruza el techo de la plataforma
+                        if(player.position.y - playerRadius >= top - 0.5 && nextY - playerRadius <= top) {
                             floorY = top;
-                            landedIndex = i;
                         }
                     }
                 });
 
                 if(floorY !== -9999 && physics.vel.y <= 0) {
-                    player.position.y = floorY + 1;
+                    player.position.y = floorY + playerRadius; // Posición exacta, cero traspaso
                     physics.vel.y = 0;
                     physics.jumps = 2; 
-                    
-                    if(currentWorld === 1 && landedIndex >= highestPlatIndex) {
-                        highestPlatIndex = landedIndex;
-                        activatePlatform(highestPlatIndex + 1);
-                        activatePlatform(highestPlatIndex + 2); 
-                    }
+                } else {
+                    player.position.y = nextY;
                 }
 
-                if(player.position.y < (currentWorld === 1 ? -40 : -320)) {
-                    player.position.set(0, currentWorld === 1 ? 5 : -240, currentWorld === 1 ? 0 : -80);
+                // Reinicio por caída
+                let fallLimit = 0;
+                let spawnPos = {y:0, z:0};
+                if(currentWorld === 1) { fallLimit = -30; spawnPos = {y:5, z:0}; }
+                if(currentWorld === 2) { fallLimit = -130; spawnPos = {y:-90, z:-200}; }
+                if(currentWorld === 3) { fallLimit = -240; spawnPos = {y:-190, z:-400}; }
+                if(currentWorld === 4) { fallLimit = -330; spawnPos = {y:-290, z:-600}; }
+
+                if(player.position.y < fallLimit) {
+                    player.position.set(0, spawnPos.y, spawnPos.z);
                     physics.vel.set(0,0,0);
                 }
 
-                if(currentWorld === 1) {
-                    memories.forEach(m => {
-                        m.mesh.rotation.y += 0.05; m.mesh.rotation.x += 0.02;
-                        // Radio de recolección gigante (distancia < 6)
-                        if(m.mesh.visible && !m.collected && player.position.distanceTo(m.mesh.position) < 6) {
-                            m.collected = true; m.mesh.visible = false;
-                            score++; document.getElementById('score').innerText = score;
-                            openMsg(m.data);
-                        }
-                    });
-                }
+                // Detección de Memorias
+                memories.forEach(m => {
+                    if(m.world !== currentWorld) return;
+                    m.mesh.rotation.y += 0.05; m.mesh.rotation.x += 0.02;
+                    m.mesh.getWorldPosition(pos);
+                    if(!m.collected && player.position.distanceTo(pos) < 3) {
+                        m.collected = true; m.mesh.visible = false;
+                        score++; document.getElementById('score').innerText = score;
+                        openMsg(m.data, m.data.isPortal);
+                    }
+                });
+
+                // Detección de Secretos
+                secrets.forEach(s => {
+                    if(s.world !== currentWorld) return;
+                    s.mesh.rotation.y -= 0.05; s.mesh.rotation.z += 0.02;
+                    s.mesh.getWorldPosition(pos);
+                    if(!s.collected && player.position.distanceTo(pos) < 3) {
+                        s.collected = true; s.mesh.visible = false;
+                        secretScore++; document.getElementById('secrets').innerText = secretScore;
+                        // Efecto visual rápido al agarrarlo
+                        document.getElementById('flash').style.background = "#ff00ff";
+                        document.getElementById('flash').style.opacity = '0.3';
+                        setTimeout(()=> { document.getElementById('flash').style.opacity = '0'; document.getElementById('flash').style.background = "#fff"; }, 100);
+                    }
+                });
             }
 
-            particles.rotation.y += 0.001;
+            // Lógica Animación Mundo Estelar
+            if (estelarActive) {
+                finalEstelarObjects.forEach((obj, idx) => {
+                    obj.rotation.x += 0.05;
+                    obj.rotation.y += 0.05;
+                    // Hacer que orbiten hacia el centro antes de estallar
+                    if(obj.position.distanceTo(player.position) > 2) {
+                        obj.position.lerp(player.position, 0.02);
+                    }
+                });
+                particles.rotation.y -= 0.005; // Galaxia girando rápido
+                particles.rotation.x += 0.002;
+            } else {
+                particles.rotation.y += 0.001;
+            }
             
-            // --- EFECTO DE CÁMARA DINÁMICA (TRAILING) ---
+            // --- CÁMARA ---
             let targetCamX = player.position.x;
-            let targetCamY = player.position.y + 7;
-            let targetCamZ = player.position.z + 18;
+            let targetCamY = player.position.y + 6;
+            let targetCamZ = player.position.z + 16;
 
-            // Inclinación/Lag de cámara basado en velocidad lateral
-            if(Math.abs(physics.vel.x) > 0.01) {
-                targetCamX -= physics.vel.x * 25; // Se aleja en contra del movimiento
-            }
-            if(physics.vel.y > 0) {
-                targetCamY -= physics.vel.y * 5; // Baja sutilmente al saltar
-            }
+            if(Math.abs(physics.vel.x) > 0.01) targetCamX -= physics.vel.x * 20; 
+            if(physics.vel.y > 0) targetCamY -= physics.vel.y * 3; 
 
-            camera.position.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.08);
-            camera.lookAt(player.position.x, player.position.y + 2, player.position.z - 5);
+            if(estelarActive) {
+                // Cámara cinematográfica dando vueltas en el mundo final
+                const time = Date.now() * 0.001;
+                camera.position.x = player.position.x + Math.sin(time) * 20;
+                camera.position.z = player.position.z + Math.cos(time) * 20;
+                camera.position.y = player.position.y + 5;
+                camera.lookAt(player.position);
+            } else {
+                camera.position.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.1);
+                camera.lookAt(player.position.x, player.position.y + 1, player.position.z - 5);
+            }
 
             renderer.render(scene, camera);
         }
