@@ -32,7 +32,7 @@
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 2s; }
 
-        /* CONTROLES MÓVILES (Estilo táctico) */
+        /* CONTROLES MÓVILES */
         #mobile-controls { display: none; position: absolute; bottom: 20px; left: 20px; z-index: 50; width: 150px; height: 150px; opacity: 0; transition: opacity 1s; }
         .dpad-row { display: flex; justify-content: center; width: 100%; height: 33%; }
         .dpad-btn { width: 45px; height: 45px; background: rgba(79,172,254,0.2); border: 1px solid rgba(79,172,254,0.5); border-radius: 10px; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; }
@@ -43,7 +43,7 @@
         .action-btn:active { background: rgba(255,154,158,0.6); transform: scale(0.9); }
 
         @media (max-width: 768px) {
-            .controls { display: none; } /* Oculta texto de PC */
+            .controls { display: none; } 
             #mobile-controls { display: flex; flex-direction: column; }
             #action-controls { display: block; }
         }
@@ -69,7 +69,6 @@
         Doble Salto: <span>[Espacio x2]</span>
     </div>
 
-    <!-- UI MÓVIL -->
     <div id="mobile-controls">
         <div class="dpad-row"><div class="dpad-btn" id="btn-w">W</div></div>
         <div class="dpad-row" style="justify-content: space-between;">
@@ -87,7 +86,7 @@
     <div class="modal" id="msg-modal">
         <h1 id="msg-title"></h1>
         <p id="msg-text"></p>
-        <button class="btn-continue" onclick="closeMsg()">Seguir Avanzando</button>
+        <button class="btn-continue" onclick="closeMsg()">Seguir</button>
     </div>
 
     <div id="game-canvas"></div>
@@ -100,7 +99,7 @@
         audioImpostor.loop = true; audioImpostor.volume = 0;
 
         function fadeAudio(audioIn, audioOut) {
-            audioIn.play().catch(e => console.log("Audio play interceptado"));
+            audioIn.play().catch(e => console.log("Audio interceptado"));
             let volIn = 0, volOut = audioOut ? audioOut.volume : 0;
             const fade = setInterval(() => {
                 if(volIn < 0.5) { volIn += 0.05; audioIn.volume = volIn; }
@@ -112,20 +111,18 @@
             }, 100);
         }
 
-        // --- MOTOR 3D ULTRA OPTIMIZADO ---
+        // --- MOTOR 3D ---
         const container = document.getElementById('game-canvas');
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x010103, 0.012);
 
         const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 800);
-        
-        // SIN antialias y resolución forzada a 1 (Elimina el 90% del LAG)
         const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" }); 
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(1); 
         container.appendChild(renderer.domElement);
 
-        // PARTÍCULAS (Solo 300 para ahorrar memoria)
+        // PARTÍCULAS
         const pGeo = new THREE.BufferGeometry();
         const pPos = new Float32Array(300 * 3);
         for(let i=0; i<300; i++) {
@@ -139,17 +136,16 @@
         scene.add(particles);
 
         // --- JUGADOR ---
-        const playerGeo = new THREE.SphereGeometry(1, 8, 8); // Baja poligonización
-        const playerMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true }); // Material sin iluminación real
+        const playerGeo = new THREE.SphereGeometry(1, 8, 8); 
+        const playerMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true }); 
         const player = new THREE.Mesh(playerGeo, playerMat);
         player.position.set(0, 5, 0);
         scene.add(player);
 
-        const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.15, jumpForce: 0.35, jumps: 2 };
+        const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.18, jumpForce: 0.38, jumps: 2 };
         const keys = { w: false, a: false, s: false, d: false };
         let spacePressed = false;
 
-        // --- CONTROLES (PC y MOBILE) ---
         function handleJump() {
             if(!spacePressed && !gamePaused && physics.jumps > 0) {
                 spacePressed = true;
@@ -169,7 +165,7 @@
             if(e.code === 'Space') spacePressed = false;
         });
 
-        // Eventos Táctiles (D-Pad y Salto)
+        // Controles Táctiles
         const bindTouch = (id, key) => {
             const el = document.getElementById(id);
             el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; }, {passive: false});
@@ -188,10 +184,10 @@
         const worldGroup1 = new THREE.Group(); scene.add(worldGroup1);
         const worldGroup2 = new THREE.Group(); worldGroup2.position.set(0, -300, -200); scene.add(worldGroup2);
         
-        const platMat = new THREE.MeshBasicMaterial({ color: 0x050510 }); // Sin luces
+        const platMat = new THREE.MeshBasicMaterial({ color: 0x050510 }); 
         const lineMat = new THREE.LineBasicMaterial({ color: 0x4facfe });
 
-        function createPlatDef(x, y, z, w, d, group, isFinal = false) {
+        function createPlatDef(x, y, z, w, d, group) {
             const geo = new THREE.BoxGeometry(w, 2, d);
             const mesh = new THREE.Mesh(geo, platMat);
             mesh.position.set(x, y, z);
@@ -200,7 +196,6 @@
             const line = new THREE.LineSegments(edges, lineMat);
             mesh.add(line);
             
-            // Oculta la plataforma al inicio, escala 0 para animación
             mesh.visible = false;
             mesh.scale.set(0.01, 0.01, 0.01);
             
@@ -209,30 +204,30 @@
             return mesh;
         }
 
-        // Definición de Plataformas (Ruta)
+        // DISTANCIAS CORREGIDAS (Más cerca, saltos probados)
         createPlatDef(0, 0, 0, 15, 15, worldGroup1); // 0 (Spawn)
-        createPlatDef(0, -2, -20, 10, 10, worldGroup1); // 1
-        createPlatDef(15, 2, -35, 12, 12, worldGroup1); // 2
-        createPlatDef(30, 5, -50, 12, 12, worldGroup1); // 3
-        createPlatDef(15, 12, -75, 10, 10, worldGroup1); // 4
-        createPlatDef(0, 18, -95, 15, 15, worldGroup1); // 5
-        createPlatDef(-25, 22, -115, 10, 10, worldGroup1); // 6
-        createPlatDef(-50, 30, -150, 20, 20, worldGroup1); // 7 (Final Mundo 1)
+        createPlatDef(0, -2, -15, 12, 12, worldGroup1); // 1
+        createPlatDef(12, 1, -28, 12, 12, worldGroup1); // 2
+        createPlatDef(20, 5, -40, 10, 10, worldGroup1); // 3
+        createPlatDef(10, 9, -52, 10, 10, worldGroup1); // 4
+        createPlatDef(0, 13, -65, 15, 15, worldGroup1); // 5
+        createPlatDef(-15, 17, -78, 12, 12, worldGroup1); // 6
+        createPlatDef(-30, 20, -95, 18, 18, worldGroup1); // 7 (Final)
 
         const memData = [
-            { idx: 2, pos: [15, 4, -35], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
-            { idx: 5, pos: [0, 20, -95], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
-            { idx: 6, pos: [-25, 24, -115], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
-            { idx: 7, pos: [-50, 32, -150], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: true }
+            { idx: 2, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
+            { idx: 5, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
+            { idx: 6, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
+            { idx: 7, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: true }
         ];
 
-        const memGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+        const memGeo = new THREE.BoxGeometry(2, 2, 2); // Fragmentos más grandes
         const memM = new THREE.MeshBasicMaterial({ color: 0xffd700, wireframe: true });
 
         memData.forEach(d => {
             const m = new THREE.Mesh(memGeo, memM);
             m.position.set(d.pos[0], d.pos[1], d.pos[2]);
-            m.visible = false; // Se oculta hasta que aparezca su plataforma
+            m.visible = false; 
             worldGroup1.add(m);
             memories.push({ mesh: m, data: d, collected: false });
         });
@@ -252,11 +247,7 @@
             }
         }
 
-        // --- LÓGICA DE JUEGO ---
-        let gamePaused = true;
-        let score = 0;
-        let currentWorld = 1;
-        let highestPlatIndex = 0; // Control de generación progresiva
+        let gamePaused = true, score = 0, currentWorld = 1, highestPlatIndex = 0;
 
         function startGame() {
             document.getElementById('start-screen').style.opacity = '0';
@@ -268,10 +259,7 @@
                 document.getElementById('action-controls').style.opacity = '1';
                 gamePaused = false;
                 fadeAudio(audioGolden, null);
-                
-                // Mostrar plataforma 0 y 1 al iniciar
-                activatePlatform(0);
-                activatePlatform(1);
+                activatePlatform(0); activatePlatform(1);
             }, 1000);
         }
 
@@ -279,8 +267,6 @@
             if(platforms[index] && !platforms[index].active) {
                 platforms[index].active = true;
                 platforms[index].mesh.visible = true;
-                
-                // Mostrar memoria si pertenece a esta plataforma
                 const mem = memories.find(m => m.data.idx === index);
                 if(mem) mem.mesh.visible = true;
             }
@@ -305,17 +291,13 @@
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
             fadeAudio(audioImpostor, audioGolden);
-            
             setTimeout(() => {
                 currentWorld = 2;
                 document.getElementById('hud-world').innerText = "El Tablero";
                 document.getElementById('hud-world').style.color = "#a855f7";
                 player.position.set(0, -250, -80);
                 physics.vel.set(0,0,0);
-                
-                // Activar tablero entero
                 platforms.forEach(p => { if(p.world === 2) activatePlatform(platforms.indexOf(p)); });
-                
                 document.getElementById('flash').style.opacity = '0';
                 gamePaused = false;
                 setTimeout(showFinalLetter, 6000);
@@ -333,27 +315,22 @@
         }
 
         // --- BUCLE PRINCIPAL ---
-        const dir = new THREE.Vector3(), right = new THREE.Vector3(), pos = new THREE.Vector3();
+        const pos = new THREE.Vector3();
 
         function animate() {
             requestAnimationFrame(animate);
 
-            // Animación de aparición de plataformas (Interpolación de escala)
             platforms.forEach(p => {
-                if(p.active && p.mesh.scale.x < 1) {
-                    p.mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
-                }
+                if(p.active && p.mesh.scale.x < 1) p.mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
             });
 
             if(!gamePaused) {
                 let mX = 0, mZ = 0;
-                camera.getWorldDirection(dir); dir.y = 0; dir.normalize();
-                right.crossVectors(dir, new THREE.Vector3(0,1,0)).normalize();
-
-                if(keys.w) { mX += dir.x * physics.speed; mZ += dir.z * physics.speed; }
-                if(keys.s) { mX -= dir.x * physics.speed; mZ -= dir.z * physics.speed; }
-                if(keys.a) { mX -= right.x * physics.speed; mZ -= right.z * physics.speed; }
-                if(keys.d) { mX += right.x * physics.speed; mZ += right.z * physics.speed; }
+                // Controles absolutos para facilitar el parkour en móvil
+                if(keys.w) mZ -= physics.speed;
+                if(keys.s) mZ += physics.speed;
+                if(keys.a) mX -= physics.speed;
+                if(keys.d) mX += physics.speed;
 
                 physics.vel.x = mX; physics.vel.z = mZ; physics.vel.y += physics.grav;
                 player.position.add(physics.vel);
@@ -362,14 +339,14 @@
                 let floorY = -9999;
                 let landedIndex = -1;
 
-                // Solo revisar colisión con plataformas VISIBLES y del MUNDO ACTUAL
+                // Hitboxes aumentadas (+1.0) para evitar traspasar
                 platforms.forEach((p, i) => {
                     if(!p.active || p.world !== currentWorld) return;
                     p.mesh.getWorldPosition(pos);
-                    if(px >= pos.x - p.w/2 - 0.5 && px <= pos.x + p.w/2 + 0.5 &&
-                       pz >= pos.z - p.d/2 - 0.5 && pz <= pos.z + p.d/2 + 0.5) {
+                    if(px >= pos.x - p.w/2 - 1.0 && px <= pos.x + p.w/2 + 1.0 &&
+                       pz >= pos.z - p.d/2 - 1.0 && pz <= pos.z + p.d/2 + 1.0) {
                         const top = pos.y + p.yTop;
-                        if(py <= top && py >= top - 2.0) {
+                        if(py <= top && py >= top - 2.5) { // Tolerancia vertical aumentada
                             floorY = top;
                             landedIndex = i;
                         }
@@ -379,27 +356,25 @@
                 if(floorY !== -9999 && physics.vel.y <= 0) {
                     player.position.y = floorY + 1;
                     physics.vel.y = 0;
-                    physics.jumps = 2; // Recarga
+                    physics.jumps = 2; 
                     
-                    // Lógica Progresiva: Si aterriza en una nueva plataforma, genera la(s) siguiente(s)
                     if(currentWorld === 1 && landedIndex >= highestPlatIndex) {
                         highestPlatIndex = landedIndex;
                         activatePlatform(highestPlatIndex + 1);
-                        activatePlatform(highestPlatIndex + 2); // Ver un poco más allá
+                        activatePlatform(highestPlatIndex + 2); 
                     }
                 }
 
-                // Vacío
                 if(player.position.y < (currentWorld === 1 ? -40 : -320)) {
                     player.position.set(0, currentWorld === 1 ? 5 : -240, currentWorld === 1 ? 0 : -80);
                     physics.vel.set(0,0,0);
                 }
 
-                // Memorias
                 if(currentWorld === 1) {
                     memories.forEach(m => {
                         m.mesh.rotation.y += 0.05; m.mesh.rotation.x += 0.02;
-                        if(m.mesh.visible && !m.collected && player.position.distanceTo(m.mesh.position) < 3) {
+                        // Radio de recolección gigante (distancia < 6)
+                        if(m.mesh.visible && !m.collected && player.position.distanceTo(m.mesh.position) < 6) {
                             m.collected = true; m.mesh.visible = false;
                             score++; document.getElementById('score').innerText = score;
                             openMsg(m.data);
@@ -410,9 +385,22 @@
 
             particles.rotation.y += 0.001;
             
-            // Cámara suave
-            camera.position.lerp(new THREE.Vector3(player.position.x, player.position.y + 8, player.position.z + 18), 0.1);
-            camera.lookAt(player.position);
+            // --- EFECTO DE CÁMARA DINÁMICA (TRAILING) ---
+            let targetCamX = player.position.x;
+            let targetCamY = player.position.y + 7;
+            let targetCamZ = player.position.z + 18;
+
+            // Inclinación/Lag de cámara basado en velocidad lateral
+            if(Math.abs(physics.vel.x) > 0.01) {
+                targetCamX -= physics.vel.x * 25; // Se aleja en contra del movimiento
+            }
+            if(physics.vel.y > 0) {
+                targetCamY -= physics.vel.y * 5; // Baja sutilmente al saltar
+            }
+
+            camera.position.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.08);
+            camera.lookAt(player.position.x, player.position.y + 2, player.position.z - 5);
+
             renderer.render(scene, camera);
         }
 
