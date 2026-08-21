@@ -10,24 +10,24 @@
         body { margin: 0; padding: 0; overflow: hidden; background: #010103; font-family: 'Nunito', sans-serif; user-select: none; color: white; touch-action: none; }
         #game-canvas { width: 100vw; height: 100vh; position: absolute; z-index: 1; }
 
-        #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; }
+        #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; pointer-events: auto; }
         #start-screen h1 { font-family: 'Cinzel', serif; font-size: 2.8em; color: #4facfe; margin-bottom: 10px; padding: 0 20px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.5);}
         #start-screen p { font-size: 1.1em; color: #cbd5e1; max-width: 90%; margin-bottom: 30px; }
-        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); transition: all 0.3s; }
-        .btn-start:active { transform: scale(0.95); }
+        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); transition: all 0.3s; z-index: 1000; -webkit-tap-highlight-color: transparent; }
+        .btn-start:active { transform: scale(0.95); background: rgba(79, 172, 254, 0.2); }
         
-        .hud { position: absolute; top: 15px; left: 15px; z-index: 10; background: rgba(5,5,15,0.85); padding: 15px; border-radius: 12px; border-left: 3px solid #00f2fe; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 1s; }
+        .hud { position: absolute; top: 15px; left: 15px; z-index: 10; background: rgba(5,5,15,0.85); padding: 15px; border-radius: 12px; border-left: 3px solid #00f2fe; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 1s; pointer-events: none; }
         .hud h2 { margin: 0 0 5px 0; font-family: 'Cinzel', serif; color: #fff; font-size: 1.2em; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
         .hud p { margin: 0; color: #a0aec0; font-size: 0.9em; font-weight: bold;}
 
-        .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.85em; border-right: 2px solid #4facfe; }
+        .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.85em; border-right: 2px solid #4facfe; pointer-events: none; }
         .controls span { color: #4facfe; font-weight: bold; }
 
         .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background: rgba(5,5,18,0.97); padding: 40px; border-radius: 20px; border: 2px solid #ff9a9e; z-index: 100; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; box-shadow: 0 0 40px rgba(255,154,158,0.4); max-height: 85vh; overflow-y: auto; }
         .modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
         .modal h1 { font-family: 'Cinzel', serif; color: #ff9a9e; font-size: 2em; margin-top: 0; text-shadow: 0 0 10px rgba(255, 154, 158, 0.5); }
         .modal p { font-size: 1.1em; line-height: 1.7; color: #e2e8f0; margin-bottom: 25px; text-align: left; white-space: pre-line; }
-        .btn-continue { background: linear-gradient(45deg, #ff9a9e, #4facfe); border: none; padding: 14px 40px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(255,154,158,0.5); }
+        .btn-continue { background: linear-gradient(45deg, #ff9a9e, #4facfe); border: none; padding: 14px 40px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(255,154,158,0.5); z-index: 101; }
         .btn-continue:active { transform: scale(0.95); }
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 1.5s; }
@@ -36,7 +36,7 @@
         #joystick-handle { position: absolute; top: 35px; left: 35px; width: 60px; height: 60px; background: rgba(79,172,254,0.4); border: 2px solid #4facfe; border-radius: 50%; pointer-events: none; transition: transform 0.05s linear; }
 
         #action-controls { display: none; position: absolute; bottom: 35px; right: 25px; z-index: 50; opacity: 0; transition: opacity 1s; }
-        .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; }
+        .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; -webkit-tap-highlight-color: transparent; }
         .action-btn:active { background: rgba(255,154,158,0.7); transform: scale(0.9); box-shadow: 0 0 15px #ff9a9e; }
 
         @media (max-width: 768px) {
@@ -52,7 +52,7 @@
     <div id="start-screen">
         <h1>El Universo de Meyiroshira</h1>
         <p>Sincronizando sistemas y mundos adicionales...<br>Sube el volumen y prepárate.</p>
-        <button class="btn-start" onclick="startGame()">Conectar</button>
+        <button class="btn-start" id="start-btn">Conectar</button>
     </div>
 
     <div class="hud" id="main-hud">
@@ -262,7 +262,7 @@
         createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(0, -738, -45, 18, 18, 4, 0x1a0a1a, 0xa855f7);
 
-        // MUNDO 5: Mundo del Avión (Estructura original de vuelo vertical exacto)[cite: 2]
+        // MUNDO 5: Mundo del Avión (Estructura original de vuelo vertical exacto)
         createPlatDef(0, -1000, 0, 25, 6, 5, 0x002244, 0x00ffff); // Ala del avión
         createPlatDef(0, -995, -15, 10, 18, 5, 0x003366, 0x00ffff); // Cuerpo del avión
         createPlatDef(0, -990, -30, 8, 8, 5, 0x111122, 0xff00ff); // Punta del avión ascendente
@@ -325,7 +325,7 @@
             { world: 2, pos: [10, -243, -36], name: "Fragmento Estelar 1" },
             { world: 3, pos: [0, -491, -40], name: "Fragmento Estelar 2" },
             { world: 4, pos: [-8, -739, -30], name: "Fragmento Estelar 3" },
-            { world: 5, pos: [0, -986, -15], name: "Fragmento Estelar 4 (Avión)" },[cite: 2]
+            { world: 5, pos: [0, -986, -15], name: "Fragmento Estelar 4 (Avión)" },
             { world: 6, pos: [-10, -1136, -36], name: "Fragmento Estelar 5 (Parkour)" },
             { world: 7, pos: [15, -1347, 15], name: "Fragmento Estelar 6 (Ajedrez)" }
         ];
@@ -354,6 +354,14 @@
                 loadWorld(1);
             }, 1000);
         }
+
+        // Conectar eventos del botón de inicio de manera directa (tanto clic como toque móvil)
+        const startBtn = document.getElementById('start-btn');
+        startBtn.addEventListener('click', startGame);
+        startBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startGame();
+        }, {passive: false});
 
         function activatePlatform(index) {
             if(platforms[index] && !platforms[index].active && platforms[index].world === currentWorld) {
@@ -394,10 +402,10 @@
             else if(worldId === 2) player.position.set(0, -245, 0);
             else if(worldId === 3) player.position.set(0, -495, 0);
             else if(worldId === 4) player.position.set(0, -745, 0);
-            else if(worldId === 5) player.position.set(0, -995, 10); // Posición inicial del Avión
-            else if(worldId === 6) player.position.set(0, -1145, 0); // Mundo Parkour
-            else if(worldId === 7) player.position.set(0, -1345, 30); // Tablero Real
-            else if(worldId === 8) player.position.set(0, -1595, 0); // Mundo Secreto Cofre Final
+            else if(worldId === 5) player.position.set(0, -995, 10);
+            else if(worldId === 6) player.position.set(0, -1145, 0);
+            else if(worldId === 7) player.position.set(0, -1345, 30);
+            else if(worldId === 8) player.position.set(0, -1595, 0);
 
             const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "Mundo del Avión", "Mundo de Parkour Extremo", "El Tablero Real", "✨ Mundo Secreto: Cofre Final ✨"];
             document.getElementById('hud-world').innerText = names[worldId];
