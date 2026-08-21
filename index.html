@@ -3,439 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Universo de Meyiroshira ✨</title>
+    <title>3 Meses A Tu Lado ✨ - Universo 3D</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@300;400;700&display=swap');
-        
-        body { margin: 0; background: #0b0e14; color: #fff; font-family: 'Nunito', sans-serif; overflow: hidden; }
-        .scene { position: absolute; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease; padding: 20px; box-sizing: border-box; }
-        .hidden { opacity: 0; pointer-events: none; z-index: -1; }
-        
-        /* UI de Búsqueda de Estrellas */
-        #star-counter { position: fixed; top: 20px; left: 20px; font-size: 18px; z-index: 999; color: gold; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,215,0,0.3); }
-        
-        /* Alertas Personalizadas */
-        #custom-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: #333; padding: 15px 30px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.4s ease; text-align: center; }
-        #custom-alert.show-alert { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@400;700&display=swap');
 
-        /* Estrellas Ocultas */
-        .hidden-star { position: absolute; cursor: pointer; font-size: 35px; filter: drop-shadow(0 0 10px gold); animation: pulse 1.5s infinite; z-index: 50; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
-        
-        /* Planeta Secreto */
-        #secret-planet { position: absolute; bottom: 12%; right: 15%; width: 90px; height: 90px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; box-shadow: inset -15px -15px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0, 242, 254, 0.6); cursor: pointer; display: none; animation: floatPlanet 3s ease-in-out infinite; z-index: 50; }
-        @keyframes floatPlanet { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        
-        /* Lluvia de Estrellas (Transición) */
-        #meteor-shower { position: absolute; width: 100vw; height: 100vh; background: radial-gradient(circle, #0f0c29, #000); display: none; z-index: 1000; }
+        body { margin: 0; padding: 0; overflow: hidden; background: #020208; font-family: 'Nunito', sans-serif; user-select: none; }
+        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
 
-        /* Tarjetas (Glassmorphism) adaptadas para carta larga */
-        .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; text-align: center; max-width: 800px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.6); position: relative; max-height: 85vh; overflow-y: auto; }
-        
-        /* Estilos de scrollbar para la carta larga */
-        .card::-webkit-scrollbar { width: 8px; }
-        .card::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-        .card::-webkit-scrollbar-thumb { background: #ff9a9e; border-radius: 10px; }
+        /* HUD / Interfaces */
+        .hud { position: absolute; top: 20px; left: 20px; z-index: 10; color: #fff; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .hud h2 { margin: 0; font-family: 'Cinzel', serif; font-size: 1.2em; color: #4facfe; }
+        .hud p { margin: 5px 0 0 0; font-size: 0.9em; color: #cbd5e1; }
 
-        h1 { font-family: 'Cinzel', serif; color: #ff9a9e; margin-top: 0; }
-        h2 { color: #fad0c4; }
-        
-        input { background: rgba(255,255,255,0.1); border: 1px solid #ff9a9e; color: white; padding: 12px; width: 80%; border-radius: 10px; margin: 10px 0; outline: none; text-align: center; font-size: 16px; }
-        button { background: linear-gradient(45deg, #ff9a9e, #fad0c4); border: none; padding: 12px 30px; border-radius: 30px; color: #333; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4); }
-        button:hover { transform: scale(1.05); }
+        /* Controles móviles / Teclado */
+        .controls-hint { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; color: #fff; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 20px; font-size: 0.85em; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.2); }
 
-        .chapter { margin-bottom: 30px; padding: 20px; border-left: 3px solid #ff9a9e; background: rgba(255,255,255,0.03); text-align: left; line-height: 1.6; }
-        
-        /* Corazón que se mueve */
-        #heart-game { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 80px; cursor: pointer; transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease; z-index: 100; user-select: none; }
-        .heart-particle { position: absolute; pointer-events: none; font-size: 24px; animation: floatParticle 1s ease-out forwards; z-index: 200; }
-        .heart-phrase { position: absolute; pointer-events: none; font-size: 20px; font-weight: bold; color: #ff9a9e; text-shadow: 0 0 10px rgba(0,0,0,0.9); animation: floatPhrase 1.2s ease-out forwards; z-index: 200; white-space: nowrap; transform: translate(-50%, 0); font-family: 'Nunito', sans-serif; }
-        @keyframes floatParticle { 0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.5) rotate(45deg); } }
-        @keyframes floatPhrase { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1.2); } }
+        /* Modales emergentes */
+        .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 85%; max-width: 650px; background: rgba(10, 10, 25, 0.95); border: 1px solid #4facfe; padding: 35px; border-radius: 25px; color: #fff; text-align: center; z-index: 100; opacity: 0; pointer-events: none; transition: all 0.4s ease; box-shadow: 0 0 50px rgba(79, 172, 254, 0.4); max-height: 80vh; overflow-y: auto; }
+        .modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
+        .modal h1 { font-family: 'Cinzel', serif; color: #4facfe; margin-top: 0; font-size: 1.8em; }
+        .modal p { font-size: 1.1em; line-height: 1.8; color: #e2e8f0; text-align: justify; }
+        .modal button { background: linear-gradient(135deg, #4facfe, #00f2fe); border: none; padding: 12px 30px; border-radius: 25px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 1em; transition: 0.3s; }
+        .modal button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 242, 254, 0.6); }
 
-        /* ---------------- FINAL DINÁMICO (ESPACIO) ---------------- */
-        #scene-final { background: radial-gradient(circle at center, #111424 0%, #000000 100%); z-index: 100; overflow: hidden; }
-        
-        .titulo-central { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); font-family: 'Cinzel', serif; font-size: 3vw; color: #fff; text-shadow: 0 0 20px #ff9a9e, 0 0 40px #ff4d4d; z-index: 10; pointer-events: none; text-align: center; line-height: 1.2; width: 100%; opacity: 0.8; }
-        
-        /* Planetas y Alien del fondo */
-        .space-object { position: absolute; z-index: 1; pointer-events: none; opacity: 0.8; }
-        
-        .planet-1 { width: 200px; height: 200px; background: radial-gradient(circle at 30% 30%, #ff9a9e, #8a2387); border-radius: 50%; box-shadow: inset -20px -20px 40px rgba(0,0,0,0.7), 0 0 30px rgba(255, 154, 158, 0.2); top: 15%; animation: orbitPlanet1 45s linear infinite; }
-        @keyframes orbitPlanet1 { from { transform: translateX(-300px) rotate(0deg); } to { transform: translateX(120vw) rotate(180deg); } }
-        
-        .planet-2 { width: 120px; height: 120px; background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe); border-radius: 50%; box-shadow: inset -15px -15px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 242, 254, 0.3); bottom: 20%; animation: orbitPlanet2 60s linear infinite; }
-        @keyframes orbitPlanet2 { from { transform: translateX(110vw) rotate(0deg); } to { transform: translateX(-300px) rotate(-180deg); } }
-
-        .ufo { font-size: 60px; top: 40%; filter: drop-shadow(0 0 15px #00ff00); animation: flyAlien 35s ease-in-out infinite 10s; left: -100px; }
-        @keyframes flyAlien { 
-            0% { transform: translate(-10vw, 0) scale(0.5) rotate(10deg); } 
-            25% { transform: translate(30vw, -20vh) scale(1) rotate(-10deg); }
-            50% { transform: translate(60vw, 10vh) scale(1.2) rotate(15deg); }
-            75% { transform: translate(90vw, -10vh) scale(0.8) rotate(-5deg); }
-            100% { transform: translate(120vw, 0) scale(0.5) rotate(0deg); } 
-        }
-
-        /* Estrellas Interactivas (Deriva Espacial) */
-        .star-final { position: absolute; font-size: 22px; cursor: pointer; color: gold; filter: drop-shadow(0 0 8px gold); transition: transform 0.2s; z-index: 5; user-select: none; }
-        .star-final:hover { transform: scale(1.5); }
-        
-        /* Animación de deriva espacial (movimiento aleatorio suave) */
-        @keyframes spaceDrift { 
-            0% { transform: translate(0, 0) rotate(0deg); } 
-            33% { transform: translate(3vw, -5vh) rotate(15deg); }
-            66% { transform: translate(-4vw, 3vh) rotate(-10deg); }
-            100% { transform: translate(0, 0) rotate(0deg); } 
-        }
-
-        /* Nube de mensaje */
-        .star-tooltip { position: absolute; background: rgba(255, 255, 255, 0.95); color: #e6005c; padding: 8px 18px; border-radius: 20px; font-weight: bold; font-size: 15px; pointer-events: none; animation: floatUpMsg 1.5s forwards; box-shadow: 0 4px 15px rgba(230, 0, 92, 0.4); z-index: 1000; white-space: nowrap; font-family: 'Nunito', sans-serif; }
+        .modal::-webkit-scrollbar { width: 6px; }
+        .modal::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 10px; }
     </style>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- Audios -->
-    <audio id="music-golden" loop><source src="golden.mp3" type="audio/mpeg"></audio>
-    <audio id="music-impostor" loop><source src="impostor.mp3" type="audio/mpeg"></audio>
+    <div id="canvas-container"></div>
 
-    <!-- UI: Contador y Alertas -->
-    <div id="star-counter">Estrellas: 0/4</div>
-    <div id="custom-alert">Mensaje</div>
-
-    <!-- Fase 1: El Acceso -->
-    <div id="scene-1" class="scene">
-        <div class="card">
-            <h1>Bienvenida, mi vida</h1>
-            <div id="q1">
-                <p>1. ¿Qué sobrenombre siempre me gusta decirte?<br><small>(Pista: Meyiro es la inicial y tiene una continuación)</small></p>
-                <input type="text" id="pass1"> <button onclick="check(1)">Validar</button>
-            </div>
-            <div id="q2" style="display:none;">
-                <p>2. ¿Qué día oficializamos nuestra relación?<br><small>(Pista: Junio)</small></p>
-                <input type="text" id="pass2"> <button onclick="check(2)">Validar</button>
-            </div>
-            <div id="q3" style="display:none;">
-                <p>3. ¿Qué fue nuestra primera película que vimos juntos?<br><small>(Pista: Nombre básico Uma musu**)</small></p>
-                <input type="text" id="pass3"> <button onclick="check(3)">Acceder al Viaje</button>
-            </div>
-        </div>
-        <!-- Estrella 1 -->
-        <div class="hidden-star" style="top: 15%; left: 10%;" onclick="findStar(this)">⭐</div>
+    <div class="hud">
+        <h2>Proyecto Eternidad • Mes 3</h2>
+        <p>Recuerdos recolectados: <span id="star-count" style="color: #00f2fe; font-weight: bold;">0</span> / 3</p>
     </div>
 
-    <!-- Fase 2: La Historia Exacta -->
-    <div id="scene-2" class="scene hidden">
-        <div class="card">
-            <h1>Nuestra Crónica</h1>
-            
-            <div class="chapter"><h3>CAPITULO 1: Nuestro Primer Hola</h3><p>Yo recuerdo mucho este momento, comenzamos desde aquí pues esto es algo que siempre he querido hacer y es contar nuestra historia jejejeje, todo comenzó un día que estaba tranquilamente encargandome de moderación del chat, siempre solía ser un staff demasiado serio te lo juro muy serio, miraba el chat moderaba y me iba a hacer trabajos de Blood Strike, siempre era lo mismo pero un día todo eso cambio, apareciste tu, tu al inicio según recuerdo eras una persona medio tímida en comunicación, pero eras muy alegre al mismo tiempo, recuerdo que nuestro primer cercanía fue un "Hola" aunque fue muy simple ese Hola fue el inicio de una historia muy interesante, desde allí comenzamos a entablar conversaciones, y no sé cómo nació una amistad.</p></div>
-            
-            <div class="chapter"><h3>CAPITULO 2: Mi primera acción</h3><p>Aunque no lo parezca fuistes una de las primeras chicas que logró establecer una comunicación muy cercana pues te trataba mucho como una hermanita al inicio, recuerdo que un día te estaban tratando mal y me moleste mucho, a tal punto que salió afectado staff y comunidad solo para que no se metieran contigo y allí comenzaron a decir y que yo tenía preferencias y etc etc etc, aunque no le preste atención simplemente los dejaba en visto pues para mí había hecho lo correcto pero algo me dejó marcado (Queso ya di que te gusta Mi tontita) esas palabras me dejaron pensando y pensando pero no me lo tomé a pecho y te seguí tratando igual como siempre.</p></div>
-            
-            <div class="chapter"><h3>CAPITULO 3: Mi impacto relativo</h3><p>Luego de establecer una gran cercanía siempre y no se porque pero me sentía raro, algo me decía que estuviera contigo y que me acercara y lo pensé mucho, pero muchísimo y lo hice, me acerqué y lo trate y nos volvimos más cercanos por alguna razón, recuerdo que allí fue donde nos conocimos por tiktok y comenzamos a tratarnos mucho más cercano, te daba cosas en Blood aunque muy mínimas pero te las daba por qué algo me decía que lo hiciera y lo hice y quien se pensaría que eso fue algo clave para nuestro hoy en día.</p></div>
-            
-            <div class="chapter"><h3>CAPITULO 4: Mi impacto yo</h3><p>Está parte de mi vida no me gustaría contarla pero se que debe estar pues es importante para nuestra historia, un día ví que te alejaste más de mi, no era igual, y aunque lo intentaba no lo lograba como antes y entendí en ese momento que alguien ya se me había adelantado, y si, este capitulo es cuando estabas con Sus, no sé porque pero digamos sentí celos, celos de que alguien de la nada se llevó todo lo que había tratado de construir y eso me dolió mucho pero aún así quise seguir adelante y algo muy doloroso ocurrió...</p></div>
-            
-            <div class="chapter"><h3>CAPITULO 5: El vacío</h3><p>Un día normal a las 3:40 de la madrugada, me llamaron del hospital de Suecia para notificarme que uno de sus familiares de uno de mis amigos le había dicho que me llamarán para avisarme que Erick mi amigo de la infancia había muerto en un accidente de automóvil llendo a Suecia puebla central en uno de los puentes Gracias al impacto de un camión, yo... Yo quede destrozado... Adicional mi trabajo, el instituto, mi familia, lo de Sus todo me afectó muy feo, tal punto que quise dejar todo , quería alejarme de Blood Strike, Quería alejarme de los estudios, quería alejarme de mi familia y quería alejarme de tí, y bueno no quería, lo hice, estaba muy mal a tal punto que no se todo lo que pasó por mi mente me hizo caer tan fuerte que.. nomás no me sentía como yo, fueron 4 meses duros que estaba controlando pero ese día todo se derrumbó, así estuve aproximadamente 15 días creo, y un día un mensaje me notifico algo, era layoucris, me pareció raro que ella me escribiera algo en seriedad pero no me imaginé que eso fue a base de preocupación de tí, ella me decía que tú estabas preocupada y cosas así y yo no sabía cómo reaccionar, pensaba que todo estaba acabando pero eso me dió a entender que aún había una luz , y no se porque pero algo me empujó y me dijo no la dejes apagar y lo hice, hablé contigo y logramos y aquí comienza el capítulo más interesante.</p></div>
-            
-            <div class="chapter"><h3>CAPITULO 6: Mi lucha</h3><p>Aquí es algo muy interesante pues yo me había decidido a no dejar que esa luz se apagará, pero de una forma interesante, quería que esa luz solo fuera para mí costará lo que costará y aquí tu debes saber que entro el queso coqueto y conquistador, dure que, 1 mes o 2 consintiendo y tratando de obtenerlo y aunque fue fuerte lo logre, y fue un resultado que esperaba, aunque me gane un odio eterno de LATAM, al menos mi luz se quedó para mí y aquí es donde empieza el último capítulo</p></div>
-            
-            <div class="chapter"><h3>CAPITULO final: Nuestro amor</h3><p>Aquí nosotros nos desarrollamos en relación, aunque eras muy tímida pues no querías hacerlo conocer al público un día nos armamos de valor y hicimos que ocurriera, y fue goood, cuando te dije te amo y me respondiste también, fue muy lindo, de una me llegaron mds y cosas así pero lo hicimos, y aquí me di a entender algo, juntos podemos solucionar cualquier cosa, aunque hemos llevado muchas luchas últimamente, personales, comunidad, entre tú y yo que incluso casi nos hemos separado, aquí es donde fuimos y entendemos que somos fuertes, y así creció nuestro primer y 2 mes de aniversario que no me arrepiento de nada.</p></div>
-            
-            <button onclick="nextScene()">Siguiente Sorpresa ✨</button>
-        </div>
-        <!-- Estrella 2 -->
-        <div class="hidden-star" style="bottom: 5%; right: 5%;" onclick="findStar(this)">⭐</div>
+    <div class="controls-hint">Usa [W][A][S][D] o Flechas para Moverte | [Espacio] para Saltar</div>
+
+    <!-- Modal de Mensaje del Aniversario -->
+    <div class="modal" id="memory-modal">
+        <h1 id="memory-title">Recuerdo Especial</h1>
+        <p id="memory-text">Mensaje aquí...</p>
+        <button onclick="closeMemory()">Continuar el viaje ✨</button>
     </div>
 
-    <!-- Fase 3: Minijuego del Corazón que Huye -->
-    <div id="scene-3" class="scene hidden">
-        <div class="card" style="position: absolute; top: 10%; left: 50%; transform: translateX(-50%); z-index: 50;">
-            <h1 style="margin-bottom: 5px;">Atrápame si puedes</h1>
-            <p style="margin-top: 0;">¡Persigue el corazón y tócalo 15 veces para leer tu carta!</p>
-        </div>
-        <div id="heart-game" onclick="hitHeart(event)">❤️</div>
-        <!-- Estrella 3 -->
-        <div class="hidden-star" style="bottom: 20%; left: 15%;" onclick="findStar(this)">⭐</div>
+    <!-- Modal de Ajedrez -->
+    <div class="modal" id="chess-modal">
+        <h1 style="color: #ff9a9e;">El Tablero Estelar</h1>
+        <p id="chess-text" style="font-size: 1.25em; text-align: center; font-style: italic; color: #ffd1d7;">
+            "Aún recuerdo cómo me ganas siempre en Ajedrez, este espacio es significativo pues representa algo importante para ti, pero allí plasmamos todo lo que nos distes, sabes?"
+        </p>
+        <button onclick="closeChessModal()">Avanzar al Portal Final</button>
     </div>
 
-    <!-- Fase 4: La Gran Carta Expandida -->
-    <div id="scene-4" class="scene hidden">
-        <div class="card" style="text-align: justify;">
-            <h1 style="text-align: center; font-size: 2.5em; text-shadow: 0 0 15px rgba(255,154,158,0.8);">Para mi luz, mi todo, mi universo</h1>
-            
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                <span style="font-size: 22px; color: #ff9a9e; font-weight: bold;">M</span>eyiroshira, mi amor hermoso... Hoy me siento a escribirte esto, no solo para celebrar una fecha, sino para honrar todo lo que hemos construido. Sesenta días pueden sonar a poco tiempo para algunos, pero tú y yo sabemos que en nuestro reloj, estos dos meses han sido una vida entera. Una vida llena de batallas, de caídas profundas y, sobre todo, del renacer más hermoso que he experimentado.
-            </p>
-            
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                Quiero que viajes conmigo al pasado por un instante. ¿Te acuerdas de cómo era yo? El staff de moderación serio, estricto, el que solo miraba la pantalla para cumplir con su trabajo en Blood Strike LATAM. Mis días eran cuadrados, sin mucho color, una rutina que parecía interminable... hasta que llegaste tú. Ese simple "Hola", viniendo de una chica que parecía tímida pero irradiaba una alegría incomprensible, fue como un fallo en mi sistema. Fue la primera grieta en el muro que yo mismo había construido a mi alrededor.
-            </p>
-            
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                Al principio quise engañarme a mí mismo. Quise protegerte como a una hermanita, me peleé con la comunidad entera cuando vi que te trataban mal porque algo dentro de mí hervía si alguien te hacía daño. Me decían que tenía preferencias, y yo los ignoraba, pero alguien me dijo: "Queso, ya di que te gusta mi tontita". Aún así, me negaba a aceptarlo. Y luego... apareció Sus. Ver cómo alguien más ocupaba ese espacio a tu lado, sentir esos celos quemándome por dentro, fue el golpe de realidad que necesitaba para entender que lo que sentía por ti era muchísimo más grande que una simple amistad de internet.
-            </p>
-
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px; padding: 15px; border-left: 4px solid #4facfe; background: rgba(79, 172, 254, 0.05);">
-                Pero la vida nos puso a prueba de la forma más cruel posible. Esa madrugada a las 3:40 AM... la llamada desde Suecia. Perder a Erick, mi amigo de la infancia, en aquel puente, fue como si alguien apagara el sol en mi universo. Me hundí. El peso del instituto, mi trabajo, mi familia y la situación contigo me aplastaron por completo. Quise desaparecer de todo: de Blood Strike, de mis proyectos, y me alejé de ti. Estuve vagando en el vacío, en un dolor que no me dejaba respirar. 
-            </p>
-
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                Y ahí fue donde sucedió el milagro. Ese mensaje de layoucris, diciéndome lo preocupada que estabas por mí... Mi amor, no tienes idea de lo que eso significó. En medio de mi oscuridad más absoluta, fuiste un faro. Fuiste esa pequeña pero inquebrantable luz que me dijo: "No te rindas". Me di cuenta de que no quería dejar que esa luz se apagara. Entendí que mi lugar seguro siempre fuiste tú.
-            </p>
-
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                Ahí despertó verdaderamente el "Queso coqueto y conquistador". Luché por ti durante meses. No me importó ganarme el odio de LATAM, no me importaron las barreras, porque mi única meta era que esa luz brillara solo para mí. Y valió la pena cada segundo.
-            </p>
-
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 25px;">
-                Hoy, después de todo lo que hemos llorado y reído juntos, después de casi habernos separado por presiones externas y haber elegido quedarnos... me doy cuenta de que somos invencibles. Contigo he aprendido que el amor verdadero no es perfecto, sino que es valiente. Gracias por romper tus miedos, por hacer público lo nuestro, por ese primer "Te amo" que hizo temblar mi mundo y por quedarte a mi lado. 
-            </p>
-
-            <p style="font-size: 18px; line-height: 1.9; color: #e2e8f0; margin-bottom: 10px; text-align: center;">
-                Quiero que este universo que he creado hoy para ti te recuerde siempre lo gigante que eres para mí. 
-            </p>
-            
-            <b style="color: #ff9a9e; font-size: 26px; display: block; text-align: center; margin-top: 30px; margin-bottom: 15px; letter-spacing: 2px;">
-                Feliz Segundo Aniversario, Meyiroshira.<br>Te amo, mi vida entera.
-            </b>
-        </div>
-        <!-- Estrella 4 -->
-        <div class="hidden-star" style="top: 15%; right: 10%;" onclick="findStar(this)">⭐</div>
-        
-        <!-- El Planeta Secreto -->
-        <div id="secret-planet" onclick="triggerSpace()"></div>
-    </div>
-
-    <!-- Transición Lluvia de estrellas -->
-    <div id="meteor-shower"></div>
-
-    <!-- Fase Final Estelar -->
-    <div id="scene-final" class="scene hidden">
-        
-        <!-- Elementos del espacio -->
-        <div class="space-object planet-1"></div>
-        <div class="space-object planet-2"></div>
-        <div class="space-object ufo">🛸</div>
-        
-        <h1 class="titulo-central">Presiona las estrellas mi vida...<br><span style="font-size: 0.5em; color: #fff;">Construyamos nuestro universo</span></h1>
-        
-        <div id="star-field"></div>
+    <!-- Modal Carta Final -->
+    <div class="modal" id="letter-modal" style="max-width: 800px;">
+        <h1 style="font-size: 2.2em; background: linear-gradient(to right, #4facfe, #ff9a9e); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tres Meses De Un Amor Infinito</h1>
+        <div id="letter-content" style="font-size: 1.05em; line-height: 2; color: #f1f5f9; text-align: justify;"></div>
+        <button id="final-btn" onclick="finishGame()">❤️ Te Amo Con Todo Mi Corazón ❤️</button>
     </div>
 
     <script>
-        const audioGolden = document.getElementById('music-golden');
-        const audioImpostor = document.getElementById('music-impostor');
-        
-        let starsFound = 0;
-        const totalStars = 4;
-        let heartClicks = 0;
-        const maxHeartClicks = 15;
+        // --- CONFIGURACIÓN TÉCNICA Y ESCENA 3D ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x020208, 0.015);
 
-        function showMessage(text) {
-            const alertBox = document.getElementById('custom-alert');
-            alertBox.innerText = text;
-            alertBox.classList.add('show-alert');
-            setTimeout(() => alertBox.classList.remove('show-alert'), 4000);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // --- ILUMINACIÓN ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0x4facfe, 1.2);
+        dirLight.position.set(20, 40, 20);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        const pointLight = new THREE.PointLight(0xff9a9e, 1.5, 50);
+        scene.add(pointLight);
+
+        // --- PARTÍCULAS ESPACIALES ---
+        const starGeo = new THREE.BufferGeometry();
+        const starCount = 1000;
+        const starPos = new Float32Array(starCount * 3);
+        for(let i=0; i<starCount*3; i++) {
+            starPos[i] = (Math.random() - 0.5) * 200;
         }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5, transparent: true, opacity: 0.8 });
+        const starField = new THREE.Points(starGeo, starMat);
+        scene.add(starField);
 
-        function findStar(element) {
-            element.style.display = 'none';
-            starsFound++;
-            document.getElementById('star-counter').innerText = `Estrellas: ${starsFound}/${totalStars}`;
-            showMessage("¡Has encontrado una estrella secreta! 🌟");
-            
-            if(starsFound === totalStars) {
-                document.getElementById('secret-planet').style.display = 'block';
-                if(!document.getElementById('scene-4').classList.contains('hidden')) {
-                    setTimeout(() => showMessage("¡Un Planeta Secreto apareció al final de tu carta! Tócalo."), 1000);
-                }
-            }
-        }
+        // --- JUGADOR (AVATAR 2D/3D) ---
+        const playerGeo = new THREE.SphereGeometry(0.8, 32, 32);
+        const playerMat = new THREE.MeshStandardMaterial({ color: 0x00f2fe, roughness: 0.2, metalness: 0.8, emissive: 0x00a8ff, emissiveIntensity: 0.4 });
+        const player = new THREE.Mesh(playerGeo, playerMat);
+        player.position.set(0, 3, 0);
+        player.castShadow = true;
+        scene.add(player);
 
-        function check(step) {
-            const val = document.getElementById('pass' + step).value.toLowerCase().trim();
-            if(step === 1 && val === 'meyiroshira') { 
-                document.getElementById('q1').style.display = 'none'; document.getElementById('q2').style.display = 'block'; 
-            }
-            else if(step === 2 && val === '21/06') { 
-                document.getElementById('q2').style.display = 'none'; document.getElementById('q3').style.display = 'block'; 
-            }
-            else if(step === 3 && val === 'uma musume') { 
-                document.getElementById('scene-1').classList.add('hidden'); 
-                document.getElementById('scene-2').classList.remove('hidden');
-            } else { 
-                showMessage("Casi... intenta de nuevo mi vida."); 
-            }
-        }
+        // --- FÍSICAS SIMPLES ---
+        let velocity = new THREE.Vector3();
+        let isGrounded = false;
+        const gravity = -0.018;
+        const speed = 0.18;
+        const jumpForce = 0.38;
 
-        function nextScene() {
-            document.getElementById('scene-2').classList.add('hidden');
-            document.getElementById('scene-3').classList.remove('hidden');
-        }
+        // --- CONTROLES ---
+        const keys = {};
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
 
-        function createHeartEffects(x, y, clickCount) {
-            const catchPhrases = [
-                "¡Uy, casi!", "¡Muy lenta mi princesa!", "¡Sigue intentando!", "¡Por aquí no!", 
-                "¡Te falta velocidad!", "¡Atrápame si puedes!", "¡Ups, fallaste!", 
-                "¡Soy muy rápido para ti!", "¡Modo gamer activado!", "¡Concéntrate mi amor!", 
-                "¡Ay, casi me tocas!", "¡Un poquito más rápido!", "¡No te rindas!", 
-                "¡Ya casi, tú puedes!", "¡Último esfuerzo!"
-            ];
-            
-            let phrase = document.createElement('div');
-            phrase.className = "heart-phrase";
-            phrase.innerText = catchPhrases[Math.min(clickCount - 1, catchPhrases.length - 1)];
-            phrase.style.left = x + "px";
-            phrase.style.top = (y - 40) + "px";
-            document.body.appendChild(phrase);
-            setTimeout(() => phrase.remove(), 1200);
-
-            for(let i = 0; i < 7; i++) {
-                let p = document.createElement('div');
-                p.className = "heart-particle";
-                p.innerText = ["❤️", "💖", "✨", "💕"][Math.floor(Math.random() * 4)];
-                p.style.left = x + "px";
-                p.style.top = y + "px";
-                p.style.setProperty('--dx', (Math.random() * 160 - 80) + "px");
-                p.style.setProperty('--dy', (Math.random() * -140 - 20) + "px");
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 1000);
-            }
-        }
-
-        function hitHeart(event) {
-            heartClicks++;
-            const heart = document.getElementById('heart-game');
-            const x = event ? event.clientX : window.innerWidth / 2;
-            const y = event ? event.clientY : window.innerHeight / 2;
-            
-            if (heartClicks <= maxHeartClicks) {
-                createHeartEffects(x, y, heartClicks);
-            }
-            
-            if(heartClicks >= maxHeartClicks) {
-                document.getElementById('scene-3').classList.add('hidden');
-                document.getElementById('scene-4').classList.remove('hidden');
-                audioGolden.play().catch(e => console.log("Interacción requerida para audio"));
-                
-                if(starsFound === totalStars) {
-                    setTimeout(() => showMessage("¡El Planeta Secreto te espera al final de tu carta! Tócalo."), 1000);
-                }
-            } else {
-                const randomX = Math.floor(Math.random() * 80) + 10; 
-                const randomY = Math.floor(Math.random() * 70) + 20; 
-                heart.style.left = randomX + "vw";
-                heart.style.top = randomY + "vh";
-                heart.style.transform = `translate(-50%, -50%) scale(${1 + heartClicks * 0.08})`;
-            }
-        }
-
-        function triggerSpace() {
-            document.getElementById('star-counter').style.display = 'none';
-            const meteor = document.getElementById('meteor-shower');
-            meteor.style.display = 'block';
-            
-            audioGolden.pause();
-            
-            setTimeout(() => {
-                document.getElementById('scene-4').classList.add('hidden');
-                meteor.style.display = 'none';
-                document.getElementById('scene-final').classList.remove('hidden');
-                
-                audioImpostor.currentTime = 0;
-                audioImpostor.play();
-                
-                createInteractiveSpace();
-            }, 1500);
-        }
-
-        // ---------- LÓGICA DEL PUZZLE "TE AMO" ----------
-        const teAmoPoints = [
-            // T (9 estrellas - Superior Izquierda)
-            {x: 20, y: 25}, {x: 23, y: 25}, {x: 26, y: 25}, {x: 29, y: 25}, {x: 32, y: 25},
-            {x: 26, y: 30}, {x: 26, y: 35}, {x: 26, y: 40}, {x: 26, y: 45},
-            
-            // E (13 estrellas - Superior Derecha)
-            {x: 60, y: 25}, {x: 60, y: 30}, {x: 60, y: 35}, {x: 60, y: 40}, {x: 60, y: 45},
-            {x: 63, y: 25}, {x: 66, y: 25}, {x: 69, y: 25},
-            {x: 63, y: 35}, {x: 66, y: 35},
-            {x: 63, y: 45}, {x: 66, y: 45}, {x: 69, y: 45},
-
-            // A (15 estrellas - Abajo Izquierda)
-            {x: 24, y: 60}, {x: 22, y: 65}, {x: 20, y: 70}, {x: 18, y: 75}, {x: 16, y: 80},
-            {x: 26, y: 60}, {x: 28, y: 65}, {x: 30, y: 70}, {x: 32, y: 75}, {x: 34, y: 80},
-            {x: 21, y: 70}, {x: 23, y: 70}, {x: 25, y: 70}, {x: 27, y: 70}, {x: 29, y: 70},
-
-            // M (15 estrellas - Abajo Centro)
-            {x: 42, y: 80}, {x: 42, y: 75}, {x: 42, y: 70}, {x: 42, y: 65}, {x: 42, y: 60},
-            {x: 58, y: 80}, {x: 58, y: 75}, {x: 58, y: 70}, {x: 58, y: 65}, {x: 58, y: 60},
-            {x: 45, y: 65}, {x: 47, y: 70}, {x: 50, y: 75}, {x: 53, y: 70}, {x: 55, y: 65},
-
-            // O (14 estrellas - Abajo Derecha)
-            {x: 70, y: 60}, {x: 73, y: 60}, {x: 76, y: 60},
-            {x: 70, y: 80}, {x: 73, y: 80}, {x: 76, y: 80},
-            {x: 67, y: 65}, {x: 67, y: 70}, {x: 67, y: 75},
-            {x: 79, y: 65}, {x: 79, y: 70}, {x: 79, y: 75},
-            {x: 68, y: 62}, {x: 78, y: 62}
+        // --- PLATAFORMAS PARKOUR (FASE 1) ---
+        const platforms = [];
+        const platformData = [
+            { x: 0, y: 0, z: 0, w: 6, h: 1, d: 6 },
+            { x: 0, y: 1.5, z: -10, w: 4, h: 1, d: 4 },
+            { x: 6, y: 3, z: -18, w: 4, h: 1, d: 4 },
+            { x: 6, y: 5, z: -28, w: 4, h: 1, d: 4 },
+            { x: -2, y: 7, z: -36, w: 5, h: 1, d: 5 },
+            { x: -2, y: 9, z: -48, w: 6, h: 1, d: 6 }, // Plataforma portal
         ];
 
-        let starsClickedSequence = 0;
+        const platMat = new THREE.MeshStandardMaterial({ color: 0x1e1e38, roughness: 0.4, metalness: 0.6 });
+        const edgeMat = new THREE.MeshBasicMaterial({ color: 0x4facfe });
 
-        function createInteractiveSpace() {
-            const container = document.getElementById('star-field');
-            const phrases = [
-                "Eres hermosa", "Te amo mi vida", "Mi princesa", "Eres mi luz", 
-                "Mi todo", "Me haces feliz", "Mi lugar seguro", "Siempre juntos"
-            ];
-            
-            for(let i = 0; i < 66; i++) {
-                let s = document.createElement('div');
-                s.className = "star-final";
-                s.innerText = "⭐";
-                s.style.left = Math.random() * 90 + 5 + "vw";
-                s.style.top = Math.random() * 85 + 10 + "vh";
-                
-                s.style.animation = `spaceDrift ${10 + Math.random()*15}s infinite alternate ease-in-out`;
-                s.style.animationDelay = `-${Math.random()*10}s`;
-                
-                s.onclick = function(e) {
-                    if (starsClickedSequence >= teAmoPoints.length) return;
+        platformData.forEach((data, index) => {
+            const geo = new THREE.BoxGeometry(data.w, data.h, data.d);
+            const mesh = new THREE.Mesh(geo, platMat);
+            mesh.position.set(data.x, data.y, data.z);
+            mesh.receiveShadow = true;
+            scene.add(mesh);
 
-                    this.style.animation = "none";
-                    this.style.transition = "all 2.5s cubic-bezier(0.25, 0.8, 0.25, 1)";
-                    this.style.transform = "scale(1.3)";
-                    this.style.color = "#ff4d4d";
-                    this.style.filter = "drop-shadow(0 0 15px #ff4d4d)";
-                    this.innerText = "❤️";
+            // Bordes brillantes
+            const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat);
+            mesh.add(wire);
 
-                    let targetPoint = teAmoPoints[starsClickedSequence];
-                    this.style.left = targetPoint.x + "vw";
-                    this.style.top = targetPoint.y + "vh";
-                    
-                    let msg = document.createElement('div');
-                    msg.className = "star-tooltip";
-                    msg.innerText = "✨ " + phrases[Math.floor(Math.random() * phrases.length)] + " ✨";
-                    msg.style.left = e.clientX + "px";
-                    msg.style.top = e.clientY + "px";
-                    document.body.appendChild(msg);
-                    setTimeout(() => msg.remove(), 1500);
+            platforms.push({ mesh, w: data.w, h: data.h, d: data.d });
+        });
 
-                    starsClickedSequence++;
+        // --- HITOS RECOLECTABLES (MES 3) ---
+        const collectibles = [];
+        const memoryTexts = [
+            { title: "Mes 1: El Destello Inicial", text: "Recuerdo cuando empezamos a hablar sin parar, descubriendo que encajábamos de una forma casi mágica. Ese primer mes fue el inicio de algo enorme." },
+            { title: "Mes 2: La Conexión Inquebrantable", text: "Enfrentamos desvelos, risas, juegos y momentos donde nos dimos cuenta de que éramos el refugio seguro del otro. Mi lugar favorito siempre fue a tu lado." },
+            { title: "Mes 3: Nuestro Aniversario Oficial", text: "¡Llegamos a nuestro tercer mes! Tres meses de ser mi reina, mi compañera de vida y la razón de mis sonrisas. ¡Gracias por cada segundo!" }
+        ];
 
-                    if(starsClickedSequence === 9) showMessage("¡La 'T' se ha formado! Sigue presionando...");
-                    if(starsClickedSequence === 22) showMessage("¡Tenemos la 'E'! Presiona más abajo...");
-                    if(starsClickedSequence === 66) {
-                        setTimeout(() => showMessage("TE AMO, MEYIROSHIRA ❤️✨"), 2500);
-                        document.querySelector('.titulo-central').innerHTML = 'Lo logramos mi amor...<br><span style="font-size: 0.5em; color: #ff9a9e;">Juntos por siempre</span>';
-                    }
+        const collectGeo = new THREE.OctahedronGeometry(0.7);
+        const collectMat = new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0xffaa00, emissiveIntensity: 0.8 });
 
-                    this.onclick = null;
-                };
-                
-                container.appendChild(s);
+        const collectPositions = [
+            { x: 6, y: 4.8, z: -18, id: 0 },
+            { x: 6, y: 6.8, z: -28, id: 1 },
+            { x: -2, y: 8.8, z: -36, id: 2 }
+        ];
+
+        collectPositions.forEach(pos => {
+            const mesh = new THREE.Mesh(collectGeo, collectMat);
+            mesh.position.set(pos.x, pos.y, pos.z);
+            scene.add(mesh);
+            collectibles.push({ mesh, id: pos.id, collected: false });
+        });
+
+        // --- PORTAL DE TRANSICIÓN AL TABLERO ---
+        const portalGeo = new THREE.TorusGeometry(1.8, 0.2, 16, 100);
+        const portalMat = new THREE.MeshBasicMaterial({ color: 0xff9a9e });
+        const portal = new THREE.Mesh(portalGeo, portalMat);
+        portal.position.set(-2, 11.5, -48);
+        scene.add(portal);
+
+        // --- FASE 2: EL TABLERO DE AJEDREZ GIGANTE (SE GENERA MÁS ABAJO) ---
+        let chessGroup = new THREE.Group();
+        chessGroup.position.set(0, -40, -100); // Ubicado abajo en el universo
+        scene.add(chessGroup);
+
+        // Crear Tablero 8x8
+        const tileSize = 4;
+        for(let r=0; r<8; r++) {
+            for(let c=0; c<8; c++) {
+                const isWhite = (r + c) % 2 === 0;
+                const tileMat = new THREE.MeshStandardMaterial({
+                    color: isWhite ? 0xe2e8f0 : 0x1a1a2e,
+                    roughness: 0.3
+                });
+                const tile = new THREE.Mesh(new THREE.BoxGeometry(tileSize, 0.8, tileSize), tileMat);
+                tile.position.set((c - 3.5) * tileSize, 0, (r - 3.5) * tileSize);
+                chessGroup.add(tile);
             }
         }
+
+        // Pieza Central - La Reina Blanca Gigante
+        const queenGeo = new THREE.CylinderGeometry(1.2, 2, 8, 32);
+        const queenMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x4facfe, emissiveIntensity: 0.3, roughness: 0.1 });
+        const queenPiece = new THREE.Mesh(queenGeo, queenMat);
+        queenPiece.position.set(0, 4, 0);
+        chessGroup.add(queenPiece);
+
+        // Trigger de Ajedrez
+        let chessTriggered = false;
+        let inChessWorld = false;
+
+        // --- LÓGICA DE JUEGO ---
+        let collectedCount = 0;
+        let gamePaused = false;
+
+        function updatePhysics() {
+            if (gamePaused) return;
+
+            // Movimiento X/Z
+            let moveX = 0;
+            let moveZ = 0;
+
+            if (keys['KeyW'] || keys['ArrowUp']) moveZ -= speed;
+            if (keys['KeyS'] || keys['ArrowDown']) moveZ += speed;
+            if (keys['KeyA'] || keys['ArrowLeft']) moveX -= speed;
+            if (keys['KeyD'] || keys['ArrowRight']) moveX += speed;
+
+            player.position.x += moveX;
+            player.position.z += moveZ;
+
+            // Gravedad
+            velocity.y += gravity;
+            player.position.y += velocity.y;
+
+            // Salto
+            if ((keys['Space']) && isGrounded) {
+                velocity.y = jumpForce;
+                isGrounded = false;
+            }
+
+            // Colisión con Plataformas
+            isGrounded = false;
+
+            if (!inChessWorld) {
+                platforms.forEach(p => {
+                    const minX = p.mesh.position.x - p.w/2 - 0.6;
+                    const maxX = p.mesh.position.x + p.w/2 + 0.6;
+                    const minZ = p.mesh.position.z - p.d/2 - 0.6;
+                    const maxZ = p.mesh.position.z + p.d/2 + 0.6;
+
+                    if (player.position.x > minX && player.position.x < maxX &&
+                        player.position.z > minZ && player.position.z < maxZ) {
+                        
+                        const floorY = p.mesh.position.y + p.h/2 + 0.8;
+                        if (player.position.y <= floorY && player.position.y >= floorY - 0.8) {
+                            player.position.y = floorY;
+                            velocity.y = 0;
+                            isGrounded = true;
+                        }
+                    }
+                });
+
+                // Caída al vacío (Respawn)
+                if (player.position.y < -15) {
+                    player.position.set(0, 4, 0);
+                    velocity.set(0,0,0);
+                }
+            } else {
+                // Físicas en el Mundo de Ajedrez
+                const boardY = chessGroup.position.y + 0.8 + 0.8;
+                if (player.position.y <= boardY) {
+                    player.position.y = boardY;
+                    velocity.y = 0;
+                    isGrounded = true;
+                }
+            }
+
+            // Colisión Recolectables
+            collectibles.forEach(c => {
+                if (!c.collected && player.position.distanceTo(c.mesh.position) < 1.8) {
+                    c.collected = true;
+                    scene.remove(c.mesh);
+                    collectedCount++;
+                    document.getElementById('star-count').innerText = collectedCount;
+                    openMemory(c.id);
+                }
+            });
+
+            // Colisión Portal
+            if (!inChessWorld && player.position.distanceTo(portal.position) < 2.2) {
+                teleportToChessWorld();
+            }
+
+            // Trigger Ajedrez
+            if (inChessWorld && !chessTriggered && player.position.distanceTo(new THREE.Vector3(chessGroup.position.x, chessGroup.position.y + 4, chessGroup.position.z)) < 5) {
+                chessTriggered = true;
+                openChessModal();
+            }
+        }
+
+        function openMemory(id) {
+            gamePaused = true;
+            document.getElementById('memory-title').innerText = memoryTexts[id].title;
+            document.getElementById('memory-text').innerText = memoryTexts[id].text;
+            document.getElementById('memory-modal').classList.add('active');
+        }
+
+        function closeMemory() {
+            document.getElementById('memory-modal').classList.remove('active');
+            gamePaused = false;
+        }
+
+        function teleportToChessWorld() {
+            inChessWorld = true;
+            player.position.set(chessGroup.position.x, chessGroup.position.y + 15, chessGroup.position.z + 12);
+            velocity.set(0,0,0);
+        }
+
+        function openChessModal() {
+            gamePaused = true;
+            document.getElementById('chess-modal').classList.add('active');
+        }
+
+        function closeChessModal() {
+            document.getElementById('chess-modal').classList.remove('active');
+            gamePaused = false;
+            openFinalLetter();
+        }
+
+        // --- CARTA FINAL ULTRA LARGA ---
+        const ultraLongLetter = `Mi amada Reina Blanca, Meyiroshira...\n\nHoy celebramos oficialmente nuestro tercer mes juntos. Tres meses que para el mundo pueden parecer un par de páginas en el calendario, pero que para mí representan el capítulo más hermoso, intenso y transformador de toda mi vida.\n\nDiseñé este universo 3D exclusivamente para ti porque quería que sintieras, paso a paso, lo que significa caminar a tu lado. Cada plataforma que saltaste representa un obstáculo que superamos juntas las noches de insomnio, las dudas, las presiones externas y la distancia. Cada estrella dorada que recolectaste lleva plasmado un pedazo de nuestro amor. Y este tablero de ajedrez gigante... tú mejor que nadie sabes lo que significa para nosotros.\n\nTodavía me sonrío solo al recordar cómo me ganas siempre en ajedrez. Me encanta ver tu astucia, tu mente brillante y la forma en que siempre logras acorralar a mi rey. Pero en esta vida real, perder ante ti es mi mayor victoria, porque sé que mientras tú estés al mando del tablero, nuestro equipo nunca podrá ser derrotado.\n\nEn estos 90 días me has regalado risas inolvidables, desvelos llenos de confidencias a las 3 AM, llamadas que no quería que terminaran nunca y un apoyo incondicional que me rescató en mis momentos más oscuros. Cuando quise rendirme, fuiste tú quien sostuvo mi mano. Fuiste y sigues siendo la luz que ilumina todo mi universo.\n\nGracias por ser mi reina, mi mejor amiga, mi dúo perfecto en cada partida y el amor de mi vida. Prometo seguir construyendo mundos para ti, seguir cuidando tu corazón y elegirte cada día de mi existencia.\n\nFeliz Aniversario #3, mi vida. Esto es solo el comienzo de nuestra historia eterna.`;
+
+        function openFinalLetter() {
+            gamePaused = true;
+            const letterCont = document.getElementById('letter-content');
+            letterCont.innerHTML = ultraLongLetter.replace(/\n/g, '<br>');
+            document.getElementById('letter-modal').classList.add('active');
+        }
+
+        function finishGame() {
+            alert("¡Te amo infinitamente, Meyiroshira! ❤️");
+        }
+
+        // --- ANIMACIÓN Y CÁMARA ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotación de elementos visuales
+            collectibles.forEach(c => { if(!c.collected) c.mesh.rotation.y += 0.03; });
+            portal.rotation.z += 0.02;
+            starField.rotation.y += 0.0005;
+            queenPiece.rotation.y += 0.01;
+
+            updatePhysics();
+
+            // Cámara Follow Suave (Estilo 2.5D / 3D)
+            const targetCamPos = new THREE.Vector3(
+                player.position.x,
+                player.position.y + 6,
+                player.position.z + 12
+            );
+            camera.position.lerp(targetCamPos, 0.08);
+            camera.lookAt(player.position.x, player.position.y + 1, player.position.z);
+
+            pointLight.position.copy(player.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // Resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
     </script>
 </body>
 </html>
