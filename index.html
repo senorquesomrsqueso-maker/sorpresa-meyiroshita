@@ -35,19 +35,17 @@
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 1.5s; }
 
-        /* CONTROLES MÓVILES */
-        #mobile-controls { display: none; position: absolute; bottom: 25px; left: 25px; z-index: 50; width: 140px; height: 140px; opacity: 0; transition: opacity 1s; }
-        .dpad-row { display: flex; justify-content: center; width: 100%; height: 33%; }
-        .dpad-btn { width: 45px; height: 45px; background: rgba(79,172,254,0.15); border: 1px solid rgba(79,172,254,0.4); border-radius: 12px; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); }
-        .dpad-btn:active { background: rgba(79,172,254,0.7); box-shadow: 0 0 10px #4facfe; }
+        /* JOYSTICK TÁCTIL PARA MÓVIL */
+        #joystick-zone { display: none; position: absolute; bottom: 30px; left: 30px; width: 130px; height: 130px; background: rgba(255,255,255,0.05); border: 2px solid rgba(79,172,254,0.3); border-radius: 50%; z-index: 50; touch-action: none; opacity: 0; transition: opacity 1s; }
+        #joystick-handle { position: absolute; top: 35px; left: 35px; width: 60px; height: 60px; background: rgba(79,172,254,0.4); border: 2px solid #4facfe; border-radius: 50%; pointer-events: none; transition: transform 0.05s linear; }
 
-        #action-controls { display: none; position: absolute; bottom: 35px; right: 25px; z-index: 50; opacity: 0; transition: opacity 1s; }
-        .action-btn { width: 65px; height: 65px; background: rgba(255,154,158,0.15); border: 2px solid rgba(255,154,158,0.4); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); }
-        .action-btn:active { background: rgba(255,154,158,0.7); transform: scale(0.9); box-shadow: 0 0 10px #ff9a9e; }
+        #action-controls { display: none; position: absolute; bottom: 40px; right: 30px; z-index: 50; opacity: 0; transition: opacity 1s; }
+        .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; }
+        .action-btn:active { background: rgba(255,154,158,0.7); transform: scale(0.9); box-shadow: 0 0 15px #ff9a9e; }
 
         @media (max-width: 768px) {
             .controls { display: none; } 
-            #mobile-controls { display: flex; flex-direction: column; }
+            #joystick-zone { display: block; }
             #action-controls { display: block; }
         }
     </style>
@@ -71,16 +69,12 @@
         Doble Salto: <span>[Espacio x2]</span>
     </div>
 
-    <div id="mobile-controls">
-        <div class="dpad-row"><div class="dpad-btn" id="btn-w">W</div></div>
-        <div class="dpad-row" style="justify-content: space-between;">
-            <div class="dpad-btn" id="btn-a">A</div>
-            <div class="dpad-btn" id="btn-s">S</div>
-            <div class="dpad-btn" id="btn-d">D</div>
-        </div>
+    <!-- Joystick Móvil -->
+    <div id="joystick-zone">
+        <div id="joystick-handle"></div>
     </div>
     <div id="action-controls">
-        <div class="action-btn" id="btn-jump">JUMP</div>
+        <div class="action-btn" id="btn-jump">SALTAR</div>
     </div>
 
     <div id="flash"></div>
@@ -124,7 +118,7 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
         container.appendChild(renderer.domElement);
 
-        // --- PARTÍCULAS DOBLES (Azul y Rosa) ---
+        // --- PARTÍCULAS DOBLES ---
         function createParticles(colorHex, count, size) {
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(count * 3);
@@ -152,6 +146,9 @@
         const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.18, jumpForce: 0.38, jumps: 2 };
         const keys = { w: false, a: false, s: false, d: false };
         let spacePressed = false;
+        
+        // Control direccional análogo (soporta teclado y joystick móvil)
+        let moveDir = { x: 0, z: 0 };
 
         function handleJump() {
             if(!spacePressed && !gamePaused && physics.jumps > 0) {
@@ -172,15 +169,55 @@
             if(e.code === 'Space') spacePressed = false;
         });
 
-        // Controles Táctiles
-        const bindTouch = (id, key) => {
-            const el = document.getElementById(id);
-            el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; }, {passive: false});
-            el.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; }, {passive: false});
+        // --- JOYSTICK TÁCTIL FUNCIONAL ---
+        const joystickZone = document.getElementById('joystick-zone');
+        const joystickHandle = document.getElementById('joystick-handle');
+        let joystickTouchId = null;
+        let joystickCenter = { x: 0, y: 0 };
+
+        joystickZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            joystickTouchId = touch.identifier;
+            const rect = joystickZone.getBoundingClientRect();
+            joystickCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        }, {passive: false});
+
+        joystickZone.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            for(let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                if(touch.identifier === joystickTouchId) {
+                    let dx = touch.clientX - joystickCenter.x;
+                    let dy = touch.clientY - joystickCenter.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const maxDist = 45;
+                    
+                    if(dist > maxDist) {
+                        dx = (dx / dist) * maxDist;
+                        dy = (dy / dist) * maxDist;
+                    }
+                    
+                    joystickHandle.style.transform = `translate(${dx}px, ${dy}px)`;
+                    moveDir.x = dx / maxDist;
+                    moveDir.z = dy / maxDist;
+                }
+            }
+        }, {passive: false});
+
+        const endJoystick = (e) => {
+            for(let i = 0; i < e.changedTouches.length; i++) {
+                if(e.changedTouches[i].identifier === joystickTouchId) {
+                    joystickTouchId = null;
+                    joystickHandle.style.transform = `translate(0px, 0px)`;
+                    moveDir.x = 0;
+                    moveDir.z = 0;
+                }
+            }
         };
-        bindTouch('btn-w', 'w'); bindTouch('btn-s', 's');
-        bindTouch('btn-a', 'a'); bindTouch('btn-d', 'd');
-        
+        joystickZone.addEventListener('touchend', endJoystick);
+        joystickZone.addEventListener('touchcancel', endJoystick);
+
         const btnJump = document.getElementById('btn-jump');
         btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); }, {passive: false});
         btnJump.addEventListener('touchend', (e) => { e.preventDefault(); spacePressed = false; }, {passive: false});
@@ -205,27 +242,26 @@
             mesh.scale.set(0.01, 0.01, 0.01);
             worldGroup.add(mesh);
             
-            // x, y, z se guardan para la colisión matemática (más rápida y precisa)
             platforms.push({ mesh, x, y, z, w, d, yTop: y + 1, active: false, world: worldId });
             return mesh;
         }
 
-        // MUNDO 1: Parkour (El mismo de tu index)
-        createPlatDef(0, 0, 0, 15, 15, 1); // 0 (Spawn)
-        createPlatDef(0, -2, -15, 12, 12, 1); // 1
-        createPlatDef(12, 1, -28, 12, 12, 1); // 2
-        createPlatDef(20, 5, -40, 10, 10, 1); // 3
-        createPlatDef(10, 9, -52, 10, 10, 1); // 4
-        createPlatDef(0, 13, -65, 15, 15, 1); // 5
-        createPlatDef(-15, 17, -78, 12, 12, 1); // 6
-        createPlatDef(-30, 20, -95, 18, 18, 1); // 7 (Final Parkour)
+        // MUNDO 1: Parkour (Intacto, tal cual lo pediste)[cite: 3]
+        createPlatDef(0, 0, 0, 15, 15, 1); 
+        createPlatDef(0, -2, -15, 12, 12, 1); 
+        createPlatDef(12, 1, -28, 12, 12, 1); 
+        createPlatDef(20, 5, -40, 10, 10, 1); 
+        createPlatDef(10, 9, -52, 10, 10, 1); 
+        createPlatDef(0, 13, -65, 15, 15, 1); 
+        createPlatDef(-15, 17, -78, 12, 12, 1); 
+        createPlatDef(-30, 20, -95, 18, 18, 1); 
 
-        // MUNDO 2: Camino Estelar (Creativo, Hermoso, Sin saltos difíciles)
-        // Un puente continuo y brillante
-        createPlatDef(0, 0, 0, 20, 25, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, 0, -25, 20, 25, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, 0, -50, 20, 25, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, 0, -75, 25, 30, 2, 0x0a0a1a, 0xff9a9e); // Plataforma final mundo 2
+        // MUNDO 2: NUEVO PASADIZO ESTELAR (Estructuras seguras, sin vacíos mortales)
+        createPlatDef(0, -250, 0, 18, 18, 2, 0x0a0a1a, 0xff9a9e);
+        createPlatDef(0, -248, -18, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
+        createPlatDef(10, -246, -36, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
+        createPlatDef(-10, -244, -54, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
+        createPlatDef(0, -242, -72, 20, 20, 2, 0x0a0a1a, 0xff9a9e); // Plataforma final de llegada
 
         // MUNDO 3: El Tablero de Ajedrez
         const tileSize = 20;
@@ -236,22 +272,22 @@
             }
         }
 
-        // --- MEMORIAS / FRAGMENTOS ---
+        // --- MEMORIAS / PORTALES ---
         const memData = [
             // MUNDO 1
-            { world: 1, pIdx: 2, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
-            { world: 1, pIdx: 5, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
-            { world: 1, pIdx: 6, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
-            { world: 1, pIdx: 7, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: 2 },
+            { world: 1, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
+            { world: 1, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida. A pesar del lag de la vida." },
+            { world: 1, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
+            { world: 1, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial. Confía en mí.", isPortal: 2 },
             
             // MUNDO 2
-            { world: 2, pIdx: 3, pos: [0, 3, -75], title: "Camino Estelar", text: "No todo tiene que ser un salto al vacío. A veces, la mayor aventura es simplemente caminar a tu lado hacia el futuro.", isPortal: 3 },
+            { world: 2, pos: [0, -240, -72], title: "Camino Estelar", text: "No todo tiene que ser un salto al vacío. A veces, la mayor aventura es simplemente caminar a tu lado hacia el futuro.", isPortal: 3 },
             
             // MUNDO 3
-            { world: 3, pIdx: 0, pos: [0, 3, 0], title: "Jaque Mate de mi Vida", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 2 meses donde mi mundo cambió. Eres el sistema operativo de mi corazón, la jugada perfecta.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu victoria. ¡Feliz Aniversario mi Reina Blanca! ❤️", isFinal: true }
+            { world: 3, pos: [0, 3, 0], title: "Jaque Mate de mi Vida", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 2 meses donde mi mundo cambió. Eres el sistema operativo de mi corazón, la jugada perfecta.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu victoria. ¡Feliz Aniversario mi Reina Blanca! ❤️", isFinal: true }
         ];
 
-        const memGeo = new THREE.OctahedronGeometry(1.2, 0); // Diseño estelar
+        const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
         const memM = new THREE.MeshBasicMaterial({ color: 0xffd700, wireframe: true });
 
         memData.forEach(d => {
@@ -270,7 +306,7 @@
                 document.getElementById('start-screen').style.display = 'none';
                 document.getElementById('main-hud').style.opacity = '1';
                 document.getElementById('main-controls').style.opacity = '1';
-                document.getElementById('mobile-controls').style.opacity = '1';
+                document.getElementById('joystick-zone').style.opacity = '1';
                 document.getElementById('action-controls').style.opacity = '1';
                 fadeAudio(audioGolden, null);
                 loadWorld(1);
@@ -290,15 +326,12 @@
             physics.vel.set(0,0,0);
             gamePaused = false;
 
-            // Limpiar y configurar plataformas y memorias según el mundo
             platforms.forEach((p, idx) => {
                 if(p.world === worldId) {
                     if (worldId === 1) {
-                        // En el mundo 1 se activan progresivamente
                         p.active = false; p.mesh.visible = false;
                         if(idx === 0 || idx === 1) activatePlatform(idx);
                     } else {
-                        // En mundo 2 y 3 se activa todo el mapa
                         p.active = true; p.mesh.visible = true; p.mesh.scale.set(0.01, 0.01, 0.01);
                     }
                 } else {
@@ -316,16 +349,15 @@
                 document.getElementById('hud-world').innerText = "El Abismo Dorado";
                 document.getElementById('hud-world').style.color = "#00f2fe";
             } else if (worldId === 2) {
-                player.position.set(0, 5, 20); // Aparece al inicio del puente
+                player.position.set(0, -245, 0); // Posición segura exacta sobre la estructura del Mundo 2
                 document.getElementById('hud-world').innerText = "El Paseo Estelar";
                 document.getElementById('hud-world').style.color = "#ff9a9e";
             } else if (worldId === 3) {
-                player.position.set(0, 10, 30); // Aparece en un borde del tablero
+                player.position.set(0, 10, 30); 
                 document.getElementById('hud-world').innerText = "El Tablero";
                 document.getElementById('hud-world').style.color = "#a855f7";
             }
             
-            // Forzar actualización de cámara sin transición brusca
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
 
@@ -361,29 +393,32 @@
             }, 1500);
         }
 
-        // --- BUCLE PRINCIPAL Y FÍSICAS ESTRICTAS ---
+        // --- BUCLE PRINCIPAL DE JUEGO ---
         function animate() {
             requestAnimationFrame(animate);
 
-            // Animación de aparición de plataformas
             platforms.forEach(p => {
                 if(p.active && p.mesh.scale.x < 1) p.mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
             });
 
             if(!gamePaused) {
+                // Calcular movimiento combinando Teclado (WASD) y Joystick análogo táctil
                 let mX = 0, mZ = 0;
                 if(keys.w) mZ -= physics.speed;
                 if(keys.s) mZ += physics.speed;
                 if(keys.a) mX -= physics.speed;
                 if(keys.d) mX += physics.speed;
 
-                // 1. Aplicar movimiento horizontal
+                if(Math.abs(moveDir.x) > 0.05 || Math.abs(moveDir.z) > 0.05) {
+                    mX = moveDir.x * physics.speed;
+                    mZ = moveDir.z * physics.speed;
+                }
+
                 player.position.x += mX;
                 player.position.z += mZ;
                 physics.vel.x = mX; 
                 physics.vel.z = mZ;
 
-                // 2. Aplicar gravedad y guardar la posición Y anterior
                 let oldY = player.position.y;
                 physics.vel.y += physics.grav;
                 player.position.y += physics.vel.y;
@@ -391,11 +426,9 @@
                 let floorY = -9999;
                 let landedIndex = -1;
 
-                // 3. Sistema de colisión estricto (Anti-traspaso)
                 platforms.forEach((p, i) => {
                     if(!p.active || p.world !== currentWorld) return;
                     
-                    // Verificación en X y Z (con un pequeño margen de radio de colisión)
                     const marginX = (p.w / 2) + 1.2;
                     const marginZ = (p.d / 2) + 1.2;
                     
@@ -403,9 +436,6 @@
                         Math.abs(player.position.z - p.z) <= marginZ) {
                         
                         const top = p.yTop;
-                        
-                        // ¿La base del jugador cruzó la superficie de la plataforma en este frame?
-                        // (Dando un margen seguro por si la velocidad de caída es muy alta)
                         const oldBase = oldY - 1.0;
                         const newBase = player.position.y - 1.0;
                         
@@ -418,13 +448,11 @@
                     }
                 });
 
-                // Si hay colisión con el suelo, corregir posición Y
                 if (floorY !== -9999 && physics.vel.y <= 0) {
                     player.position.y = floorY + 1.0;
                     physics.vel.y = 0;
-                    physics.jumps = 2; // Recargar saltos
+                    physics.jumps = 2; 
                     
-                    // Progresión de plataformas (Solo en Mundo 1)
                     if (currentWorld === 1 && landedIndex >= highestPlatIndex) {
                         highestPlatIndex = landedIndex;
                         activatePlatform(highestPlatIndex + 1);
@@ -432,19 +460,21 @@
                     }
                 }
 
-                // Caída al vacío (Reinicio)
-                if(player.position.y < -35) {
+                // Límites de caída al vacío adaptados de forma segura por mundo
+                let voidLimit = -40;
+                if(currentWorld === 2) voidLimit = -280;
+                if(currentWorld === 3) voidLimit = -30;
+
+                if(player.position.y < voidLimit) {
                     if(currentWorld === 1) player.position.set(0, 5, 0);
-                    if(currentWorld === 2) player.position.set(0, 5, 20);
+                    if(currentWorld === 2) player.position.set(0, -245, 0);
                     if(currentWorld === 3) player.position.set(0, 10, 30);
                     physics.vel.set(0,0,0);
                 }
 
-                // Interacción con Memorias
                 memories.forEach(m => {
                     m.mesh.rotation.y += 0.05; m.mesh.rotation.x += 0.02;
                     if(m.data.world === currentWorld && m.mesh.visible && !m.collected) {
-                        // Rango de recolección seguro (distancia < 3.5)
                         if(player.position.distanceTo(m.mesh.position) < 3.5) {
                             m.collected = true; 
                             m.mesh.visible = false;
@@ -454,13 +484,11 @@
                 });
             }
 
-            // Animación suave de partículas
             particlesCyan.rotation.y += 0.001;
             particlesCyan.rotation.x += 0.0005;
             particlesPink.rotation.y -= 0.001;
             particlesPink.rotation.z += 0.0005;
             
-            // --- EFECTO DE CÁMARA (Suave y con Trailing) ---
             let targetCamX = player.position.x;
             let targetCamY = player.position.y + 7;
             let targetCamZ = player.position.z + 18;
