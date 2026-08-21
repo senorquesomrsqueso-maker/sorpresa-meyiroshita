@@ -51,7 +51,7 @@
 
     <div id="start-screen">
         <h1>El Universo de Meyiroshira</h1>
-        <p>Sincronizando sistemas de alta optimización...<br>Sube el volumen y prepárate.</p>
+        <p>Sincronizando sistemas y mundo secreto...<br>Sube el volumen y prepárate.</p>
         <button class="btn-start" onclick="startGame()">Conectar</button>
     </div>
 
@@ -109,10 +109,9 @@
         const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 900);
         const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" }); 
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Optimizado para PC y Móvil
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         container.appendChild(renderer.domElement);
 
-        // Planetas de fondo decorativos
         const planetGeo = new THREE.SphereGeometry(15, 16, 16);
         const planetMat = new THREE.MeshBasicMaterial({ color: 0xff9a9e, wireframe: true });
         const bgPlanet = new THREE.Mesh(planetGeo, planetMat);
@@ -165,7 +164,6 @@
             if(keys.hasOwnProperty(k)) keys[k] = false;
         });
 
-        // Joystick Táctil Móvil
         const joystickZone = document.getElementById('joystick-zone');
         const joystickHandle = document.getElementById('joystick-handle');
         let joystickTouchId = null;
@@ -244,20 +242,20 @@
         createPlatDef(-15, 17, -78, 12, 12, 1); 
         createPlatDef(-30, 20, -95, 18, 18, 1); 
 
-        // MUNDO 2: Paseo Estelar (Secreto ajustado por encima)
+        // MUNDO 2: Paseo Estelar
         createPlatDef(0, -250, 0, 18, 18, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(0, -248, -18, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(10, -246, -36, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(-10, -244, -54, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
         createPlatDef(0, -242, -72, 20, 20, 2, 0x0a0a1a, 0xff9a9e);
 
-        // MUNDO 3: Pasaje Cósmico (Distancias accesibles)
+        // MUNDO 3: Pasaje Cósmico
         createPlatDef(0, -500, 0, 20, 20, 3, 0x05101a, 0x00f2fe);
         createPlatDef(0, -498, -20, 14, 14, 3, 0x05101a, 0x00f2fe);
         createPlatDef(0, -496, -40, 14, 14, 3, 0x05101a, 0x00f2fe);
         createPlatDef(0, -494, -60, 20, 20, 3, 0x05101a, 0x00f2fe);
 
-        // MUNDO 4: Arcade Ascendente (Escalones hacia arriba con planetas)
+        // MUNDO 4: Arcade Ascendente
         createPlatDef(0, -750, 0, 16, 16, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(8, -746, -15, 12, 12, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
@@ -272,6 +270,10 @@
             }
         }
 
+        // MUNDO 6: Mundo Secreto del Cofre (Solo accesible con los 3 Easter Eggs)
+        createPlatDef(0, -1250, 0, 22, 22, 6, 0x1a001a, 0xff00ff);
+        createPlatDef(0, -1246, -25, 15, 15, 6, 0x1a001a, 0xff00ff);
+
         // Memorias y Portales
         const memData = [
             { world: 1, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
@@ -285,7 +287,9 @@
             
             { world: 4, pos: [0, -734, -45], title: "Nivel Superado: Arcade Ascendente", text: "Subiendo cada escalón de la vida juntos.", isPortal: 5 },
             
-            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Carta Gigante)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true }
+            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Carta Gigante)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true, checkSecret: true },
+
+            { world: 6, pos: [0, -1242, -25], title: "Cofre Secreto del Aniversario", text: "✨ ¡Has abierto el cofre secreto definitivo!\n\nEste nivel solo se desbloquea para la jugadora más especial del universo. Gracias por todos los momentos, risas y por ser mi compañera de equipo incondicional. ¡Te amo muchísimo!", isSecretFinal: true }
         ];
 
         const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
@@ -299,7 +303,7 @@
             memories.push({ mesh: m, data: d, collected: false });
         });
 
-        // 3 Easter Eggs (Ubicados perfectamente por encima de las estructuras)
+        // 3 Easter Eggs (Por encima de las estructuras)
         const eeData = [
             { world: 2, pos: [10, -243, -36], name: "Fragmento Secreto 1" },
             { world: 3, pos: [0, -491, -40], name: "Fragmento Secreto 2" },
@@ -371,8 +375,9 @@
             else if(worldId === 3) player.position.set(0, -495, 0);
             else if(worldId === 4) player.position.set(0, -745, 0);
             else if(worldId === 5) player.position.set(0, -995, 30);
+            else if(worldId === 6) player.position.set(0, -1245, 0);
 
-            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "El Tablero Real"];
+            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "El Tablero Real", "Mundo Secreto: Cofre de los Recuerdos"];
             document.getElementById('hud-world').innerText = names[worldId];
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
@@ -383,19 +388,15 @@
             document.getElementById('msg-title').innerText = data.title;
             
             let textToShow = data.text;
-            if(data.isFinal && easterEggsFound === 3) {
-                textToShow += "\n\n✨ ¡INCREÍBLE! Encontraste los 3 Easter Eggs ocultos.\n🎁 Cofre Secreto Abierto: ¡Feliz Tercer Aniversario Meyiroshira! Te amo con todo mi ser.";
-            }
-
             document.getElementById('msg-text').innerHTML = textToShow.replace(/\n/g, '<br>');
             
             const btn = document.querySelector('.btn-continue');
             if(data.isPortal) {
                 btn.innerText = "Siguiente Nivel";
                 btn.onclick = () => transitionToWorld(data.isPortal);
-            } else if(data.isFinal) {
-                btn.innerText = "Te Amo";
-                btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); gamePaused=false; };
+            } else if(data.checkSecret && easterEggsFound === 3) {
+                btn.innerText = "Abrir Mundo Secreto";
+                btn.onclick = () => transitionToWorld(6);
             } else {
                 btn.innerText = "Seguir";
                 btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); setTimeout(()=>gamePaused=false, 200); };
@@ -406,7 +407,7 @@
         function transitionToWorld(worldId) {
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
-            if (worldId === 5) fadeAudio(audioImpostor, audioGolden);
+            if (worldId === 5 || worldId === 6) fadeAudio(audioImpostor, audioGolden);
 
             setTimeout(() => {
                 loadWorld(worldId);
@@ -473,6 +474,7 @@
                 if(currentWorld === 3) voidLimit = -530;
                 if(currentWorld === 4) voidLimit = -780;
                 if(currentWorld === 5) voidLimit = -1030;
+                if(currentWorld === 6) voidLimit = -1280;
 
                 if(player.position.y < voidLimit) {
                     loadWorld(currentWorld);
