@@ -262,7 +262,7 @@
         createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(0, -738, -45, 18, 18, 4, 0x1a0a1a, 0xa855f7);
 
-        // MUNDO 5: Tablero Real con Carta Gigante (antes Mundo 7, ahora conectado directo al Arcade)
+        // MUNDO 5: Tablero Real con Carta Gigante
         const tileSize = 20;
         for(let r=0; r<6; r++) {
             for(let c=0; c<6; c++) {
@@ -288,9 +288,9 @@
             
             { world: 4, pos: [0, -734, -45], title: "Nivel Superado: Arcade Ascendente", text: "Subiendo cada escalón de la vida juntos.", isPortal: 5 },
 
-            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Carta Gigante)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nHan sido 3 meses maravillosos donde mi mundo cambió por completo. Eres el sistema operativo de mi corazón, la jugada perfecta en esta partida llamada vida.\n\nPrometo seguir perdiendo en ajedrez con tal de ver tu hermosa sonrisa y tu victoria. ¡Feliz Tercer Aniversario mi Reina Blanca! ❤️", isFinal: true, checkSecret: true },
+            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Sistema de Ajedrez 2D)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nEste sistema de ajedrez 2D y nuestro multiverso representan cada jugada perfecta que hacemos juntos. ¡Has llegado hasta aquí superando cada reto!\n\nReúne los 4 fragmentos estelares ocultos en este tablero para abrir el Cofre Secreto Final.", isFinal: true, checkSecret: true },
 
-            { world: 6, pos: [0, -1242, -25], title: "Cofre Secreto del Aniversario", text: "✨ ¡Has abierto el cofre secreto definitivo!\n\nEste nivel solo se desbloquea para la jugadora más especial del universo al recolectar todos los fragmentos. ¡Te amo muchísimo!", isSecretFinal: true }
+            { world: 6, pos: [0, -1242, -25], title: "✨ ¡Feliz Aniversario Meyiroshira! ✨", text: "Has abierto el Cofre Secreto Final del Aniversario recabando cada fragmento estelar de nuestro sistema 2D.\n\nGracias por ser la jugadora más importante de mi vida, por cada risa, cada partida y cada segundo a tu lado. ¡Te amo con todo mi corazón por siempre! ❤️", isSecretFinal: true }
         ];
 
         const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
@@ -386,7 +386,7 @@
             else if(worldId === 5) player.position.set(0, -995, 30);
             else if(worldId === 6) player.position.set(0, -1245, 0);
 
-            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "El Tablero Real", "✨ Mundo Secreto: Cofre Final ✨"];
+            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "Tablero de Ajedrez 2D", "✨ ¡Mundo Secreto: Cofre Final! ✨"];
             document.getElementById('hud-world').innerText = names[worldId];
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
@@ -404,7 +404,7 @@
                 btn.innerText = "Siguiente Nivel";
                 btn.onclick = () => transitionToWorld(data.isPortal);
             } else if(data.checkSecret && easterEggsFound === 4) {
-                btn.innerText = "🔓 Entrar al Mundo Secreto del Cofre";
+                btn.innerText = "🔓 Abrir el Cofre Secreto Final";
                 btn.onclick = () => transitionToWorld(6);
             } else {
                 btn.innerText = "Seguir";
