@@ -51,7 +51,7 @@
 
     <div id="start-screen">
         <h1>El Universo de Meyiroshira</h1>
-        <p>Sincronizando mundos separados (Avión y Parkour)...<br>Sube el volumen y prepárate.</p>
+        <p>Sincronizando sistemas y mundos adicionales...<br>Sube el volumen y prepárate.</p>
         <button class="btn-start" onclick="startGame()">Conectar</button>
     </div>
 
@@ -262,12 +262,10 @@
         createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
         createPlatDef(0, -738, -45, 18, 18, 4, 0x1a0a1a, 0xa855f7);
 
-        // MUNDO 5: Mundo del Avión (Vuelo vertical hacia arriba)
-        createPlatDef(0, -1000, 0, 25, 6, 5, 0x002244, 0x00ffff); // Ala del avión base
-        createPlatDef(0, -990, -15, 12, 20, 5, 0x003366, 0x00ffff); // Cuerpo principal del avión
-        createPlatDef(0, -975, -15, 10, 10, 5, 0x004488, 0x00ffff); // Escala de vuelo intermedia del avión
-        createPlatDef(0, -955, -15, 8, 8, 5, 0x0055aa, 0x00ffff); // Zona alta del vuelo del avión
-        createPlatDef(0, -935, -15, 14, 14, 5, 0x002244, 0x00ffff); // Plataforma culminante del avión
+        // MUNDO 5: Mundo del Avión (Estructura original de vuelo vertical exacto)[cite: 2]
+        createPlatDef(0, -1000, 0, 25, 6, 5, 0x002244, 0x00ffff); // Ala del avión
+        createPlatDef(0, -995, -15, 10, 18, 5, 0x003366, 0x00ffff); // Cuerpo del avión
+        createPlatDef(0, -990, -30, 8, 8, 5, 0x111122, 0xff00ff); // Punta del avión ascendente
 
         // MUNDO 6: Mundo de Parkour Extremo (Adicional separado)
         createPlatDef(0, -1150, 0, 12, 12, 6, 0x330033, 0xff00ff);
@@ -302,7 +300,7 @@
             
             { world: 4, pos: [0, -734, -45], title: "Nivel Superado: Arcade Ascendente", text: "Subiendo cada escalón de la vida juntos.", isPortal: 5 },
 
-            { world: 5, pos: [0, -930, -15], title: "El Mundo del Avión", text: "✈️ ¡Has completado el vuelo vertical del avión hacia las alturas con éxito!", isPortal: 6 },
+            { world: 5, pos: [0, -986, -30], title: "El Mundo del Avión", text: "✈️ ¡Has completado el vuelo vertical del avión hacia las alturas con éxito!", isPortal: 6 },
 
             { world: 6, pos: [0, -1125, -72], title: "Mundo de Parkour Extremo", text: "🧗‍♂️ ¡Has superado todos los saltos de precisión en el mundo adicional de parkour!", isPortal: 7 },
             
@@ -327,7 +325,7 @@
             { world: 2, pos: [10, -243, -36], name: "Fragmento Estelar 1" },
             { world: 3, pos: [0, -491, -40], name: "Fragmento Estelar 2" },
             { world: 4, pos: [-8, -739, -30], name: "Fragmento Estelar 3" },
-            { world: 5, pos: [0, -970, -15], name: "Fragmento Estelar 4 (Avión)" },
+            { world: 5, pos: [0, -986, -15], name: "Fragmento Estelar 4 (Avión)" },[cite: 2]
             { world: 6, pos: [-10, -1136, -36], name: "Fragmento Estelar 5 (Parkour)" },
             { world: 7, pos: [15, -1347, 15], name: "Fragmento Estelar 6 (Ajedrez)" }
         ];
@@ -396,7 +394,7 @@
             else if(worldId === 2) player.position.set(0, -245, 0);
             else if(worldId === 3) player.position.set(0, -495, 0);
             else if(worldId === 4) player.position.set(0, -745, 0);
-            else if(worldId === 5) player.position.set(0, -995, 0); // Mundo Avión (inicio abajo subiendo)
+            else if(worldId === 5) player.position.set(0, -995, 10); // Posición inicial del Avión
             else if(worldId === 6) player.position.set(0, -1145, 0); // Mundo Parkour
             else if(worldId === 7) player.position.set(0, -1345, 30); // Tablero Real
             else if(worldId === 8) player.position.set(0, -1595, 0); // Mundo Secreto Cofre Final
