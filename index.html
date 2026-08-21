@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Un Universo Para Ti ✨ - Tercer Aniversario</title>
+    <title>El Multiverso Definitivo Para Ti ✨ - Tercer Aniversario</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Nunito:wght@300;400;700&display=swap');
 
         body { margin: 0; padding: 0; overflow: hidden; background: #010103; font-family: 'Nunito', sans-serif; user-select: none; color: white; touch-action: none; }
         #game-canvas { width: 100vw; height: 100vh; position: absolute; z-index: 1; }
 
-        #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; pointer-events: auto; }
+        /* Lienzo 2D para el gran final explosivo de estrellas */
+        #canvas-2d { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2; pointer-events: none; display: none; background: #000; }
+
+        #start-screen { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a1a; z-index: 200; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; transition: opacity 1s ease; }
         #start-screen h1 { font-family: 'Cinzel', serif; font-size: 2.8em; color: #4facfe; margin-bottom: 10px; padding: 0 20px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.5);}
         #start-screen p { font-size: 1.1em; color: #cbd5e1; max-width: 90%; margin-bottom: 30px; }
-        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); transition: all 0.3s; z-index: 1000; -webkit-tap-highlight-color: transparent; }
-        .btn-start:active { transform: scale(0.95); background: rgba(79, 172, 254, 0.2); }
+        .btn-start { background: #000; border: 2px solid #4facfe; color: #4facfe; padding: 12px 40px; font-size: 1.2em; font-family: 'Cinzel', serif; border-radius: 30px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); transition: all 0.3s; }
+        .btn-start:active { transform: scale(0.95); }
         
-        .hud { position: absolute; top: 15px; left: 15px; z-index: 10; background: rgba(5,5,15,0.85); padding: 15px; border-radius: 12px; border-left: 3px solid #00f2fe; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 1s; pointer-events: none; }
+        .hud { position: absolute; top: 15px; left: 15px; z-index: 10; background: rgba(5,5,15,0.85); padding: 15px; border-radius: 12px; border-left: 3px solid #00f2fe; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 1s; }
         .hud h2 { margin: 0 0 5px 0; font-family: 'Cinzel', serif; color: #fff; font-size: 1.2em; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
         .hud p { margin: 0; color: #a0aec0; font-size: 0.9em; font-weight: bold;}
 
-        .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.85em; border-right: 2px solid #4facfe; pointer-events: none; }
+        .controls { position: absolute; bottom: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 10px; text-align: right; color: #cbd5e1; opacity: 0; font-size: 0.85em; border-right: 2px solid #4facfe; }
         .controls span { color: #4facfe; font-weight: bold; }
 
         .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 550px; background: rgba(5,5,18,0.97); padding: 40px; border-radius: 20px; border: 2px solid #ff9a9e; z-index: 100; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; box-shadow: 0 0 40px rgba(255,154,158,0.4); max-height: 85vh; overflow-y: auto; }
         .modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
         .modal h1 { font-family: 'Cinzel', serif; color: #ff9a9e; font-size: 2em; margin-top: 0; text-shadow: 0 0 10px rgba(255, 154, 158, 0.5); }
         .modal p { font-size: 1.1em; line-height: 1.7; color: #e2e8f0; margin-bottom: 25px; text-align: left; white-space: pre-line; }
-        .btn-continue { background: linear-gradient(45deg, #ff9a9e, #4facfe); border: none; padding: 14px 40px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(255,154,158,0.5); z-index: 101; }
+        .btn-continue { background: linear-gradient(45deg, #ff9a9e, #4facfe); border: none; padding: 14px 40px; color: #000; font-weight: bold; font-size: 1.1em; border-radius: 25px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 0 15px rgba(255,154,158,0.5); }
         .btn-continue:active { transform: scale(0.95); }
 
         #flash { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: white; z-index: 150; opacity: 0; pointer-events: none; transition: opacity 1.5s; }
@@ -36,7 +39,7 @@
         #joystick-handle { position: absolute; top: 35px; left: 35px; width: 60px; height: 60px; background: rgba(79,172,254,0.4); border: 2px solid #4facfe; border-radius: 50%; pointer-events: none; transition: transform 0.05s linear; }
 
         #action-controls { display: none; position: absolute; bottom: 35px; right: 25px; z-index: 50; opacity: 0; transition: opacity 1s; }
-        .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; -webkit-tap-highlight-color: transparent; }
+        .action-btn { width: 75px; height: 75px; background: rgba(255,154,158,0.2); border: 2px solid rgba(255,154,158,0.5); border-radius: 50%; color: white; font-weight: bold; display: flex; align-items: center; justify-content: center; user-select: none; backdrop-filter: blur(2px); font-family: 'Cinzel', serif; font-size: 0.9em; }
         .action-btn:active { background: rgba(255,154,158,0.7); transform: scale(0.9); box-shadow: 0 0 15px #ff9a9e; }
 
         @media (max-width: 768px) {
@@ -50,30 +53,31 @@
 <body>
 
     <div id="start-screen">
-        <h1>El Universo de Meyiroshira</h1>
-        <p>Sincronizando sistemas y mundos adicionales...<br>Sube el volumen y prepárate.</p>
-        <button class="btn-start" id="start-btn">Conectar</button>
+        <h1>El Multiverso de Meyiroshira</h1>
+        <p>Sincronizando mundos abiertos, simulador de vuelo, ajedrez y sorpresa 2D...<br>Sube el volumen y prepárate.</p>
+        <button class="btn-start" onclick="startGame()">Conectar al Multiverso</button>
     </div>
 
     <div class="hud" id="main-hud">
-        <h2>Proyecto Eternidad</h2>
-        <p>Mundo: <span id="hud-world" style="color: #4facfe;">El Abismo Dorado</span></p>
-        <p>Fragmentos Estelares: <span id="easter-score" style="color: #ffd700;">0</span> / 4</p>
+        <h2>Proyecto Eternidad Gigante</h2>
+        <p>Mundo: <span id="hud-world" style="color: #4facfe;">Mundo Abierto Inicial</span></p>
+        <p>Fragmentos: <span id="easter-score" style="color: #ffd700;">0</span> / 3</p>
     </div>
 
     <div class="controls" id="main-controls">
         Mover: <span>[W A S D]</span><br>
-        Doble Salto: <span>[Espacio x2]</span>
+        Salto / Vuelo: <span>[Espacio]</span>
     </div>
 
     <div id="joystick-zone">
         <div id="joystick-handle"></div>
     </div>
     <div id="action-controls">
-        <div class="action-btn" id="btn-jump">SALTAR</div>
+        <div class="action-btn" id="btn-jump">ACCIÓN</div>
     </div>
 
     <div id="flash"></div>
+    <canvas id="canvas-2d"></canvas>
 
     <div class="modal" id="msg-modal">
         <h1 id="msg-title"></h1>
@@ -104,27 +108,27 @@
 
         const container = document.getElementById('game-canvas');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x010103, 0.010);
+        scene.fog = new THREE.FogExp2(0x010103, 0.008);
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 900);
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1500);
         const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "high-performance" }); 
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         container.appendChild(renderer.domElement);
 
-        const planetGeo = new THREE.SphereGeometry(15, 16, 16);
+        const planetGeo = new THREE.SphereGeometry(25, 16, 16);
         const planetMat = new THREE.MeshBasicMaterial({ color: 0xff9a9e, wireframe: true });
         const bgPlanet = new THREE.Mesh(planetGeo, planetMat);
-        bgPlanet.position.set(60, -400, -100);
+        bgPlanet.position.set(100, -200, -200);
         scene.add(bgPlanet);
 
         function createParticles(colorHex, count, size) {
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(count * 3);
             for(let i=0; i<count; i++) {
-                pPos[i*3] = (Math.random() - 0.5) * 500;
-                pPos[i*3+1] = (Math.random() - 0.5) * 2000;
-                pPos[i*3+2] = (Math.random() - 0.5) * 500;
+                pPos[i*3] = (Math.random() - 0.5) * 800;
+                pPos[i*3+1] = (Math.random() - 0.5) * 800;
+                pPos[i*3+2] = (Math.random() - 0.5) * 800;
             }
             pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
             const pMat = new THREE.PointsMaterial({ color: colorHex, size: size, transparent: true, opacity: 0.6 });
@@ -132,33 +136,53 @@
             scene.add(pSys);
             return pSys;
         }
-        const particlesCyan = createParticles(0x4facfe, 400, 1.8);
-        const particlesPink = createParticles(0xff9a9e, 350, 1.5);
-        const particlesGold = createParticles(0xffd700, 250, 2.0);
+        const particlesCyan = createParticles(0x4facfe, 300, 1.5);
+        const particlesPink = createParticles(0xff9a9e, 250, 1.2);
 
+        // Jugador / Vehículo actual
         const playerGeo = new THREE.SphereGeometry(1, 10, 10); 
         const playerMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true }); 
         const player = new THREE.Mesh(playerGeo, playerMat);
         player.position.set(0, 5, 0);
         scene.add(player);
 
-        const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.18, jumpForce: 0.38, jumps: 2 };
+        // Geometría especial para el minijuego de Avión en Vuelo (Mundo 3)
+        const planeGroup = new THREE.Group();
+        const bodyGeo = new THREE.BoxGeometry(0.8, 0.5, 2.5);
+        const bodyMat = new THREE.MeshBasicMaterial({ color: 0xff9a9e, wireframe: true });
+        const planeBody = new THREE.Mesh(bodyGeo, bodyMat);
+        planeGroup.add(planeBody);
+        const wingGeo = new THREE.BoxGeometry(3.5, 0.1, 1);
+        const wingMat = new THREE.MeshBasicMaterial({ color: 0x4facfe, wireframe: true });
+        const planeWing = new THREE.Mesh(wingGeo, wingMat);
+        planeGroup.add(planeWing);
+        planeGroup.visible = false;
+        scene.add(planeGroup);
+
+        const physics = { vel: new THREE.Vector3(), grav: -0.015, speed: 0.22, jumpForce: 0.38, jumps: 2 };
         const keys = { w: false, a: false, s: false, d: false };
         let moveDir = { x: 0, z: 0 };
         let easterEggsFound = 0;
+        let isExplosion2DActive = false;
 
-        function handleJump(e) {
+        function handleAction(e) {
             if(e) e.preventDefault();
-            if(!gamePaused && physics.jumps > 0) {
-                physics.vel.y = physics.jumpForce;
-                physics.jumps--;
+            if(isExplosion2DActive) return;
+            if(!gamePaused) {
+                if(currentWorld === 3) {
+                    // Impulso en modo avión
+                    physics.vel.y += 0.25;
+                } else if(physics.jumps > 0) {
+                    physics.vel.y = physics.jumpForce;
+                    physics.jumps--;
+                }
             }
         }
 
         window.addEventListener('keydown', e => {
             const k = e.key.toLowerCase();
             if(keys.hasOwnProperty(k)) keys[k] = true;
-            if(e.code === 'Space') handleJump(e);
+            if(e.code === 'Space') handleAction(e);
         });
         window.addEventListener('keyup', e => {
             const k = e.key.toLowerCase();
@@ -208,7 +232,7 @@
         joystickZone.addEventListener('touchcancel', endJoystick);
 
         const btnJump = document.getElementById('btn-jump');
-        btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(e); }, {passive: false});
+        btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); handleAction(e); }, {passive: false});
 
         const platforms = [];
         const memories = [];
@@ -227,70 +251,58 @@
             mesh.add(line);
             
             mesh.visible = false;
-            mesh.scale.set(0.01, 0.01, 0.01);
             worldGroup.add(mesh);
             platforms.push({ mesh, x, y, z, w, d, yTop: y + 1, active: false, world: worldId });
             return mesh;
         }
 
-        // MUNDO 1: Parkour Inicial
-        createPlatDef(0, 0, 0, 15, 15, 1); 
-        createPlatDef(0, -2, -15, 12, 12, 1); 
-        createPlatDef(12, 1, -28, 12, 12, 1); 
-        createPlatDef(20, 5, -40, 10, 10, 1); 
-        createPlatDef(10, 9, -52, 10, 10, 1); 
-        createPlatDef(0, 13, -65, 15, 15, 1); 
-        createPlatDef(-15, 17, -78, 12, 12, 1); 
-        createPlatDef(-30, 20, -95, 18, 18, 1); 
+        // MUNDO 1: Mundo Abierto Gigante (Islas flotantes interconectadas)
+        createPlatDef(0, 0, 0, 40, 40, 1, 0x070716, 0x00f2fe);
+        createPlatDef(45, 3, -30, 20, 20, 1, 0x070716, 0x00f2fe);
+        createPlatDef(-45, 6, -50, 25, 25, 1, 0x070716, 0x00f2fe);
+        createPlatDef(0, 12, -90, 30, 30, 1, 0x070716, 0x00f2fe);
 
-        // MUNDO 2: Paseo Estelar
-        createPlatDef(0, -250, 0, 18, 18, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, -248, -18, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(10, -246, -36, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(-10, -244, -54, 14, 14, 2, 0x0a0a1a, 0xff9a9e);
-        createPlatDef(0, -242, -72, 20, 20, 2, 0x0a0a1a, 0xff9a9e);
+        // MUNDO 2: Parkour de Precisión (Torre Ascendente)
+        for(let i=0; i<10; i++) {
+            createPlatDef((i%2===0?1:-1)*(10 + i*3), -200 - (i*10), - (i*15), 12, 12, 2, 0x0a0a1a, 0xff9a9e);
+        }
 
-        // MUNDO 3: Pasaje Cósmico
-        createPlatDef(0, -500, 0, 20, 20, 3, 0x05101a, 0x00f2fe);
-        createPlatDef(0, -498, -20, 14, 14, 3, 0x05101a, 0x00f2fe);
-        createPlatDef(0, -496, -40, 14, 14, 3, 0x05101a, 0x00f2fe);
-        createPlatDef(0, -494, -60, 20, 20, 3, 0x05101a, 0x00f2fe);
+        // MUNDO 3: Simulación de Avión en Vuelo (Rutas aéreas cósmicas)
+        for(let i=0; i<8; i++) {
+            createPlatDef(Math.sin(i)*30, -450 - (i*8), - (i*35), 18, 18, 3, 0x05101a, 0xffd700);
+        }
 
-        // MUNDO 4: Arcade Ascendente
-        createPlatDef(0, -750, 0, 16, 16, 4, 0x1a0a1a, 0xa855f7);
-        createPlatDef(8, -746, -15, 12, 12, 4, 0x1a0a1a, 0xa855f7);
-        createPlatDef(-8, -742, -30, 12, 12, 4, 0x1a0a1a, 0xa855f7);
-        createPlatDef(0, -738, -45, 18, 18, 4, 0x1a0a1a, 0xa855f7);
+        // MUNDO 4: Multijugador / Arcade Arena
+        createPlatDef(0, -700, 0, 50, 50, 4, 0x1a0a1a, 0xa855f7);
+        createPlatDef(0, -695, -40, 20, 20, 4, 0x1a0a1a, 0xa855f7);
+        createPlatDef(0, -690, -80, 25, 25, 4, 0x1a0a1a, 0xa855f7);
 
-        // MUNDO 5: Tablero Real con Carta Gigante
+        // MUNDO 5: Tablero Real de Ajedrez con Carta Gigante
         const tileSize = 20;
-        for(let r=0; r<6; r++) {
-            for(let c=0; c<6; c++) {
+        for(let r=0; r<8; r++) {
+            for(let c=0; c<8; c++) {
                 const isW = (r + c) % 2 === 0;
-                createPlatDef((c - 2.5) * tileSize, -1000, (r - 2.5) * tileSize, tileSize, tileSize, 5, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
+                createPlatDef((c - 3.5) * tileSize, -1000, (r - 3.5) * tileSize, tileSize, tileSize, 5, isW ? 0xdddddd : 0x111111, isW ? 0x555555 : 0x4facfe);
             }
         }
 
-        // MUNDO 6: MUNDO SECRETO (Cofre Final del Aniversario - Desbloqueado con los 4 Fragmentos)
-        createPlatDef(0, -1250, 0, 22, 22, 6, 0x1a001a, 0xff00ff);
-        createPlatDef(0, -1246, -25, 15, 15, 6, 0x1a001a, 0xff00ff);
+        // MUNDO 6: Mundo Secreto Final (Explosión de Estrellas 2D / Mensaje masivo)
+        createPlatDef(0, -1300, 0, 40, 40, 6, 0x1a001a, 0xff00ff);
 
-        // Memorias y Portales de transición
+        // Memorias y Portales por Mundo
         const memData = [
-            { world: 1, pos: [12, 3, -28], title: "El Primer Mes", text: "Descubrimos que nuestras mentes operaban en el mismo servidor. Mi vida mejoró al instante." },
-            { world: 1, pos: [0, 15, -65], title: "El Segundo Mes", text: "Demostramos que nuestro dúo está hecho para ganar cualquier partida." },
-            { world: 1, pos: [-15, 19, -78], title: "El Tercer Mes", text: "Eres mi soporte y la razón de mi sonrisa frente a la pantalla." },
-            { world: 1, pos: [-30, 22, -95], title: "El Gran Salto", text: "Prepárate para entrar a nuestro rincón especial.", isPortal: 2 },
+            { world: 1, pos: [45, 5, -30], title: "Inicios del Mundo Abierto", text: "Cada rincón de este vasto espacio virtual está diseñado para nosotros." },
+            { world: 1, pos: [0, 15, -90], title: "Salto al Parkour", text: "Prepárate para superar la gran torre de obstáculos.", isPortal: 2 },
             
-            { world: 2, pos: [0, -240, -72], title: "Camino Estelar", text: "A veces, caminar a tu lado es la mayor aventura.", isPortal: 3 },
+            { world: 2, pos: [10, -280, -105], title: "Cima del Parkour", text: "¡Lo lograste! Ahora aborda la siguiente fase aérea.", isPortal: 3 },
             
-            { world: 3, pos: [0, -490, -60], title: "Constelación de Amor", text: "Cada estrella representa un momento feliz juntos.", isPortal: 4 },
+            { world: 3, pos: [0, -500, -105], title: "Vuelo Estelar Superado", text: "Volar a tu lado es la sensación más libre del universo.", isPortal: 4 },
             
-            { world: 4, pos: [0, -734, -45], title: "Nivel Superado: Arcade Ascendente", text: "Subiendo cada escalón de la vida juntos.", isPortal: 5 },
+            { world: 4, pos: [0, -685, -80], title: "Arena Arcade Multijugador", text: "Nuestra sincronización en equipo supera cualquier desafío.", isPortal: 5 },
+            
+            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Ajedrez)", text: "Mi amada Meyiroshira...\n\nHan sido 3 meses maravillosos llenos de partidas ganadas, risas y momentos inolvidables. Eres la jugada maestra de mi existencia.\n\nReúne los 3 fragmentos ocultos en el multiverso para revelar el gran evento final de estrellas. ❤️", isFinal: true, checkSecret: true },
 
-            { world: 5, pos: [0, -997, 0], title: "Jaque Mate de mi Vida (Sistema de Ajedrez 2D)", text: "Mi amada Meyiroshira...\n\nQuería construir un código que demostrara que mi amor por ti no cabe en un mensaje normal.\n\nEste sistema de ajedrez 2D y nuestro multiverso representan cada jugada perfecta que hacemos juntos. ¡Has llegado hasta aquí superando cada reto!\n\nReúne los 4 fragmentos estelares ocultos en este tablero para abrir el Cofre Secreto Final.", isFinal: true, checkSecret: true },
-
-            { world: 6, pos: [0, -1242, -25], title: "✨ ¡Feliz Aniversario Meyiroshira! ✨", text: "Has abierto el Cofre Secreto Final del Aniversario recabando cada fragmento estelar de nuestro sistema 2D.\n\nGracias por ser la jugadora más importante de mi vida, por cada risa, cada partida y cada segundo a tu lado. ¡Te amo con todo mi corazón por siempre! ❤️", isSecretFinal: true }
+            { world: 6, pos: [0, -1295, 0], title: "El Despliegue de Estrellas", text: "✨ ¡Has desbloqueado el núcleo final! Observa cómo todas las estrellas del cosmos explotan para escribir nuestro amor.", isSecretFinal: true }
         ];
 
         const memGeo = new THREE.OctahedronGeometry(1.2, 0); 
@@ -304,12 +316,11 @@
             memories.push({ mesh: m, data: d, collected: false });
         });
 
-        // 4 Fragmentos / Estrellas repartidas en los mundos restantes
+        // 3 Fragmentos / Easter Eggs ocultos en los mundos previos
         const eeData = [
-            { world: 2, pos: [10, -243, -36], name: "Fragmento Estelar 1" },
-            { world: 3, pos: [0, -491, -40], name: "Fragmento Estelar 2" },
-            { world: 4, pos: [-8, -739, -30], name: "Fragmento Estelar 3" },
-            { world: 5, pos: [15, -997, 15], name: "Fragmento Estelar 4 (Ajedrez)" }
+            { world: 1, pos: [-45, 8, -50], name: "Fragmento Abierto" },
+            { world: 2, pos: [-12, -230, -45], name: "Fragmento Parkour" },
+            { world: 4, pos: [0, -693, -40], name: "Fragmento Arcade" }
         ];
         const eeGeo = new THREE.DodecahedronGeometry(0.8, 0);
         const eeMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
@@ -322,7 +333,7 @@
             easterEggs.push({ mesh: m, data: e, collected: false });
         });
 
-        let gamePaused = true, currentWorld = 1, highestPlatIndex = 0;
+        let gamePaused = true, currentWorld = 1;
 
         function startGame() {
             document.getElementById('start-screen').style.opacity = '0';
@@ -337,36 +348,22 @@
             }, 1000);
         }
 
-        const startBtn = document.getElementById('start-btn');
-        startBtn.addEventListener('click', startGame);
-        startBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            startGame();
-        }, {passive: false});
-
-        function activatePlatform(index) {
-            if(platforms[index] && !platforms[index].active && platforms[index].world === currentWorld) {
-                platforms[index].active = true;
-                platforms[index].mesh.visible = true;
-            }
-        }
-
         function loadWorld(worldId) {
             currentWorld = worldId;
-            highestPlatIndex = 0;
             physics.vel.set(0,0,0);
             gamePaused = false;
+            isExplosion2DActive = false;
+            document.getElementById('canvas-2d').style.display = 'none';
+            container.style.display = 'block';
 
-            platforms.forEach((p, idx) => {
+            // Activar visualmente solo las plataformas del mundo actual
+            platforms.forEach((p) => {
                 if(p.world === worldId) {
-                    if (worldId === 1) {
-                        p.active = false; p.mesh.visible = false;
-                        if(idx === 0 || idx === 1) activatePlatform(idx);
-                    } else {
-                        p.active = true; p.mesh.visible = true; p.mesh.scale.set(0.01, 0.01, 0.01);
-                    }
+                    p.active = true;
+                    p.mesh.visible = true;
                 } else {
-                    p.active = false; p.mesh.visible = false;
+                    p.active = false; 
+                    p.mesh.visible = false;
                 }
             });
 
@@ -379,14 +376,24 @@
                 e.mesh.visible = (e.data.world === worldId && !e.collected);
             });
 
-            if(worldId === 1) player.position.set(0, 5, 0);
-            else if(worldId === 2) player.position.set(0, -245, 0);
-            else if(worldId === 3) player.position.set(0, -495, 0);
-            else if(worldId === 4) player.position.set(0, -745, 0);
-            else if(worldId === 5) player.position.set(0, -995, 30);
-            else if(worldId === 6) player.position.set(0, -1245, 0);
+            // Cambiar entre esfera normal y avión según el mundo
+            if(worldId === 3) {
+                player.visible = false;
+                planeGroup.visible = true;
+            } else {
+                player.visible = true;
+                planeGroup.visible = false;
+            }
 
-            const names = ["", "El Abismo Dorado", "El Paseo Estelar", "Pasaje Cósmico", "Arcade Ascendente", "Tablero de Ajedrez 2D", "✨ ¡Mundo Secreto: Cofre Final! ✨"];
+            // Posiciones iniciales por cada mundo gigante
+            if(worldId === 1) player.position.set(0, 3, 0);
+            else if(worldId === 2) player.position.set(0, -195, 0);
+            else if(worldId === 3) { player.position.set(0, -445, 0); planeGroup.position.copy(player.position); }
+            else if(worldId === 4) player.position.set(0, -695, 0);
+            else if(worldId === 5) player.position.set(0, -995, 45); // Tablero de ajedrez
+            else if(worldId === 6) { player.position.set(0, -1295, 0); initStarExplosion2D(); }
+
+            const names = ["", "Mundo Abierto Gigante", "Torre Parkour Extrema", "Simulador de Avión Estelar", "Arena Arcade Multijugador", "El Tablero Real de Ajedrez", "Mundo 2D: Explosión de Estrellas"];
             document.getElementById('hud-world').innerText = names[worldId];
             camera.position.set(player.position.x, player.position.y + 7, player.position.z + 18);
         }
@@ -395,17 +402,18 @@
             gamePaused = true; 
             physics.vel.set(0,0,0);
             document.getElementById('msg-title').innerText = data.title;
-            
-            let textToShow = data.text;
-            document.getElementById('msg-text').innerHTML = textToShow.replace(/\n/g, '<br>');
+            document.getElementById('msg-text').innerHTML = data.text.replace(/\n/g, '<br>');
             
             const btn = document.querySelector('.btn-continue');
             if(data.isPortal) {
-                btn.innerText = "Siguiente Nivel";
+                btn.innerText = "Siguiente Mundo";
                 btn.onclick = () => transitionToWorld(data.isPortal);
-            } else if(data.checkSecret && easterEggsFound === 4) {
-                btn.innerText = "🔓 Abrir el Cofre Secreto Final";
+            } else if(data.checkSecret && easterEggsFound === 3) {
+                btn.innerText = "Activar Mundo 2D de Estrellas";
                 btn.onclick = () => transitionToWorld(6);
+            } else if(data.isSecretFinal) {
+                btn.innerText = "Ver Gran Final";
+                btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); initStarExplosion2D(); };
             } else {
                 btn.innerText = "Seguir";
                 btn.onclick = () => { document.getElementById('msg-modal').classList.remove('active'); setTimeout(()=>gamePaused=false, 200); };
@@ -416,7 +424,7 @@
         function transitionToWorld(worldId) {
             document.getElementById('msg-modal').classList.remove('active');
             document.getElementById('flash').style.opacity = '1'; 
-            if (worldId >= 5) fadeAudio(audioImpostor, audioGolden);
+            if (worldId === 5 || worldId === 6) fadeAudio(audioImpostor, audioGolden);
 
             setTimeout(() => {
                 loadWorld(worldId);
@@ -424,14 +432,59 @@
             }, 1500);
         }
 
+        // Sistema especial para el mundo final en 2D (Estrellas explotando con el mensaje)
+        function initStarExplosion2D() {
+            gamePaused = true;
+            isExplosion2DActive = true;
+            container.style.display = 'none';
+            const c2d = document.getElementById('canvas-2d');
+            c2d.style.display = 'block';
+            const ctx = c2d.getContext('2d');
+            c2d.width = window.innerWidth;
+            c2d.height = window.innerHeight;
+
+            let stars = [];
+            for(let i=0; i<300; i++) {
+                stars.push({
+                    x: c2d.width / 2,
+                    y: c2d.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12,
+                    size: Math.random() * 3 + 1,
+                    color: Math.random() > 0.5 ? '#ff9a9e' : '#4facfe'
+                });
+            }
+
+            function loop2D() {
+                if(!isExplosion2DActive) return;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.fillRect(0, 0, c2d.width, c2d.height);
+
+                stars.forEach(s => {
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    ctx.fillStyle = s.color;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 2.5em Cinzel, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#ff9a9e';
+                ctx.shadowBlur = 25;
+                ctx.fillText("¡Feliz Tercer Aniversario,", c2d.width / 2, c2d.height / 2 - 30);
+                ctx.fillText("Meyiroshira! ❤️", c2d.width / 2, c2d.height / 2 + 30);
+                requestAnimationFrame(loop2D);
+            }
+            loop2D();
+        }
+
         function animate() {
             requestAnimationFrame(animate);
 
-            platforms.forEach(p => {
-                if(p.active && p.mesh.scale.x < 1) p.mesh.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
-            });
-
-            if(!gamePaused) {
+            if(!gamePaused && !isExplosion2DActive) {
                 let mX = 0, mZ = 0;
                 if(keys.w) mZ -= physics.speed;
                 if(keys.s) mZ += physics.speed;
@@ -447,43 +500,44 @@
                 player.position.z += mZ;
                 physics.vel.x = mX; physics.vel.z = mZ;
 
-                let oldY = player.position.y;
-                physics.vel.y += physics.grav;
-                player.position.y += physics.vel.y;
+                if(currentWorld === 3) {
+                    // Control especial modo avión en vuelo
+                    physics.vel.y += physics.grav * 0.4;
+                    player.position.y += physics.vel.y;
+                    planeGroup.position.copy(player.position);
+                    planeGroup.rotation.z = -mX * 0.8;
+                } else {
+                    physics.vel.y += physics.grav;
+                    player.position.y += physics.vel.y;
+                }
 
                 let floorY = -9999;
-                let landedIndex = -1;
 
-                platforms.forEach((p, i) => {
+                platforms.forEach((p) => {
                     if(!p.active || p.world !== currentWorld) return;
-                    const marginX = (p.w / 2) + 1.2;
-                    const marginZ = (p.d / 2) + 1.2;
+                    const marginX = (p.w / 2) + 0.8;
+                    const marginZ = (p.d / 2) + 0.8;
                     
                     if (Math.abs(player.position.x - p.x) <= marginX && Math.abs(player.position.z - p.z) <= marginZ) {
                         const top = p.yTop;
-                        if (oldY - 1.0 >= top - 1.0 && player.position.y - 1.0 <= top + 0.5) {
-                            if (top > floorY) { floorY = top; landedIndex = i; }
+                        if (player.position.y >= top - 0.5 && player.position.y <= top + 1.8 && physics.vel.y <= 0) {
+                            if (top > floorY) { floorY = top; }
                         }
                     }
                 });
 
-                if (floorY !== -9999 && physics.vel.y <= 0) {
+                if (floorY !== -9999 && currentWorld !== 3) {
                     player.position.y = floorY + 1.0;
                     physics.vel.y = 0;
                     physics.jumps = 2; 
-                    if (currentWorld === 1 && landedIndex >= highestPlatIndex) {
-                        highestPlatIndex = landedIndex;
-                        activatePlatform(highestPlatIndex + 1);
-                        activatePlatform(highestPlatIndex + 2); 
-                    }
                 }
 
-                let voidLimit = -40;
-                if(currentWorld === 2) voidLimit = -280;
-                if(currentWorld === 3) voidLimit = -530;
-                if(currentWorld === 4) voidLimit = -780;
-                if(currentWorld === 5) voidLimit = -1030;
-                if(currentWorld === 6) voidLimit = -1280;
+                let voidLimit = -100;
+                if(currentWorld === 2) voidLimit = -350;
+                if(currentWorld === 3) voidLimit = -750;
+                if(currentWorld === 4) voidLimit = -850;
+                if(currentWorld === 5) voidLimit = -1150;
+                if(currentWorld === 6) voidLimit = -1400;
 
                 if(player.position.y < voidLimit) {
                     loadWorld(currentWorld);
@@ -513,7 +567,6 @@
 
             particlesCyan.rotation.y += 0.0005;
             particlesPink.rotation.y -= 0.0005;
-            particlesGold.rotation.y += 0.001;
             bgPlanet.rotation.y += 0.002;
             
             let targetCamX = player.position.x;
